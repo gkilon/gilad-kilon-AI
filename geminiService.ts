@@ -5,7 +5,7 @@ import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TeamSyn
 const SYSTEM_INSTRUCTION = `
 אתה העוזר האסטרטגי הדיגיטלי של גלעד קילון. 
 תפקידך לסייע למנהלים ליישם את המתודולוגיה של גלעד: "~~מדברים~~ עושים AI בפיתוח ארגוני".
-אתה מומחה באבחון צרכים ניהוליים והכוונת המשתמש לכלי הנכון ביותר עבורו.
+אתה מומחה באבחון צרכים ניהוליים, ניתוח דאטה צוותי והכוונת המשתמש לפעולות פרקטיות.
 `;
 
 export const getToolRecommendation = async (userInput: string) => {
@@ -139,15 +139,28 @@ export const processIdea = async (content: string, projects: ProjectChange[], is
   return JSON.parse(response.text || '{}');
 };
 
-export const getSynergyInsight = async (pulse: Partial<TeamSynergyPulse>) => {
+export const getSynergyInsight = async (avgScores: any, vibes: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const prompt = `נתח השתתפות וסינרגיה בצוות לפי הפרמטרים הבאים:
-  Ownership: ${pulse.ownership}, Role Clarity: ${pulse.roleClarity}, Routines: ${pulse.routines}, 
-  Comm: ${pulse.communication}, Commitment: ${pulse.commitment}, Respect: ${pulse.respect}.
-  Vibe: "${pulse.vibe}".`;
+  const prompt = `
+נתח את מצב הצוות על בסיס נתוני Pulse:
+ממוצעים (סולם 1-6):
+Ownership: ${avgScores.ownership}
+Role Clarity: ${avgScores.roleClarity}
+Routines: ${avgScores.routines}
+Communication: ${avgScores.communication}
+Commitment: ${avgScores.commitment}
+Respect: ${avgScores.respect}
+
+תגובות מילוליות מהשטח: "${vibes.join(' | ')}"
+
+כתוב ניתוח קצר מאוד (עד 4-5 משפטים סה"כ) בפורמט הבא:
+1. חוזקה מרכזית: (מה הכי גבוה ומה המשמעות)
+2. נקודת תורפה: (מה הכי נמוך ואיזה סיכון זה מייצר)
+3. שורה תחתונה ניהולית: (פעולה אחת פרקטית לביצוע)
+`;
   
   const response = await ai.models.generateContent({ 
-    model: 'gemini-3-pro-preview', 
+    model: 'gemini-3-flash-preview', 
     contents: prompt, 
     config: { systemInstruction: SYSTEM_INSTRUCTION } 
   });

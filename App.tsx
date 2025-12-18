@@ -30,6 +30,19 @@ const App: React.FC = () => {
 
   const dbReady = isFirebaseReady();
 
+  // מנגנון כניסה ישירה לצוות דרך URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const teamParam = params.get('team');
+    
+    if (teamParam && !session) {
+      setSession({ teamId: teamParam.toLowerCase(), isManager: false });
+      setView('synergy');
+      // ננקה את ה-URL למראה נקי אחרי הכניסה
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   useEffect(() => {
     if (session) {
       localStorage.setItem('gk_session', JSON.stringify(session));
@@ -42,7 +55,7 @@ const App: React.FC = () => {
   }, [session, dbReady]);
 
   const loadAllData = async () => {
-    if (!session || !dbReady) return;
+    if (!session || !dbReady || !session.isManager) return;
     setLoading(true);
     try {
       const managerId = session.teamId;
@@ -56,13 +69,14 @@ const App: React.FC = () => {
       setIdeas(i as IdeaEntry[]);
       setGeneralTasks(t as Task[]);
     } catch (e) {
-      console.error("Firebase load failed:", e);
+      console.error("Cloud load failed:", e);
     }
     setLoading(false);
   };
 
   const handleLogin = (teamId: string, isManager: boolean) => {
     setSession({ teamId, isManager });
+    setView(isManager ? 'dashboard' : 'synergy');
   };
 
   const handleLogout = () => {
@@ -100,7 +114,7 @@ const App: React.FC = () => {
       setProjects(prev => editingProject ? prev.map(p => p.id === id ? newProject : p) : [newProject, ...prev]);
       setView('dashboard');
     } catch (e) {
-      alert("שגיאת סנכרון: הנתונים לא נשמרו ב-Firebase");
+      alert("שגיאת סנכרון: הנתונים לא נשמרו בענן");
     }
     setLoading(false);
   };
@@ -111,7 +125,7 @@ const App: React.FC = () => {
       await deleteFromCloud('projects', id);
       setProjects(prev => prev.filter(p => p.id !== id));
     } catch (e) {
-      alert("מחיקה נכשלה בשרת");
+      alert("מחיקה נכשלה");
     }
   };
 
@@ -133,7 +147,7 @@ const App: React.FC = () => {
     if (loading) return (
       <div className="py-40 text-center space-y-8 animate-fadeIn">
         <div className="w-16 h-16 border-4 border-cyan-brand border-t-transparent rounded-full animate-spin mx-auto"></div>
-        <div className="text-cyan-brand font-black text-2xl uppercase italic tracking-widest">סנכרון ענן בזמן אמת...</div>
+        <div className="text-cyan-brand font-black text-2xl uppercase italic tracking-widest">טוען נתונים מהענן...</div>
       </div>
     );
 
@@ -164,16 +178,16 @@ const App: React.FC = () => {
           <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
             <div className="flex items-center gap-2 text-emerald-400">
                <span className={`w-2 h-2 rounded-full ${dbReady ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
-               <span>{dbReady ? 'Cloud Synced' : 'Sync Error'}</span>
+               <span>{dbReady ? 'מחובר ומסונכרן' : 'שגיאת תקשורת'}</span>
             </div>
             <span className="text-slate-500">|</span>
-            <span className="text-slate-400">צוות: {session.teamId}</span>
+            <span className="text-slate-400">מרחב: {session.teamId}</span>
             <button onClick={handleLogout} className="text-red-400/60 hover:text-red-400 transition-colors mr-2">התנתקות [X]</button>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-600">
             <span className={`w-1.5 h-1.5 rounded-full ${dbReady ? 'bg-cyan-brand' : 'bg-red-500'}`}></span>
-            <span>Firebase Status: {dbReady ? 'Connected' : 'Missing Config'}</span>
+            <span>מצב מערכת: {dbReady ? 'פעיל' : 'לא מחובר'}</span>
           </div>
         )}
       </div>
