@@ -73,7 +73,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-cyan-brand/5 rounded-full blur-[100px] -z-10"></div>
         <BrandLogo size="lg" />
         <div className="mt-8 mb-2 text-lg md:text-2xl font-light tracking-tight flex items-center gap-4">
-          <span className="text-slate-400 font-black line-through italic decoration-white/20">מדברים</span>
+          <span className="text-slate-300 font-black line-through italic decoration-white/30">מדברים</span>
           <span className="font-black text-cyan-brand drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">עושים AI</span>
           <span className="text-cyan-brand font-bold">בפיתוח ארגוני</span>
         </div>

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ProjectChange, WoopData, IdeaEntry, TeamSynergyPulse, StrategyTest, Task, UserSession } from './types';
 import { fetchFromCloud, syncToCloud, deleteFromCloud } from './firebase';
+import { suggestTasksForWoop } from './geminiService';
 import Dashboard from './components/Dashboard';
 import WoopWizard from './components/WoopWizard';
 import Header from './components/Header';
@@ -66,25 +67,47 @@ const App: React.FC = () => {
 
   const handleSaveWoop = async (data: WoopData) => {
     if (!session) return;
+    setLoading(true);
     const id = editingProject?.id || Math.random().toString(36).substr(2, 9);
+    
+    // AI Task Suggestion
+    const suggestedTaskTexts = await suggestTasksForWoop(data);
+    const aiTasks: Task[] = suggestedTaskTexts.map(text => ({
+      id: Math.random().toString(36).substr(2, 5),
+      text,
+      completed: false,
+      createdAt: Date.now()
+    }));
+
     const newProject: ProjectChange = {
       id,
       title: data.wish.split('\n')[0].substring(0, 40),
       createdAt: editingProject?.createdAt || Date.now(),
       woop: data,
-      tasks: editingProject?.tasks || [
-        { id: Math.random().toString(36).substr(2, 5), text: `מימוש שלב הפעולה: ${data.plan.substring(0, 30)}...`, completed: false, createdAt: Date.now() }
-      ],
+      tasks: aiTasks,
       readinessScore: 8
     };
     
     setProjects(prev => editingProject ? prev.map(p => p.id === id ? newProject : p) : [newProject, ...prev]);
     await syncToCloud('projects', { ...newProject, managerId: session.teamId });
+    setLoading(false);
     setView('dashboard');
   };
 
+  const toggleTask = async (projectId: string, taskId: string) => {
+    if (!session) return;
+    const project = projects.find(p => p.id === projectId);
+    if (!project) return;
+    
+    const updatedTasks = project.tasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t);
+    const updatedProject = { ...project, tasks: updatedTasks };
+    
+    setProjects(prev => prev.map(p => p.id === projectId ? updatedProject : p));
+    await syncToCloud('projects', { ...updatedProject, managerId: session.teamId });
+  };
+
   const renderView = () => {
-    if (loading) return <div className="py-40 text-center animate-pulse text-cyan-brand font-black text-2xl uppercase italic tracking-widest">סנכרון מול הענן של גלעד...</div>;
+    if (loading) return <div className="py-40 text-center animate-pulse text-cyan-brand font-black text-2xl uppercase italic tracking-widest">סנכרון אסטרטגי מול הענן של גלעד...</div>;
 
     if (!session && (view !== 'home' && view !== 'about' && view !== 'login')) {
       return <Login onLogin={handleLogin} />;
@@ -93,7 +116,7 @@ const App: React.FC = () => {
     switch(view) {
       case 'login': return <Login onLogin={handleLogin} />;
       case 'home': return <Landing onEnterTool={(v) => setView(v as any)} />;
-      case 'dashboard': return <Dashboard projects={projects} onNew={() => { setEditingProject(null); setView('wizard'); }} onDelete={id => deleteFromCloud('projects', id)} onToggleTask={(pid, tid) => {}} />;
+      case 'dashboard': return <Dashboard projects={projects} onNew={() => { setEditingProject(null); setView('wizard'); }} onDelete={id => deleteFromCloud('projects', id)} onToggleTask={toggleTask} />;
       case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={handleSaveWoop} initialData={editingProject?.woop} />;
       case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={i => { setIdeas([i, ...ideas]); syncToCloud('ideas', {...i, managerId: session?.teamId}); }} />;
       case 'synergy': return <TeamSynergy history={[]} onSave={() => {}} />;

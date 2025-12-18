@@ -1,5 +1,6 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
-import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TeamSynergyPulse } from "./types";
+import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TeamSynergyPulse, Task } from "./types";
 
 const SYSTEM_INSTRUCTION = `
 אתה העוזר האסטרטגי הדיגיטלי של גלעד קילון. 
@@ -50,6 +51,38 @@ export const getToolRecommendation = async (userInput: string) => {
     }
   });
   return JSON.parse(response.text || '{"recommendations": []}');
+};
+
+export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const prompt = `
+  על בסיס מודל ה-WOOP הבא, צור רשימה של 4-5 משימות אופרטיביות קונקרטיות לביצוע מיידי:
+  Wish: ${woop.wish}
+  Outcome: ${woop.outcome}
+  Obstacle: ${woop.obstacle}
+  Plan: ${woop.plan}
+  
+  החזר רק מערך של מחרוזות (המשימות).
+  `;
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: prompt,
+    config: {
+      systemInstruction: "אתה מנהל תפעול חד ומהיר. הפוך אסטרטגיה למשימות.",
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.ARRAY,
+        items: { type: Type.STRING }
+      }
+    }
+  });
+  
+  try {
+    return JSON.parse(response.text || "[]");
+  } catch (e) {
+    return ["להתחיל במימוש שלב ה-Plan", "שיחת עדכון עם הצוות", "קביעת מדדי הצלחה"];
+  }
 };
 
 export const getCollaborativeFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
