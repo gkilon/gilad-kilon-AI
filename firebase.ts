@@ -1,6 +1,6 @@
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, doc, deleteDoc, updateDoc, setDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, deleteDoc, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -27,22 +27,33 @@ export const deleteFromCloud = async (collectionName: string, id: string) => {
 
 export const fetchFromCloud = async (collectionName: string, managerId: string) => {
   if (!db) return [];
-  const q = query(
-    collection(db, collectionName),
-    where("managerId", "==", managerId),
-    orderBy("updatedAt", "desc")
-  );
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+  try {
+    const q = query(
+      collection(db, collectionName),
+      where("managerId", "==", managerId)
+    );
+    const querySnapshot = await getDocs(q);
+    const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    // מיון בזיכרון כדי למנוע שגיאות אינדקס ב-Firestore
+    return data.sort((a: any, b: any) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  } catch (e) {
+    console.error("Fetch error:", e);
+    return [];
+  }
 };
 
 export const saveTeamPulse = async (teamId: string, data: any) => {
   if (!db) return null;
-  return await addDoc(collection(db, "team_pulses"), {
-    teamId,
-    ...data,
-    timestamp: Date.now()
-  });
+  try {
+    return await addDoc(collection(db, "team_pulses"), {
+      teamId,
+      ...data,
+      timestamp: Date.now()
+    });
+  } catch (e) {
+    console.error("Save error:", e);
+    return null;
+  }
 };
 
 export const getTeamPulses = async (teamId: string) => {
@@ -50,11 +61,12 @@ export const getTeamPulses = async (teamId: string) => {
   try {
     const q = query(
       collection(db, "team_pulses"),
-      where("teamId", "==", teamId),
-      orderBy("timestamp", "desc")
+      where("teamId", "==", teamId)
     );
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => doc.data());
+    const results = querySnapshot.docs.map(doc => doc.data());
+    // מיון בזיכרון ללא צורך באינדקס מורכב
+    return results.sort((a: any, b: any) => b.timestamp - a.timestamp);
   } catch (e) {
     console.error("Firestore error:", e);
     return [];
