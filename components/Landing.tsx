@@ -73,8 +73,8 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-cyan-brand/5 rounded-full blur-[100px] -z-10"></div>
         <BrandLogo size="lg" />
         <div className="mt-8 mb-2 text-lg md:text-2xl font-light tracking-tight flex items-center gap-4">
-          <span className="line-through text-cyan-brand/20 font-black">מדברים</span>
-          <span className="font-black text-cyan-brand drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">עושים AI</span>
+          <span className="opacity-20 text-cyan-brand font-black italic">מדברים</span>
+          <span className="font-black text-cyan-brand drop-shadow-[0_0_15px_rgba(45,212,191,0.5)]">עושים AI</span>
           <span className="text-cyan-brand font-bold">בפיתוח ארגוני</span>
         </div>
       </section>
@@ -85,8 +85,8 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-orange-500/5 rounded-full blur-[100px] pointer-events-none"></div>
           
           <div className="flex flex-col gap-8 relative z-10">
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-              <div className="space-y-4 text-right">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 text-right">
+              <div className="space-y-4">
                 <div className="inline-flex items-center gap-3 px-6 py-2.5 bg-amber-500 text-slate-950 rounded-full text-[13px] font-black uppercase tracking-[0.25em] shadow-[0_0_30px_rgba(245,158,11,0.5)] transform -rotate-1">
                   <span className="animate-pulse text-lg">✦</span>
                   דלפק התייעצות ראשונית

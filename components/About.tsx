@@ -35,7 +35,12 @@ const About: React.FC = () => {
               src="gilad.jpg" 
               alt="גלעד קילון"
               className="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
+              onLoad={(e) => {
+                const img = e.target as HTMLImageElement;
+                console.log("Image loaded successfully:", img.src);
+              }}
               onError={(e) => {
+                console.error("Image load failed, showing fallback");
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
                 const parent = target.parentElement;
