@@ -4,6 +4,7 @@ import { TeamSynergyPulse } from '../types';
 import { saveTeamPulse, getTeamPulses, isFirebaseReady } from '../firebase';
 
 const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSynergyPulse) => void }> = ({ history, onSave }) => {
+  // Initialize state with all required fields from TeamSynergyPulse
   const [pulse, setPulse] = useState<TeamSynergyPulse>({ 
     ownership: 3, 
     roleClarity: 3, 
@@ -12,7 +13,8 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
     commitment: 3, 
     respect: 3, 
     vibe: '',
-    timestamp: 0 
+    timestamp: Date.now(),
+    teamId: localStorage.getItem('gk_team_username') || ''
   });
   
   const [loading, setLoading] = useState(false);
@@ -105,7 +107,9 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
       return;
     }
     setLoading(true);
-    const success = await saveTeamPulse(teamUsername, pulse);
+    // Ensure the pulse sent to server has correct teamId and fresh timestamp
+    const dataToSave = { ...pulse, teamId: teamUsername, timestamp: Date.now() };
+    const success = await saveTeamPulse(teamUsername, dataToSave);
     if (success) {
       setSubmitted(true);
       if (isManager) loadCloudData(); // עדכן מיד אם מנהל

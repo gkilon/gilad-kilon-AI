@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ProjectChange, WoopData, IdeaEntry, TeamSynergyPulse, StrategyTest, Task } from './types';
+import { ProjectChange, WoopData, IdeaEntry, TeamSynergyPulse, StrategyTest, Task, UserSession } from './types';
 import { fetchFromCloud, syncToCloud, deleteFromCloud } from './firebase';
 import Dashboard from './components/Dashboard';
 import WoopWizard from './components/WoopWizard';
@@ -11,53 +11,61 @@ import TeamSynergy from './components/TeamSynergy';
 import ExecutiveSynergy from './components/ExecutiveSynergy';
 import TaskHub from './components/TaskHub';
 import About from './components/About';
+import Login from './components/Login';
 
 const App: React.FC = () => {
   const [projects, setProjects] = useState<ProjectChange[]>([]);
   const [ideas, setIdeas] = useState<IdeaEntry[]>([]);
-  const [synergyHistory, setSynergyHistory] = useState<TeamSynergyPulse[]>([]);
-  const [executiveHistory, setExecutiveHistory] = useState<StrategyTest[]>([]);
   const [generalTasks, setGeneralTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   
-  // Persistent view state across refreshes
-  const initialView = (sessionStorage.getItem('gk_current_view') as any) || 'home';
-  const [view, setView] = useState<'home' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about'>(initialView);
+  const [session, setSession] = useState<UserSession | null>(() => {
+    const saved = localStorage.getItem('gk_session');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const [view, setView] = useState<'home' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'login'>('home');
   const [editingProject, setEditingProject] = useState<ProjectChange | null>(null);
 
-  const managerId = "gilad_default_team"; 
-
   useEffect(() => {
-    const loadAllData = async () => {
-      setLoading(true);
-      try {
-        const p = await fetchFromCloud('projects', managerId);
-        const i = await fetchFromCloud('ideas', managerId);
-        const t = await fetchFromCloud('general_tasks', managerId);
-        
-        if (p.length) setProjects(p as ProjectChange[]);
-        if (i.length) setIdeas(i as IdeaEntry[]);
-        if (t.length) setGeneralTasks(t as Task[]);
-      } catch (e) {
-        console.error("Failed to load cloud data", e);
-      }
-      setLoading(false);
-    };
-
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('mode') === 'survey') {
-      setView('synergy');
+    if (session) {
+      localStorage.setItem('gk_session', JSON.stringify(session));
+      loadAllData();
+    } else {
+      localStorage.removeItem('gk_session');
     }
+  }, [session]);
 
-    loadAllData();
-  }, []);
+  const loadAllData = async () => {
+    if (!session) return;
+    setLoading(true);
+    try {
+      const managerId = session.teamId;
+      const p = await fetchFromCloud('projects', managerId);
+      const i = await fetchFromCloud('ideas', managerId);
+      const t = await fetchFromCloud('general_tasks', managerId);
+      
+      setProjects(p as ProjectChange[]);
+      setIdeas(i as IdeaEntry[]);
+      setGeneralTasks(t as Task[]);
+    } catch (e) {
+      console.error("Failed to load cloud data", e);
+    }
+    setLoading(false);
+  };
 
-  // Sync view to sessionStorage to survive F5
-  useEffect(() => {
-    sessionStorage.setItem('gk_current_view', view);
-  }, [view]);
+  const handleLogin = (teamId: string, isManager: boolean) => {
+    setSession({ teamId, isManager });
+    setView(isManager ? 'dashboard' : 'synergy');
+  };
+
+  const handleLogout = () => {
+    setSession(null);
+    setView('home');
+  };
 
   const handleSaveWoop = async (data: WoopData) => {
+    if (!session) return;
     const id = editingProject?.id || Math.random().toString(36).substr(2, 9);
     const newProject: ProjectChange = {
       id,
@@ -70,72 +78,47 @@ const App: React.FC = () => {
       readinessScore: 8
     };
     
-    if (editingProject) setProjects(projects.map(p => p.id === id ? newProject : p));
-    else setProjects([newProject, ...projects]);
-    
-    await syncToCloud('projects', { ...newProject, managerId });
+    setProjects(prev => editingProject ? prev.map(p => p.id === id ? newProject : p) : [newProject, ...prev]);
+    await syncToCloud('projects', { ...newProject, managerId: session.teamId });
     setView('dashboard');
   };
 
-  const handleDeleteProject = async (id: string) => {
-    setProjects(prev => prev.filter(p => p.id !== id));
-    await deleteFromCloud('projects', id);
-  };
-
-  const handleToggleTask = async (pid: string, tid: string) => {
-    const updatedProjects = projects.map(p => {
-      if (p.id === pid) {
-        const updatedTasks = p.tasks.map(t => t.id === tid ? {...t, completed: !t.completed} : t);
-        const updatedProj = {...p, tasks: updatedTasks};
-        syncToCloud('projects', { ...updatedProj, managerId });
-        return updatedProj;
-      }
-      return p;
-    });
-    setProjects(updatedProjects);
-  };
-
-  const handleSaveIdea = async (idea: IdeaEntry) => {
-    setIdeas([idea, ...ideas]);
-    await syncToCloud('ideas', { ...idea, managerId });
-  };
-
-  const handleUpdateGeneralTasks = async (newTasks: Task[]) => {
-    setGeneralTasks(newTasks);
-    for (const t of newTasks) {
-      await syncToCloud('general_tasks', { ...t, managerId });
-    }
-  };
-
   const renderView = () => {
-    if (loading) return <div className="py-40 text-center animate-pulse text-cyan-brand font-black">טוען נתונים מהענן...</div>;
+    if (loading) return <div className="py-40 text-center animate-pulse text-cyan-brand font-black text-2xl uppercase italic tracking-widest">סנכרון מול הענן של גלעד...</div>;
+
+    if (!session && (view !== 'home' && view !== 'about' && view !== 'login')) {
+      return <Login onLogin={handleLogin} />;
+    }
 
     switch(view) {
-      case 'home': return <Landing onEnterTool={(v, url) => url ? window.open(url, '_blank') : setView(v as any)} />;
-      case 'dashboard': return <Dashboard projects={projects} onNew={() => { setEditingProject(null); setView('wizard'); }} onDelete={handleDeleteProject} onToggleTask={handleToggleTask} />;
+      case 'login': return <Login onLogin={handleLogin} />;
+      case 'home': return <Landing onEnterTool={(v) => setView(v as any)} />;
+      case 'dashboard': return <Dashboard projects={projects} onNew={() => { setEditingProject(null); setView('wizard'); }} onDelete={id => deleteFromCloud('projects', id)} onToggleTask={(pid, tid) => {}} />;
       case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={handleSaveWoop} initialData={editingProject?.woop} />;
-      case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={handleSaveIdea} />;
-      case 'synergy': return <TeamSynergy history={synergyHistory} onSave={p => setSynergyHistory([p, ...synergyHistory])} />;
-      case 'executive': return <ExecutiveSynergy history={executiveHistory} onSave={s => setExecutiveHistory([s, ...executiveHistory])} />;
-      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={handleUpdateGeneralTasks} />;
+      case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={i => { setIdeas([i, ...ideas]); syncToCloud('ideas', {...i, managerId: session?.teamId}); }} />;
+      case 'synergy': return <TeamSynergy history={[]} onSave={() => {}} />;
+      case 'executive': return <ExecutiveSynergy history={[]} onSave={() => {}} />;
+      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={t => { setGeneralTasks(t); t.forEach(task => syncToCloud('general_tasks', {...task, managerId: session?.teamId})) }} />;
       case 'about': return <About />;
       default: return <Landing onEnterTool={(v) => setView(v as any)} />;
     }
   };
 
   return (
-    <div className="min-h-screen selection:bg-cyan-brand/30 app-frame" dir="rtl">
-      <Header onNavigate={(v) => {
-        if (v === 'communication') window.open('https://hilarious-kashata-9aafa2.netlify.app/', '_blank');
-        else if (v === 'feedback360') window.open('https://ubiquitous-nougat-41808d.netlify.app/', '_blank');
-        else setView(v as any);
-      }} currentView={view} />
+    <div className="min-h-screen app-frame" dir="rtl">
+      <Header onNavigate={(v) => setView(v as any)} currentView={view} />
+      
+      {session && (
+        <div className="max-w-7xl mx-auto px-6 pt-4 flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-500">
+           <div className="flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Workspace: {session.teamId}</span>
+           </div>
+           <button onClick={handleLogout} className="hover:text-red-400 transition-colors">Logout [X]</button>
+        </div>
+      )}
+
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {view !== 'home' && (
-          <button onClick={() => setView('home')} className="mb-6 group flex items-center gap-2 text-slate-500 hover:text-cyan-brand transition-all font-bold text-xs uppercase tracking-widest">
-            <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Hub
-          </button>
-        )}
         {renderView()}
       </main>
     </div>

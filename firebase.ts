@@ -11,23 +11,24 @@ const firebaseConfig = {
   appId: process.env.VITE_FIREBASE_APP_ID
 };
 
-if (!firebaseConfig.apiKey) {
-  console.warn("Firebase API Key is missing. Cloud features will not work.");
-}
-
 const app = firebaseConfig.apiKey ? initializeApp(firebaseConfig) : null;
 export const db = app ? getFirestore(app) : null;
 
-// פונקציה לבדיקת חיבור
+// Helper function to check if firebase is ready
 export const isFirebaseReady = () => !!db;
 
 const normalizeId = (id: string) => id ? id.trim().toLowerCase() : "";
 
 export const syncToCloud = async (collectionName: string, data: any) => {
-  if (!db) return;
+  if (!db) {
+    console.warn("Cloud Sync skipped: Database not initialized.");
+    return;
+  }
   try {
-    const docRef = doc(collection(db, collectionName), data.id || Math.random().toString(36).substr(2, 9));
-    await setDoc(docRef, { ...data, updatedAt: Date.now() }, { merge: true });
+    const id = data.id || Math.random().toString(36).substr(2, 9);
+    const docRef = doc(db, collectionName, id);
+    await setDoc(docRef, { ...data, id, updatedAt: Date.now() }, { merge: true });
+    console.log(`Cloud sync successful for ${collectionName}/${id}`);
   } catch (e) {
     console.error("Cloud sync failed:", e);
   }
@@ -50,19 +51,17 @@ export const fetchFromCloud = async (collectionName: string, managerId: string) 
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
   } catch (e) {
-    console.error("Fetch error:", e);
+    console.error(`Fetch error for ${collectionName}:`, e);
     return [];
   }
 };
 
 export const saveTeamPulse = async (teamId: string, data: any) => {
   if (!db) {
-    console.error("Firebase not initialized - check your environment variables");
+    console.error("Firebase not initialized - check your .env keys");
     return false;
   }
   const tid = normalizeId(teamId);
-  if (!tid) return false;
-
   try {
     const pulseData = {
       teamId: tid,
@@ -70,8 +69,7 @@ export const saveTeamPulse = async (teamId: string, data: any) => {
       timestamp: Date.now(),
       serverTimestamp: new Date().toISOString()
     };
-    const docRef = await addDoc(collection(db, "team_pulses"), pulseData);
-    console.log("Success: Pulse saved with ID:", docRef.id);
+    await addDoc(collection(db, "team_pulses"), pulseData);
     return true;
   } catch (e) {
     console.error("Firestore Save Error:", e);
@@ -82,16 +80,10 @@ export const saveTeamPulse = async (teamId: string, data: any) => {
 export const getTeamPulses = async (teamId: string) => {
   if (!db) return [];
   const tid = normalizeId(teamId);
-  if (!tid) return [];
-
   try {
-    const q = query(
-      collection(db, "team_pulses"),
-      where("teamId", "==", tid)
-    );
+    const q = query(collection(db, "team_pulses"), where("teamId", "==", tid));
     const querySnapshot = await getDocs(q);
     const results = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-    console.log(`Fetched ${results.length} results for team: ${tid}`);
     return results.sort((a: any, b: any) => b.timestamp - a.timestamp);
   } catch (e) {
     console.error("Firestore Fetch Error:", e);

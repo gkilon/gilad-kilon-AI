@@ -64,9 +64,8 @@ export interface TeamSynergyPulse {
   commitment: number;
   respect: number;
   vibe: string;
-  aiInsight?: string;
   timestamp: number;
-  isAggregate?: boolean;
+  teamId: string;
 }
 
 export interface StrategyTest {
@@ -88,4 +87,9 @@ export interface CommStyleResult {
   strengths: string[];
   growthAreas: string[];
   howToCommunicateWithMe: string;
+}
+
+export interface UserSession {
+  isManager: boolean;
+  teamId: string;
 }
