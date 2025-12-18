@@ -20,13 +20,14 @@ const App: React.FC = () => {
   const [generalTasks, setGeneralTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const [view, setView] = useState<'home' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about'>('home');
+  // Persistent view state across refreshes
+  const initialView = (sessionStorage.getItem('gk_current_view') as any) || 'home';
+  const [view, setView] = useState<'home' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about'>(initialView);
   const [editingProject, setEditingProject] = useState<ProjectChange | null>(null);
 
-  const managerId = "gilad_default_team"; // בייצור אפשר להוציא מ-Auth
+  const managerId = "gilad_default_team"; 
 
   useEffect(() => {
-    // טעינה ראשונית מהענן
     const loadAllData = async () => {
       setLoading(true);
       try {
@@ -38,10 +39,7 @@ const App: React.FC = () => {
         if (i.length) setIdeas(i as IdeaEntry[]);
         if (t.length) setGeneralTasks(t as Task[]);
       } catch (e) {
-        console.error("Failed to load cloud data, falling back to local storage", e);
-        // Fallback ל-local storage אם אין חיבור לענן
-        const lp = localStorage.getItem('gk_projects');
-        if (lp) setProjects(JSON.parse(lp));
+        console.error("Failed to load cloud data", e);
       }
       setLoading(false);
     };
@@ -54,7 +52,11 @@ const App: React.FC = () => {
     loadAllData();
   }, []);
 
-  // שמירה לענן בכל שינוי
+  // Sync view to sessionStorage to survive F5
+  useEffect(() => {
+    sessionStorage.setItem('gk_current_view', view);
+  }, [view]);
+
   const handleSaveWoop = async (data: WoopData) => {
     const id = editingProject?.id || Math.random().toString(36).substr(2, 9);
     const newProject: ProjectChange = {
@@ -68,11 +70,9 @@ const App: React.FC = () => {
       readinessScore: 8
     };
     
-    // עדכון סטייט מקומי
     if (editingProject) setProjects(projects.map(p => p.id === id ? newProject : p));
     else setProjects([newProject, ...projects]);
     
-    // סנכרון לענן
     await syncToCloud('projects', { ...newProject, managerId });
     setView('dashboard');
   };
@@ -102,7 +102,6 @@ const App: React.FC = () => {
 
   const handleUpdateGeneralTasks = async (newTasks: Task[]) => {
     setGeneralTasks(newTasks);
-    // לצורך פשטות נסנכרן את כל המערך (אפשר גם אחד אחד)
     for (const t of newTasks) {
       await syncToCloud('general_tasks', { ...t, managerId });
     }
