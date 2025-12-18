@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { TeamSynergyPulse, UserSession } from '../types';
-import { saveTeamPulse, getTeamPulses, isFirebaseReady } from '../firebase';
+import { saveTeamPulse, getTeamPulses, isFirebaseReady, checkWorkspaceExists } from '../firebase';
 import { getSynergyInsight } from '../geminiService';
 
 interface TeamSynergyProps {
@@ -27,6 +27,7 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [aiInsight, setAiInsight] = useState<string>('');
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
+  const [workspaceExists, setWorkspaceExists] = useState<boolean | null>(null);
   
   const refreshInterval = useRef<number | null>(null);
 
@@ -34,10 +35,15 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
   const isManager = session?.isManager || false;
 
   useEffect(() => {
-    if (teamId && isManager) {
-      loadCloudData();
-      refreshInterval.current = window.setInterval(loadCloudData, 30000);
-    }
+    const verifyAndLoad = async () => {
+      const exists = await checkWorkspaceExists(teamId);
+      setWorkspaceExists(exists);
+      if (exists && isManager) {
+        loadCloudData();
+        refreshInterval.current = window.setInterval(loadCloudData, 30000);
+      }
+    };
+    if (teamId) verifyAndLoad();
     return () => {
       if (refreshInterval.current) clearInterval(refreshInterval.current);
     };
@@ -91,17 +97,18 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
   const handleSubmit = async () => {
     if (!teamId) return;
     setLoading(true);
-    const dataToSave = { ...pulse, teamId: teamId, timestamp: Date.now() };
-    const success = await saveTeamPulse(teamId, dataToSave);
+    const success = await saveTeamPulse(teamId, { ...pulse });
     if (success) {
       setSubmitted(true);
       if (isManager) loadCloudData();
+    } else {
+      alert("שגיאה: מרחב עבודה זה לא קיים או שיש בעיית תקשורת.");
     }
     setLoading(false);
   };
 
   const shareLink = () => {
-    const url = `${window.location.origin}${window.location.pathname}?mode=survey&team=${teamId.toLowerCase()}`;
+    const url = `${window.location.origin}${window.location.pathname}?team=${teamId.toLowerCase()}`;
     navigator.clipboard.writeText(url).then(() => {
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
@@ -117,6 +124,16 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
     { key: 'respect', label: 'כבוד ואמון הדדי', icon: '✨' }
   ];
 
+  if (workspaceExists === false) {
+    return (
+      <div className="max-w-2xl mx-auto py-40 text-center animate-fadeIn space-y-6">
+        <h2 className="text-4xl font-black text-white">שגיאה: מרחב עבודה לא נמצא</h2>
+        <p className="text-slate-400">הקוד "{teamId}" אינו משוייך למרחב עבודה פעיל בגלעד קילון AI.</p>
+        <button onClick={() => window.location.reload()} className="bg-white text-slate-950 px-8 py-4 rounded-2xl font-black">חזור לדף הכניסה</button>
+      </div>
+    );
+  }
+
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto py-32 text-center animate-fadeIn space-y-8">
@@ -124,7 +141,7 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
           <svg className="w-12 h-12 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg>
         </div>
         <h2 className="text-5xl font-black text-white italic">המשוב נשלח!</h2>
-        <p className="text-slate-400 text-xl font-medium">הדופק הצוותי עבור "{teamId}" עודכן.</p>
+        <p className="text-slate-400 text-xl font-medium">ה-Pulse שלכם עודכן במרחב "{teamId}".</p>
         <button onClick={() => setSubmitted(false)} className="px-12 py-4 bg-white text-slate-950 rounded-2xl font-black shadow-xl">שלח עדכון נוסף</button>
       </div>
     );
@@ -136,7 +153,7 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
          <div className="space-y-4">
             <div className="flex items-center gap-3">
               <span className={`w-2 h-2 rounded-full ${isFirebaseReady() ? 'bg-amber-500 animate-pulse' : 'bg-red-500'}`}></span>
-              <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Team Quality Hub | {teamId}</span>
+              <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Workspace Verified | {teamId}</span>
             </div>
             <h2 className="text-6xl font-black text-white tracking-tighter uppercase">ניהול איכות הצוות</h2>
             <p className="text-slate-400 text-xl font-medium">מדידת אמון, סנכרון וביצועים בזמן אמת.</p>
@@ -147,11 +164,11 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
         <div className="space-y-12 animate-fadeIn border-b border-white/10 pb-16">
           <div className="glass-card rounded-[2.5rem] p-8 border-amber-500/20 bg-amber-500/5 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
             <div className="text-right">
-              <h4 className="text-lg font-black text-white italic">דשבורד ניהולי: <span className="text-amber-500 uppercase">{teamId}</span></h4>
-              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">נתונים מצטברים בזמן אמת</p>
+              <h4 className="text-lg font-black text-white italic">דשבורד ניהולי של {teamId}</h4>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">נתונים מבודדים ומאובטחים</p>
             </div>
             <button onClick={shareLink} className="px-8 py-4 bg-amber-500 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg">
-              {copySuccess ? 'הלינק הועתק!' : 'שלח לינק לדירוג צוותי'}
+              {copySuccess ? 'הלינק הועתק!' : 'שלח לינק לצוות (עם קוד מובנה)'}
             </button>
           </div>
 
@@ -168,6 +185,9 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
                        </div>
                      </div>
                    ))}
+                 </div>
+                 <div className="mt-12 pt-8 border-t border-white/5 text-center text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">
+                   מבוסס על {aggregateMetrics.count} דירוגי צוות אחרונים
                  </div>
               </div>
 
@@ -195,14 +215,14 @@ const TeamSynergy: React.FC<TeamSynergyProps> = ({ session }) => {
           ) : (
             <div className="glass-card p-20 text-center rounded-[4rem] border-dashed border-white/5 bg-slate-900/20">
                <div className="text-4xl mb-4">📡</div>
-               <h3 className="text-2xl font-black text-white">מחכה לנתונים מהצוות...</h3>
-               <p className="text-slate-500 italic mt-2">שלח את הלינק לעובדים כדי להתחיל לראות את ה-Pulse הצוותי.</p>
+               <h3 className="text-2xl font-black text-white">המרחב שלך ריק</h3>
+               <p className="text-slate-500 italic mt-2">הצוות שלך עוד לא התחיל לדרג. שלח להם את הלינק למעלה.</p>
             </div>
           )}
         </div>
       )}
 
-      {/* תמיד מציגים את השאלון מתחת, אלא אם המנהל בחר אחרת */}
+      {/* שאלון הדירוג */}
       <div className="glass-card rounded-[3.5rem] p-12 space-y-12 border-amber-500/20 shadow-[0_0_100px_rgba(245,158,11,0.05)] bg-slate-900/40">
         <div className="text-center space-y-4">
           <h3 className="text-3xl font-black text-white italic">דירוג Pulse צוותי</h3>

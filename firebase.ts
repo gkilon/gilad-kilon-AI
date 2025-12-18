@@ -1,6 +1,6 @@
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, query, where, getDocs, doc, deleteDoc, setDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, deleteDoc, setDoc, getDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -14,21 +14,60 @@ const firebaseConfig = {
 const app = firebaseConfig.apiKey ? initializeApp(firebaseConfig) : null;
 export const db = app ? getFirestore(app) : null;
 
-// Helper function to check if firebase is ready
 export const isFirebaseReady = () => !!db;
 
 const normalizeId = (id: string) => id ? id.trim().toLowerCase() : "";
 
-export const syncToCloud = async (collectionName: string, data: any) => {
-  if (!db) {
-    console.warn("Cloud Sync skipped: Database not initialized.");
-    return;
+// --- Workspace Management ---
+
+export const createWorkspace = async (teamId: string, password: string) => {
+  if (!db) return { success: false, error: "Database not connected" };
+  const tid = normalizeId(teamId);
+  try {
+    const docRef = doc(db, "workspaces", tid);
+    const existing = await getDoc(docRef);
+    if (existing.exists()) return { success: false, error: "מרחב עבודה בשם זה כבר קיים" };
+    
+    await setDoc(docRef, {
+      id: tid,
+      password, // In a real production app we'd hash this, but for this demo/MVP it secures the session
+      createdAt: Date.now()
+    });
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: "שגיאת שרת ביצירת מרחב" };
   }
+};
+
+export const loginToWorkspace = async (teamId: string, password: string) => {
+  if (!db) return { success: false };
+  const tid = normalizeId(teamId);
+  try {
+    const docRef = doc(db, "workspaces", tid);
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) return { success: false, error: "מרחב עבודה לא נמצא" };
+    if (snap.data().password !== password) return { success: false, error: "סיסמה שגויה" };
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: "שגיאת התחברות" };
+  }
+};
+
+export const checkWorkspaceExists = async (teamId: string) => {
+  if (!db) return false;
+  const tid = normalizeId(teamId);
+  const snap = await getDoc(doc(db, "workspaces", tid));
+  return snap.exists();
+};
+
+// --- Data Operations (Scoped by Manager ID / Workspace) ---
+
+export const syncToCloud = async (collectionName: string, data: any) => {
+  if (!db || !data.managerId) return;
   try {
     const id = data.id || Math.random().toString(36).substr(2, 9);
     const docRef = doc(db, collectionName, id);
     await setDoc(docRef, { ...data, id, updatedAt: Date.now() }, { merge: true });
-    console.log(`Cloud sync successful for ${collectionName}/${id}`);
   } catch (e) {
     console.error("Cloud sync failed:", e);
   }
@@ -51,28 +90,26 @@ export const fetchFromCloud = async (collectionName: string, managerId: string) 
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
   } catch (e) {
-    console.error(`Fetch error for ${collectionName}:`, e);
+    console.error(`Fetch error:`, e);
     return [];
   }
 };
 
 export const saveTeamPulse = async (teamId: string, data: any) => {
-  if (!db) {
-    console.error("Firebase not initialized - check your .env keys");
-    return false;
-  }
+  if (!db) return false;
   const tid = normalizeId(teamId);
+  // First verify workspace exists
+  const exists = await checkWorkspaceExists(tid);
+  if (!exists) return false;
+
   try {
-    const pulseData = {
+    await addDoc(collection(db, "team_pulses"), {
       teamId: tid,
       ...data,
-      timestamp: Date.now(),
-      serverTimestamp: new Date().toISOString()
-    };
-    await addDoc(collection(db, "team_pulses"), pulseData);
+      timestamp: Date.now()
+    });
     return true;
   } catch (e) {
-    console.error("Firestore Save Error:", e);
     return false;
   }
 };
@@ -83,10 +120,9 @@ export const getTeamPulses = async (teamId: string) => {
   try {
     const q = query(collection(db, "team_pulses"), where("teamId", "==", tid));
     const querySnapshot = await getDocs(q);
-    const results = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-    return results.sort((a: any, b: any) => b.timestamp - a.timestamp);
+    return querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+      .sort((a: any, b: any) => b.timestamp - a.timestamp);
   } catch (e) {
-    console.error("Firestore Fetch Error:", e);
     return [];
   }
 };
