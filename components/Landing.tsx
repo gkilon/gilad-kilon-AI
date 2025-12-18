@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { getToolRecommendation } from '../geminiService';
 
@@ -75,15 +74,14 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         <BrandLogo size="lg" />
         <div className="mt-8 mb-2 text-lg md:text-2xl font-light tracking-tight flex items-center gap-4">
           <span className="line-through text-slate-500 opacity-40">מדברים</span>
-          <span className="font-black text-white">עושים AI</span>
-          <span className="text-cyan-brand font-medium">בפיתוח ארגוני</span>
+          <span className="font-black text-amber-500 drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]">עושים AI</span>
+          <span className="text-cyan-brand font-bold">בפיתוח ארגוני</span>
         </div>
       </section>
 
-      {/* Reception Desk - Consultation Area - Updated Prominent Orange Design */}
+      {/* Reception Desk - Consultation Area */}
       <section className="w-full">
         <div className="glass-card p-10 rounded-[3rem] border-amber-500/40 bg-slate-900/80 relative overflow-hidden group shadow-[0_0_60px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/20">
-          {/* Decorative glowing amber accent */}
           <div className="absolute -top-24 -right-24 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-orange-500/5 rounded-full blur-[100px] pointer-events-none"></div>
           
@@ -163,7 +161,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         </div>
       </section>
 
-      {/* Simplified Tools Grid */}
+      {/* Tools Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
         {tools.map((tool) => (
           <div 

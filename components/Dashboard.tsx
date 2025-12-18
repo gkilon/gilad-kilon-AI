@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ProjectChange } from '../types';
 
@@ -11,7 +10,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onToggleTask }) => {
   return (
-    <div className="space-y-10 animate-fadeIn pt-6">
+    <div className="space-y-10 animate-fadeIn pt-6 text-right">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
         <div>
           <h2 className="text-4xl font-black text-white leading-tight uppercase tracking-tighter">ניהול השינוי</h2>
@@ -19,7 +18,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onTogg
         </div>
         <button 
           onClick={onNew}
-          className="bg-cyan-brand hover:bg-cyan-400 text-slate-950 px-10 py-4 rounded-2xl font-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-cyan-brand/20"
+          className="bg-transparent hover:bg-cyan-brand text-cyan-brand hover:text-slate-950 px-10 py-4 rounded-2xl font-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 border-2 border-cyan-brand/30 hover:border-cyan-brand shadow-xl hover:shadow-cyan-brand/20"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />

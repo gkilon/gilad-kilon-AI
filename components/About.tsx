@@ -1,6 +1,4 @@
 import React from 'react';
-// ייבוא התמונה ישירות מהתיקייה שמעל (השורש)
-import giladImage from '../gilad.jpg';
 
 const About: React.FC = () => {
   const expertises = [
@@ -36,7 +34,7 @@ const About: React.FC = () => {
           <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full scale-110 opacity-50 group-hover:opacity-100 transition-opacity"></div>
           <div className="relative w-48 h-48 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl z-10 bg-slate-800 flex items-center justify-center">
             <img 
-              src={giladImage} 
+              src="/gilad.jpg" 
               alt="גלעד קילון"
               className="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
               onError={(e) => {
@@ -46,7 +44,7 @@ const About: React.FC = () => {
                 if (parent) {
                   parent.style.background = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
                   const initials = document.createElement('div');
-                  initials.className = "absolute inset-0 flex items-center justify-center text-4xl font-black text-amber-500/40";
+                  initials.className = "absolute inset-0 flex items-center justify-center text-5xl font-black text-amber-500/60";
                   initials.innerText = "GK";
                   parent.appendChild(initials);
                 }
