@@ -14,10 +14,29 @@ const firebaseConfig = {
 const app = firebaseConfig.apiKey ? initializeApp(firebaseConfig) : null;
 export const db = app ? getFirestore(app) : null;
 
+// מנגנון שמירה מקומית כגיבוי (Fallback)
+const saveLocal = (key: string, data: any) => {
+  const existing = JSON.parse(localStorage.getItem(key) || '[]');
+  existing.push(data);
+  localStorage.setItem(key, JSON.stringify(existing));
+};
+
+const getLocal = (key: string) => {
+  return JSON.parse(localStorage.getItem(key) || '[]');
+};
+
 export const syncToCloud = async (collectionName: string, data: any) => {
-  if (!db) return;
-  const docRef = doc(collection(db, collectionName), data.id || Math.random().toString(36).substr(2, 9));
-  await setDoc(docRef, { ...data, updatedAt: Date.now() }, { merge: true });
+  if (!db) {
+    saveLocal(`local_${collectionName}`, { ...data, updatedAt: Date.now() });
+    return;
+  }
+  try {
+    const docRef = doc(collection(db, collectionName), data.id || Math.random().toString(36).substr(2, 9));
+    await setDoc(docRef, { ...data, updatedAt: Date.now() }, { merge: true });
+  } catch (e) {
+    console.error("Cloud sync failed, using local", e);
+    saveLocal(`local_${collectionName}`, data);
+  }
 };
 
 export const deleteFromCloud = async (collectionName: string, id: string) => {
@@ -26,49 +45,61 @@ export const deleteFromCloud = async (collectionName: string, id: string) => {
 };
 
 export const fetchFromCloud = async (collectionName: string, managerId: string) => {
-  if (!db) return [];
+  const localData = getLocal(`local_${collectionName}`);
+  if (!db) return localData;
   try {
     const q = query(
       collection(db, collectionName),
       where("managerId", "==", managerId)
     );
     const querySnapshot = await getDocs(q);
-    const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-    // מיון בזיכרון כדי למנוע שגיאות אינדקס ב-Firestore
-    return data.sort((a: any, b: any) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    const cloudData = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    const combined = [...cloudData, ...localData];
+    return combined.sort((a: any, b: any) => (b.updatedAt || 0) - (a.updatedAt || 0));
   } catch (e) {
     console.error("Fetch error:", e);
-    return [];
+    return localData;
   }
 };
 
 export const saveTeamPulse = async (teamId: string, data: any) => {
-  if (!db) return null;
+  const pulseData = {
+    teamId,
+    ...data,
+    timestamp: Date.now()
+  };
+  
+  // תמיד נשמור מקומית ליתר ביטחון
+  saveLocal(`pulses_${teamId}`, pulseData);
+
+  if (!db) return true; // החזרת true כדי שהממשק ימשיך כרגיל
+  
   try {
-    return await addDoc(collection(db, "team_pulses"), {
-      teamId,
-      ...data,
-      timestamp: Date.now()
-    });
+    await addDoc(collection(db, "team_pulses"), pulseData);
+    return true;
   } catch (e) {
-    console.error("Save error:", e);
-    return null;
+    console.error("Cloud save failed, but saved locally", e);
+    return true; // נחזיר אמת כי שמרנו מקומית
   }
 };
 
 export const getTeamPulses = async (teamId: string) => {
-  if (!db) return [];
+  const localData = getLocal(`pulses_${teamId}`);
+  if (!db) return localData.sort((a: any, b: any) => b.timestamp - a.timestamp);
+  
   try {
     const q = query(
       collection(db, "team_pulses"),
       where("teamId", "==", teamId)
     );
     const querySnapshot = await getDocs(q);
-    const results = querySnapshot.docs.map(doc => doc.data());
-    // מיון בזיכרון ללא צורך באינדקס מורכב
-    return results.sort((a: any, b: any) => b.timestamp - a.timestamp);
+    const cloudResults = querySnapshot.docs.map(doc => doc.data());
+    const combined = [...cloudResults, ...localData];
+    // הסרת כפילויות אם קיימות (לפי timestamp)
+    const unique = Array.from(new Map(combined.map(item => [item.timestamp, item])).values());
+    return unique.sort((a: any, b: any) => b.timestamp - a.timestamp);
   } catch (e) {
-    console.error("Firestore error:", e);
-    return [];
+    console.error("Firestore error, showing local data only:", e);
+    return localData.sort((a: any, b: any) => b.timestamp - a.timestamp);
   }
 };

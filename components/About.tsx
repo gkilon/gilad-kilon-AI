@@ -42,7 +42,7 @@ const About: React.FC = () => {
                 if (parent) {
                   parent.style.background = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
                   const initials = document.createElement('div');
-                  initials.className = "absolute inset-0 flex items-center justify-center text-5xl font-black text-amber-500/60";
+                  initials.className = "absolute inset-0 flex items-center justify-center text-5xl font-black text-amber-500/60 drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]";
                   initials.innerText = "GK";
                   parent.appendChild(initials);
                 }
