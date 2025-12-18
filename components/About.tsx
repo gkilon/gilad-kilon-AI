@@ -1,4 +1,6 @@
 import React from 'react';
+// ייבוא התמונה ישירות מהתיקייה שמעל (השורש)
+import giladImage from '../gilad.jpg';
 
 const About: React.FC = () => {
   const expertises = [
@@ -33,13 +35,11 @@ const About: React.FC = () => {
         <div className="relative shrink-0 group order-first md:order-last">
           <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full scale-110 opacity-50 group-hover:opacity-100 transition-opacity"></div>
           <div className="relative w-48 h-48 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl z-10 bg-slate-800 flex items-center justify-center">
-            {/* נתיב התמונה שונה ל- /gilad.jpg מתוך הנחה שהוא בתיקיית public */}
             <img 
-              src="/gilad.jpg" 
+              src={giladImage} 
               alt="גלעד קילון"
               className="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
               onError={(e) => {
-                // אם התמונה לא נמצאה, נציג רקע גרדיאנט עם האותיות הראשונות
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
                 const parent = target.parentElement;
@@ -79,7 +79,7 @@ const About: React.FC = () => {
               <span className="block text-4xl font-black text-white">20</span>
               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">שנות ניסיון</span>
             </div>
-            <div className="h-8 w-px bg-white/10"></div>
+            <div className="h-8 w-px bg-white/10 mx-2"></div>
             <div className="text-center">
               <span className="block text-4xl font-black text-white">MA</span>
               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">סוציולוגיה ארגונית</span>
