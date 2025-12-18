@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { TeamSynergyPulse } from '../types';
-import { saveTeamPulse, getTeamPulses } from '../firebase';
+import { saveTeamPulse, getTeamPulses, isFirebaseReady } from '../firebase';
 
 const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSynergyPulse) => void }> = ({ history, onSave }) => {
   const [pulse, setPulse] = useState<TeamSynergyPulse>({ 
@@ -23,6 +23,8 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
   const [cloudHistory, setCloudHistory] = useState<TeamSynergyPulse[]>([]);
   const [isSurveyMode, setIsSurveyMode] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<boolean>(isFirebaseReady());
+  
   const refreshInterval = useRef<number | null>(null);
 
   useEffect(() => {
@@ -34,24 +36,23 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
       setIsManager(false);
     }
     
-    if (teamUsername && isManager && !isSurveyMode) {
+    if (teamUsername && isManager) {
       loadCloudData();
-      refreshInterval.current = window.setInterval(loadCloudData, 8000);
+      refreshInterval.current = window.setInterval(loadCloudData, 10000); // רענן כל 10 שניות
     }
 
     return () => {
       if (refreshInterval.current) clearInterval(refreshInterval.current);
     };
-  }, [teamUsername, isManager, isSurveyMode]);
+  }, [teamUsername, isManager]);
 
   const loadCloudData = async () => {
     if (!teamUsername) return;
-    try {
-      const data = await getTeamPulses(teamUsername);
-      setCloudHistory(data as TeamSynergyPulse[]);
-    } catch (e) {
-      console.error("Error loading pulses:", e);
-    }
+    setLoading(true);
+    const data = await getTeamPulses(teamUsername);
+    setCloudHistory(data as TeamSynergyPulse[]);
+    setLoading(false);
+    setConnectionStatus(isFirebaseReady());
   };
 
   const handleManagerLogin = () => {
@@ -99,26 +100,21 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
 
   const handleSubmit = async () => {
     if (!teamUsername) {
-      alert("נא להזין קוד צוות.");
+      alert("חובה להזין קוד צוות (למשל: משה).");
       return;
     }
     setLoading(true);
-    try {
-      const tid = teamUsername.trim().toLowerCase();
-      const newPulse = { ...pulse, timestamp: Date.now() };
-      await saveTeamPulse(tid, newPulse);
+    const success = await saveTeamPulse(teamUsername, pulse);
+    if (success) {
       setSubmitted(true);
-      if (!isSurveyMode) onSave(newPulse);
-    } catch (e) {
-      alert("שגיאת תקשורת.");
-    } finally {
-      setLoading(false);
+    } else {
+      alert("שגיאה בשמירה לענן. וודא שאתה מחובר לאינטרנט.");
     }
+    setLoading(false);
   };
 
   const shareLink = () => {
-    if (!teamUsername) return;
-    const url = `${window.location.origin}${window.location.pathname}?mode=survey&team=${teamUsername.trim().toLowerCase()}`;
+    const url = `${window.location.origin}${window.location.pathname}?mode=survey&team=${teamUsername.toLowerCase()}`;
     navigator.clipboard.writeText(url).then(() => {
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
@@ -137,14 +133,12 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto py-32 text-center animate-fadeIn space-y-8">
-        <div className="w-24 h-24 bg-cyan-brand rounded-full flex items-center justify-center mx-auto shadow-2xl border-4 border-white/20">
+        <div className="w-24 h-24 bg-cyan-brand rounded-full flex items-center justify-center mx-auto shadow-2xl">
           <svg className="w-12 h-12 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg>
         </div>
         <h2 className="text-5xl font-black text-white italic">נשלח בהצלחה!</h2>
-        <p className="text-slate-400 text-xl font-medium">התשובות שלך התקבלו. המנהל יוכל לראות את הממוצע המעודכן.</p>
-        {!isSurveyMode && (
-          <button onClick={() => setSubmitted(false)} className="px-12 py-4 bg-amber-500 text-slate-950 rounded-2xl font-black shadow-xl">חזור</button>
-        )}
+        <p className="text-slate-400 text-xl font-medium">הנתונים שלך שמורים כעת בענן של גלעד.</p>
+        <button onClick={() => setSubmitted(false)} className="px-12 py-4 bg-amber-500 text-slate-950 rounded-2xl font-black shadow-xl">שלח אבחון נוסף</button>
       </div>
     );
   }
@@ -153,17 +147,20 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
     <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-20 text-right">
       <div className="flex flex-col md:flex-row justify-between items-start gap-6">
          <div className="space-y-4">
-            <span className="text-amber-500 font-black uppercase tracking-[0.4em] text-xs">Collective Synergy Audit</span>
+            <div className="flex items-center gap-3">
+              <span className={`w-2 h-2 rounded-full ${connectionStatus ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+              <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{connectionStatus ? 'Cloud Sync Active' : 'Offline Mode'}</span>
+            </div>
             <h2 className="text-6xl font-black text-white tracking-tighter uppercase">איכות עבודת צוות</h2>
-            <p className="text-slate-400 text-xl font-medium">אבחון עומק של הדינמיקה הצוותית.</p>
+            <p className="text-slate-400 text-xl font-medium">ניהול מבוסס נתונים בזמן אמת.</p>
           </div>
           
           {!isSurveyMode && (
             <div className="flex gap-3">
               {!isManager ? (
-                <button onClick={() => setShowManagerLogin(true)} className="px-6 py-2 border border-amber-500/30 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-slate-950 transition-all">כניסת מנהל</button>
+                <button onClick={() => setShowManagerLogin(true)} className="px-6 py-2 border border-amber-500/30 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-slate-950 transition-all">לוח מנהל</button>
               ) : (
-                <button onClick={handleLogout} className="px-6 py-2 border border-red-500/30 text-red-500 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">יציאה</button>
+                <button onClick={handleLogout} className="px-6 py-2 border border-red-500/30 text-red-500 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">יציאה מהדשבורד</button>
               )}
             </div>
           )}
@@ -171,16 +168,17 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
 
       {showManagerLogin && (
         <div className="glass-card p-10 rounded-[3rem] border-amber-500/40 bg-slate-900/90 space-y-6 animate-fadeIn">
-          <h3 className="text-2xl font-black text-white">צפייה בתוצאות</h3>
+          <h3 className="text-2xl font-black text-white">כניסת מנהל צוות</h3>
+          <p className="text-slate-400">הזן את קוד הצוות כדי למשוך את הנתונים מהשרת:</p>
           <div className="flex flex-col md:flex-row gap-4">
             <input 
               type="text" 
-              placeholder="הזן קוד צוות (למשל: משה)..." 
-              className="flex-1 bg-slate-950 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-amber-500 text-right"
+              placeholder="למשל: משה..." 
+              className="flex-1 bg-slate-950 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-amber-500 text-right font-bold text-xl"
               value={teamUsername}
               onChange={(e) => setTeamUsername(e.target.value)}
             />
-            <button onClick={handleManagerLogin} className="bg-amber-500 text-slate-950 px-10 py-4 rounded-2xl font-black shadow-lg">הצג דשבורד</button>
+            <button onClick={handleManagerLogin} className="bg-amber-500 text-slate-950 px-10 py-4 rounded-2xl font-black shadow-lg">הצג תוצאות</button>
           </div>
         </div>
       )}
@@ -189,25 +187,30 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
         <div className="space-y-12 animate-fadeIn">
           <div className="glass-card rounded-[2.5rem] p-8 border-amber-500/20 bg-amber-500/5 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
             <div className="text-right">
-              <h4 className="text-lg font-black text-white">דוח פעיל עבור: <span className="text-amber-500">{teamUsername}</span></h4>
-              <p className="text-xs text-slate-500 italic">הנתונים מתעדכנים אוטומטית בכל כמה שניות.</p>
+              <h4 className="text-lg font-black text-white italic">דשבורד צוות: <span className="text-amber-500 uppercase">{teamUsername}</span></h4>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Live from Cloud Storage</p>
             </div>
-            <button onClick={shareLink} className="p-5 bg-amber-500 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg">
-              {copySuccess ? 'הלינק הועתק!' : 'העתק לינק לשאלון עובדים'}
-            </button>
+            <div className="flex gap-4">
+              <button onClick={loadCloudData} className={`p-4 bg-slate-800 text-white rounded-2xl font-black text-xs hover:bg-slate-700 transition-all ${loading ? 'animate-spin' : ''}`}>
+                ↻
+              </button>
+              <button onClick={shareLink} className="px-8 py-4 bg-amber-500 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg">
+                {copySuccess ? 'הלינק הועתק!' : 'העתק לינק לעובדים'}
+              </button>
+            </div>
           </div>
 
           {aggregateMetrics ? (
-            <>
-              <div className="glass-card rounded-[3rem] p-10 border-amber-500/30 bg-slate-900/50 relative overflow-hidden shadow-2xl">
+            <div className="space-y-12">
+              <div className="glass-card rounded-[3rem] p-12 border-amber-500/30 bg-slate-900/50 relative overflow-hidden shadow-2xl">
                  <div className="absolute top-0 left-0 bg-amber-500 text-slate-950 px-6 py-1 font-black text-[10px] uppercase tracking-widest rounded-br-2xl">ממוצעי צוות ({aggregateMetrics.count} משיבים)</div>
-                 <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-6">
+                 <div className="grid grid-cols-2 md:grid-cols-3 gap-12 mt-8">
                    {metrics.map(m => (
-                     <div key={m.key} className="text-center space-y-2">
-                       <span className="text-4xl font-black text-amber-500 block">{aggregateMetrics[m.key as keyof typeof aggregateMetrics]} / 6</span>
-                       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-tight">{m.label}</p>
-                       <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden w-24 mx-auto mt-2">
-                          <div className="h-full bg-amber-500 transition-all duration-1000" style={{ width: `${(parseFloat(aggregateMetrics[m.key as keyof typeof aggregateMetrics] as string) / 6) * 100}%` }}></div>
+                     <div key={m.key} className="text-center space-y-3">
+                       <span className="text-5xl font-black text-amber-500 block">{aggregateMetrics[m.key as keyof typeof aggregateMetrics]}</span>
+                       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-tight">{m.label}</p>
+                       <div className="h-2 bg-slate-800 rounded-full overflow-hidden w-full max-w-[120px] mx-auto">
+                          <div className="h-full bg-amber-500 transition-all duration-1000 shadow-[0_0_10px_rgba(245,158,11,0.5)]" style={{ width: `${(parseFloat(aggregateMetrics[m.key as keyof typeof aggregateMetrics] as string) / 6) * 100}%` }}></div>
                        </div>
                      </div>
                    ))}
@@ -215,61 +218,88 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
               </div>
 
               <div className="space-y-6">
-                 <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest pr-4">פירוט תשובות גולמיות (אנונימי)</h4>
-                 <div className="grid gap-4">
+                 <h4 className="text-sm font-black text-slate-500 uppercase tracking-widest pr-4 border-r-4 border-amber-500 mr-2">פירוט תשובות גולמיות (אנונימי)</h4>
+                 <div className="grid gap-6">
                     {cloudHistory.map((h, i) => (
-                      <div key={i} className="glass-card p-6 rounded-2xl border-white/5 bg-slate-900/40 text-sm">
-                         <div className="flex justify-between items-center mb-3">
-                            <span className="text-[10px] text-slate-500">{new Date(h.timestamp).toLocaleString('he-IL')}</span>
-                            <div className="flex gap-2 text-[9px] font-black text-amber-500">
-                               {metrics.map(m => <span key={m.key}>{m.label.split(' ')[0]}: {h[m.key]}</span>)}
+                      <div key={i} className="glass-card p-8 rounded-[2rem] border-white/5 bg-slate-950/40 hover:bg-slate-900 transition-all group">
+                         <div className="flex justify-between items-center mb-6">
+                            <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">תאריך שליחה: {h.timestamp ? new Date(h.timestamp).toLocaleString('he-IL') : 'מקור לא ידוע'}</span>
+                            <div className="flex gap-3">
+                               {metrics.map(m => (
+                                 <div key={m.key} className="flex flex-col items-center">
+                                    <span className="text-[8px] text-slate-700 font-black uppercase">{m.label.split(' ')[0]}</span>
+                                    <span className="text-lg font-black text-amber-500/60 group-hover:text-amber-500 transition-colors">{h[m.key]}</span>
+                                 </div>
+                               ))}
                             </div>
                          </div>
-                         {h.vibe && <p className="text-slate-300 italic border-r-2 border-amber-500/30 pr-3">"{h.vibe}"</p>}
+                         {h.vibe ? (
+                           <div className="relative">
+                             <div className="absolute top-0 right-0 w-8 h-8 bg-amber-500/10 rounded-full blur-xl"></div>
+                             <p className="text-slate-300 text-lg italic leading-relaxed pr-6 border-r-2 border-amber-500/20 relative z-10">"{h.vibe}"</p>
+                           </div>
+                         ) : (
+                           <p className="text-slate-700 text-xs italic">לא נכתבו הערות נוספות.</p>
+                         )}
                       </div>
                     ))}
                  </div>
               </div>
-            </>
+            </div>
           ) : (
-            <div className="glass-card p-20 text-center rounded-[3rem] border-dashed border-white/10 bg-slate-900/40 italic text-slate-500">
-               {loading ? 'מושך נתונים...' : 'עדיין לא התקבלו תשובות מהעובדים תחת קוד זה.'}
+            <div className="glass-card p-32 text-center rounded-[4rem] border-dashed border-white/5 bg-slate-900/20">
+               <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                 <span className="text-2xl animate-pulse">☁️</span>
+               </div>
+               <h5 className="text-xl font-bold text-white mb-2">ממתין לנתונים הראשונים...</h5>
+               <p className="text-slate-600 max-w-xs mx-auto text-sm">שלח את הקישור לעובדים שלך. הנתונים יופיעו כאן באופן אוטומטי ברגע שמישהו יענה.</p>
             </div>
           )}
         </div>
       )}
 
-      {!isManager && (
+      {(!isManager || !teamUsername) && (
         <div className="glass-card rounded-[3.5rem] p-12 space-y-12 border-amber-500/20 shadow-[0_0_100px_rgba(245,158,11,0.05)] bg-slate-900/40">
           <div className="text-center space-y-4 bg-amber-500/5 p-8 rounded-[2.5rem] border border-amber-500/10">
             <h3 className="text-3xl font-black text-white italic">שאלון אבחון צוותי</h3>
             <p className="text-slate-200 font-bold text-xl leading-relaxed">
               באיזו מידה הדברים הבאים מתקיימים בצוות שלך?
               <br/>
-              <span className="text-amber-500 font-black tracking-widest text-sm uppercase">(סקאלה 1-6 משמאל לימין)</span>
+              <span className="text-amber-500 font-black tracking-widest text-sm uppercase">(1 = נמוך, 6 = גבוה)</span>
             </p>
           </div>
 
           {!isSurveyMode && (
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-amber-500 uppercase tracking-widest pr-4">קוד הצוות (חובה לשליחה)</label>
-              <input type="text" placeholder="הזן קוד צוות..." className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-amber-500 text-right font-bold" value={teamUsername} onChange={(e) => setTeamUsername(e.target.value)} />
+              <label className="text-[10px] font-black text-amber-500 uppercase tracking-widest pr-4">קוד הצוות (חובה)</label>
+              <input 
+                type="text" 
+                placeholder="הזן קוד צוות (למשל: משה)..." 
+                className="w-full bg-slate-950 border border-white/10 rounded-2xl px-8 py-6 text-white text-2xl font-black outline-none focus:border-amber-500 text-right" 
+                value={teamUsername} 
+                onChange={(e) => setTeamUsername(e.target.value)} 
+              />
             </div>
           )}
           
-          <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
+          <div className="grid md:grid-cols-2 gap-x-16 gap-y-16">
             {metrics.map(metric => (
-              <div key={metric.key} className="space-y-4 group">
+              <div key={metric.key} className="space-y-6">
                 <div className="flex justify-between items-center px-2">
-                  <label className="text-lg font-bold text-slate-200">{metric.label}</label>
-                  <span className="text-4xl font-black text-amber-500">{pulse[metric.key] as number}</span>
+                  <label className="text-xl font-black text-white">{metric.label}</label>
+                  <span className="text-5xl font-black text-amber-500 drop-shadow-[0_0_15px_rgba(245,158,11,0.3)]">{pulse[metric.key] as number}</span>
                 </div>
                 
-                <div className="relative pt-10 px-2" dir="ltr">
-                  <div className="absolute top-0 left-0 text-[11px] font-black text-slate-500 uppercase tracking-widest">נמוך</div>
-                  <div className="absolute top-0 right-0 text-[11px] font-black text-amber-500 uppercase tracking-widest">גבוה</div>
-                  <input type="range" min="1" max="6" step="1" value={pulse[metric.key] as number} onChange={(e) => setPulse({...pulse, [metric.key]: parseInt(e.target.value)})} className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500" />
-                  <div className="flex justify-between mt-2 text-[10px] font-black text-slate-700">
+                <div className="relative pt-12 px-2" dir="ltr">
+                  <div className="absolute top-0 left-0 text-[12px] font-black text-slate-500 uppercase tracking-widest">נמוך</div>
+                  <div className="absolute top-0 right-0 text-[12px] font-black text-amber-500 uppercase tracking-widest">גבוה</div>
+                  <input 
+                    type="range" min="1" max="6" step="1" 
+                    value={pulse[metric.key] as number} 
+                    onChange={(e) => setPulse({...pulse, [metric.key]: parseInt(e.target.value)})} 
+                    className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500" 
+                  />
+                  <div className="flex justify-between mt-3 text-[10px] font-black text-slate-700">
                     <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
                   </div>
                 </div>
@@ -279,11 +309,20 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
 
           <div className="space-y-4">
             <label className="text-lg font-bold text-slate-200 pr-2 italic">הערות אנונימיות נוספות:</label>
-            <textarea className="w-full bg-slate-950/50 rounded-3xl p-8 border border-white/5 text-slate-200 min-h-[140px] outline-none focus:border-amber-500/50 resize-none text-right placeholder-slate-800" placeholder="מה עובד טוב? מה פחות?" value={pulse.vibe} onChange={(e) => setPulse({...pulse, vibe: e.target.value})} />
+            <textarea 
+              className="w-full bg-slate-950 rounded-3xl p-10 border border-white/5 text-slate-200 text-xl min-h-[180px] outline-none focus:border-amber-500/50 resize-none text-right placeholder-slate-800" 
+              placeholder="יש לך משהו נוסף לשתף את המנהל? זה המקום. הדיווח אנונימי לחלוטין." 
+              value={pulse.vibe} 
+              onChange={(e) => setPulse({...pulse, vibe: e.target.value})} 
+            />
           </div>
 
-          <button onClick={handleSubmit} disabled={loading} className="w-full bg-white text-slate-950 py-8 rounded-[2.5rem] font-black text-2xl hover:bg-amber-500 hover:text-white transition-all shadow-2xl disabled:opacity-30 active:scale-95">
-            {loading ? "שולח תשובות..." : "שלח תשובה למערכת"}
+          <button 
+            onClick={handleSubmit} 
+            disabled={loading || !teamUsername} 
+            className="w-full bg-white text-slate-950 py-10 rounded-[3rem] font-black text-3xl hover:bg-amber-500 hover:text-white transition-all shadow-2xl disabled:opacity-20 active:scale-95"
+          >
+            {loading ? "מעלה נתונים לענן..." : "שלח אבחון למערכת"}
           </button>
         </div>
       )}
