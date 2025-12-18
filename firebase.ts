@@ -14,6 +14,9 @@ const firebaseConfig = {
 const app = firebaseConfig.apiKey ? initializeApp(firebaseConfig) : null;
 export const db = app ? getFirestore(app) : null;
 
+// פונקציית עזר לנורמליזציה של מזהים
+const normalizeId = (id: string) => id.trim().toLowerCase();
+
 const saveLocal = (key: string, data: any) => {
   const existing = JSON.parse(localStorage.getItem(key) || '[]');
   existing.push(data);
@@ -33,23 +36,35 @@ export const syncToCloud = async (collectionName: string, data: any) => {
     const docRef = doc(collection(db, collectionName), data.id || Math.random().toString(36).substr(2, 9));
     await setDoc(docRef, { ...data, updatedAt: Date.now() }, { merge: true });
   } catch (e) {
-    console.error("Cloud sync failed, using local", e);
+    console.error("Cloud sync failed", e);
     saveLocal(`local_${collectionName}`, data);
   }
 };
 
+// Added deleteFromCloud to fix the "Module './firebase' has no exported member 'deleteFromCloud'" error in App.tsx
 export const deleteFromCloud = async (collectionName: string, id: string) => {
-  if (!db) return;
-  await deleteDoc(doc(db, collectionName, id));
+  if (!db) {
+    const localKey = `local_${collectionName}`;
+    const existing = JSON.parse(localStorage.getItem(localKey) || '[]');
+    const updated = existing.filter((item: any) => item.id !== id);
+    localStorage.setItem(localKey, JSON.stringify(updated));
+    return;
+  }
+  try {
+    await deleteDoc(doc(db, collectionName, id));
+  } catch (e) {
+    console.error("Cloud delete failed", e);
+  }
 };
 
 export const fetchFromCloud = async (collectionName: string, managerId: string) => {
+  const mid = normalizeId(managerId);
   const localData = getLocal(`local_${collectionName}`);
   if (!db) return localData;
   try {
     const q = query(
       collection(db, collectionName),
-      where("managerId", "==", managerId)
+      where("managerId", "==", mid)
     );
     const querySnapshot = await getDocs(q);
     const cloudData = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
@@ -62,13 +77,14 @@ export const fetchFromCloud = async (collectionName: string, managerId: string) 
 };
 
 export const saveTeamPulse = async (teamId: string, data: any) => {
+  const tid = normalizeId(teamId);
   const pulseData = {
-    teamId: teamId.trim().toLowerCase(),
+    teamId: tid,
     ...data,
     timestamp: Date.now()
   };
   
-  saveLocal(`pulses_${teamId}`, pulseData);
+  saveLocal(`pulses_${tid}`, pulseData);
 
   if (!db) return true;
   
@@ -82,7 +98,7 @@ export const saveTeamPulse = async (teamId: string, data: any) => {
 };
 
 export const getTeamPulses = async (teamId: string) => {
-  const tid = teamId.trim().toLowerCase();
+  const tid = normalizeId(teamId);
   const localData = getLocal(`pulses_${tid}`);
   if (!db) return localData.sort((a: any, b: any) => b.timestamp - a.timestamp);
   
@@ -93,10 +109,11 @@ export const getTeamPulses = async (teamId: string) => {
     );
     const querySnapshot = await getDocs(q);
     const cloudResults = querySnapshot.docs.map(doc => doc.data());
-    const combined = [...cloudResults, ...localData];
     
-    // Uniq by timestamp to avoid double showing local/cloud
+    // שילוב וניקוי כפילויות מבוסס זמן
+    const combined = [...cloudResults, ...localData];
     const unique = Array.from(new Map(combined.map(item => [item.timestamp, item])).values());
+    
     return unique.sort((a: any, b: any) => b.timestamp - a.timestamp);
   } catch (e) {
     console.error("Firestore error:", e);

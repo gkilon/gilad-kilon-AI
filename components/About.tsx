@@ -30,7 +30,7 @@ const About: React.FC = () => {
       <section className="flex flex-col md:flex-row gap-12 items-center md:items-start border-b border-white/5 pb-16">
         <div className="relative shrink-0 group order-first md:order-last">
           <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full scale-110 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-          <div className="relative w-48 h-48 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl z-10 bg-slate-800 flex items-center justify-center">
+          <div className="relative w-48 h-48 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl z-10 bg-slate-900 flex items-center justify-center">
             <img 
               src="./gilad.jpg" 
               alt="גלעד קילון"
@@ -40,9 +40,9 @@ const About: React.FC = () => {
                 target.style.display = 'none';
                 const parent = target.parentElement;
                 if (parent) {
-                  parent.style.background = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
+                  parent.style.background = 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)';
                   const initials = document.createElement('div');
-                  initials.className = "absolute inset-0 flex items-center justify-center text-5xl font-black text-amber-500/60 drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]";
+                  initials.className = "absolute inset-0 flex items-center justify-center text-6xl font-black text-amber-500/40 drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]";
                   initials.innerText = "GK";
                   parent.appendChild(initials);
                 }
