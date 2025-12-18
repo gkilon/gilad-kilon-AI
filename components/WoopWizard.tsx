@@ -86,14 +86,14 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4 animate-fadeIn">
+    <div className="max-w-7xl mx-auto py-8 px-4 animate-fadeIn text-right">
       {/* Dynamic Breadcrumbs */}
       <div className="flex items-center justify-between mb-16 px-4">
         <div className="flex items-center gap-3">
           {steps.map((s, i) => (
             <React.Fragment key={s.id}>
               <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-black transition-all duration-500 ${
-                i === currentStepIdx ? 'bg-cyan-brand text-slate-950 scale-125 shadow-lg shadow-cyan-brand/20' : i < currentStepIdx ? 'bg-slate-800 text-cyan-brand border border-cyan-brand/30' : 'bg-slate-900 text-slate-600'
+                i === currentStepIdx ? 'bg-amber-500 text-slate-950 scale-125 shadow-lg shadow-amber-500/20' : i < currentStepIdx ? 'bg-slate-800 text-amber-500 border border-amber-500/30' : 'bg-slate-900 text-slate-600'
               }`}>
                 {i + 1}
               </div>
@@ -102,7 +102,7 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
           ))}
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-[10px] font-black text-cyan-brand uppercase tracking-[0.2em]">Step Insight</span>
+          <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">Step Insight</span>
           <span className="text-white font-bold">{currentStep.title}</span>
         </div>
       </div>
@@ -119,14 +119,14 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
             <div className="relative">
                <textarea
                 autoFocus
-                className="w-full h-[400px] p-10 rounded-[3rem] bg-slate-900/40 border border-white/5 focus:border-cyan-brand/50 focus:ring-4 focus:ring-cyan-brand/5 shadow-2xl transition-all text-2xl font-medium placeholder-slate-700 leading-relaxed resize-none text-slate-100"
+                className="w-full h-[400px] p-10 rounded-[3rem] bg-slate-900/40 border border-white/5 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 shadow-2xl transition-all text-2xl font-medium placeholder-slate-700 leading-relaxed resize-none text-slate-100 text-right"
                 placeholder="שתף את המחשבות שלך כאן..."
                 value={currentVal}
                 onChange={(e) => handleInputChange(e.target.value)}
               />
-              <div className="absolute bottom-10 left-10 flex items-center gap-2">
+              <div className="absolute bottom-10 right-10 flex items-center gap-2">
                 <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Editing Mode</span>
-                <div className="w-1.5 h-1.5 bg-cyan-brand rounded-full animate-pulse"></div>
+                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -138,7 +138,7 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
             <button 
               onClick={handleNext}
               disabled={!currentVal.trim()}
-              className="bg-white hover:bg-cyan-brand text-slate-950 px-14 py-6 rounded-[2rem] font-black text-xl shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 disabled:opacity-10"
+              className="bg-white hover:bg-amber-500 text-slate-950 px-14 py-6 rounded-[2rem] font-black text-xl shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 disabled:opacity-10"
             >
               {currentStepIdx === steps.length - 1 ? 'סיים וייצא תוכנית' : 'המשך לשלב הבא'}
             </button>
@@ -151,7 +151,7 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
             {/* Logo Watermark */}
             <div className="absolute top-10 right-10 flex gap-1 items-end h-8 opacity-20">
               <div className="w-2 h-4 bg-slate-700 rounded-full"></div>
-              <div className="w-2 h-8 bg-cyan-brand rounded-full"></div>
+              <div className="w-2 h-8 bg-amber-500 rounded-full"></div>
             </div>
 
             <div className="flex items-center gap-4 mb-12">
@@ -160,7 +160,7 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
               </div>
               <div>
                 <h4 className="font-black text-2xl text-white">העוזר האסטרטגי</h4>
-                <p className="text-[10px] text-cyan-brand font-black uppercase tracking-widest mt-1">מבית גלעד קילון</p>
+                <p className="text-[10px] text-amber-500 font-black uppercase tracking-widest mt-1">מבית גלעד קילון</p>
               </div>
             </div>
 
@@ -168,31 +168,31 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
               {isAiLoading ? (
                 <div className="flex flex-col items-center justify-center h-full gap-6 opacity-40">
                   <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 bg-cyan-brand rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
-                    <div className="w-2.5 h-2.5 bg-cyan-brand rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2.5 h-2.5 bg-cyan-brand rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
-                  <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-brand">Deep Analysis...</p>
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-amber-500">Deep Analysis...</p>
                 </div>
               ) : feedback ? (
                 <div className="space-y-10 animate-fadeIn">
                   <div className="space-y-4">
                     <h5 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">תובנה אישית:</h5>
-                    <p className="text-xl text-slate-300 leading-relaxed font-medium italic border-r-4 border-cyan-brand/30 pr-6 py-2">
+                    <p className="text-xl text-slate-300 leading-relaxed font-medium italic border-r-4 border-amber-500/30 pr-6 py-2">
                       "{feedback.analysis}"
                     </p>
                   </div>
 
                   {!confirmed && (
                     <div className="space-y-8">
-                      <div className="bg-white/[0.03] p-8 rounded-[2rem] border border-white/5 hover:border-cyan-brand/20 transition-all group">
-                        <h5 className="text-[10px] font-black text-cyan-brand uppercase tracking-widest mb-4">הצעה לניסוח מורחב ודיוק המהלך:</h5>
+                      <div className="bg-white/[0.03] p-8 rounded-[2rem] border border-white/5 hover:border-amber-500/20 transition-all group">
+                        <h5 className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-4">הצעה לניסוח מורחב ודיוק המהלך:</h5>
                         <p className="text-lg font-medium text-slate-200 leading-relaxed mb-8">
                           {feedback.refinedText}
                         </p>
                         <button 
                           onClick={handleAdoptRefined}
-                          className="w-full bg-cyan-brand hover:bg-cyan-400 text-slate-950 font-black py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3"
+                          className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -203,7 +203,7 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
 
                       <div className="p-8 rounded-[2rem] bg-amber-500/5 border border-amber-500/10">
                         <h5 className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-4">לדיוק נוסף כדאי לחשוב:</h5>
-                        <p className="text-lg font-bold text-amber-100/90 leading-tight">
+                        <p className="text-lg font-bold text-amber-50 leading-tight">
                           {feedback.clarifyingQuestion}
                         </p>
                       </div>
@@ -211,8 +211,8 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
                   )}
 
                   {confirmed && (
-                    <div className="bg-cyan-brand/5 p-10 rounded-[2.5rem] border border-cyan-brand/20 flex flex-col items-center text-center gap-6 animate-fadeIn">
-                      <div className="w-16 h-16 bg-cyan-brand rounded-full flex items-center justify-center text-slate-950 shadow-lg shadow-cyan-brand/20">
+                    <div className="bg-amber-500/5 p-10 rounded-[2.5rem] border border-amber-500/20 flex flex-col items-center text-center gap-6 animate-fadeIn">
+                      <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
@@ -238,7 +238,7 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
             <div className="mt-12 pt-8 border-t border-white/5 flex justify-between items-center text-[10px] font-black text-slate-700 tracking-[0.3em]">
               <span>FEEDBACK 360 CORE</span>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-cyan-brand rounded-full"></div>
+                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
                 <span>ACTIVE SYNC</span>
               </div>
             </div>

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { getToolRecommendation } from '../geminiService';
 
@@ -68,18 +69,16 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
 
   return (
     <div className="animate-fadeIn space-y-16 pb-16 max-w-5xl mx-auto flex flex-col items-center">
-      {/* Brand Header */}
       <section className="text-center pt-2 relative flex flex-col items-center w-full">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-cyan-brand/5 rounded-full blur-[100px] -z-10"></div>
         <BrandLogo size="lg" />
         <div className="mt-8 mb-2 text-lg md:text-2xl font-light tracking-tight flex items-center gap-4">
-          <span className="line-through text-slate-500 opacity-40">מדברים</span>
-          <span className="font-black text-amber-500 drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]">עושים AI</span>
+          <span className="line-through text-cyan-brand/20 font-black">מדברים</span>
+          <span className="font-black text-cyan-brand drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">עושים AI</span>
           <span className="text-cyan-brand font-bold">בפיתוח ארגוני</span>
         </div>
       </section>
 
-      {/* Reception Desk - Consultation Area */}
       <section className="w-full">
         <div className="glass-card p-10 rounded-[3rem] border-amber-500/40 bg-slate-900/80 relative overflow-hidden group shadow-[0_0_60px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/20">
           <div className="absolute -top-24 -right-24 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -87,7 +86,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           
           <div className="flex flex-col gap-8 relative z-10">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-              <div className="space-y-4">
+              <div className="space-y-4 text-right">
                 <div className="inline-flex items-center gap-3 px-6 py-2.5 bg-amber-500 text-slate-950 rounded-full text-[13px] font-black uppercase tracking-[0.25em] shadow-[0_0_30px_rgba(245,158,11,0.5)] transform -rotate-1">
                   <span className="animate-pulse text-lg">✦</span>
                   דלפק התייעצות ראשונית
@@ -101,7 +100,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
 
             <div className="relative">
               <textarea 
-                className="w-full bg-slate-950/80 border-2 border-white/5 rounded-[2.5rem] px-10 py-10 text-2xl text-white outline-none focus:border-amber-500/60 focus:bg-slate-950 transition-all min-h-[180px] resize-none shadow-2xl placeholder-slate-700 font-medium"
+                className="w-full bg-slate-950/80 border-2 border-white/5 rounded-[2.5rem] px-10 py-10 text-2xl text-white outline-none focus:border-amber-500/60 focus:bg-slate-950 transition-all min-h-[180px] resize-none shadow-2xl placeholder-slate-700 font-medium text-right"
                 placeholder="אני מרגיש שהצוות שלי לא מסונכרן... / אני רוצה להוביל שינוי במודל העבודה..."
                 value={consultationText}
                 onChange={(e) => setConsultationText(e.target.value)}
@@ -123,7 +122,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </div>
 
             {recommendations.length > 0 && (
-              <div className="mt-6 space-y-8 animate-fadeIn">
+              <div className="mt-6 space-y-8 animate-fadeIn text-right">
                 <div className="flex items-center gap-6">
                   <div className="h-px bg-amber-500/30 flex-1"></div>
                   <span className="text-[12px] font-black text-amber-500 uppercase tracking-[0.4em] bg-slate-900 px-4 py-1 rounded-full border border-amber-500/20">AI Recommended Path</span>
@@ -161,7 +160,6 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         </div>
       </section>
 
-      {/* Tools Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
         {tools.map((tool) => (
           <div 
