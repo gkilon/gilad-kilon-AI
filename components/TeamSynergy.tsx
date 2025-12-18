@@ -158,8 +158,8 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
 
       {showManagerLogin && (
         <div className="glass-card p-10 rounded-[3rem] border-amber-500/40 bg-slate-900/90 space-y-6 animate-fadeIn">
-          <h3 className="text-2xl font-black text-white">כניסת מנהל לצוות</h3>
-          <p className="text-slate-400">הזן קוד צוות (למשל השם שלך) כדי לראות את כל התשובות של העובדים שלך. אין צורך ברישום מקדים.</p>
+          <h3 className="text-2xl font-black text-white">כניסת מנהל</h3>
+          <p className="text-slate-400">הזן את קוד הצוות שלך כדי לצפות בתוצאות המצטברות של העובדים שלך (הדשבורד יופיע מיד מתחת במסך זה).</p>
           <div className="flex flex-col md:flex-row gap-4">
             <input 
               type="text" 
@@ -168,7 +168,7 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
               value={teamCode}
               onChange={(e) => setTeamCode(e.target.value)}
             />
-            <button onClick={handleManagerLogin} className="bg-amber-500 text-slate-950 px-10 py-4 rounded-2xl font-black shadow-lg">כניסה למערכת</button>
+            <button onClick={handleManagerLogin} className="bg-amber-500 text-slate-950 px-10 py-4 rounded-2xl font-black shadow-lg">כניסה לדשבורד</button>
           </div>
           <button onClick={() => setShowManagerLogin(false)} className="text-slate-500 text-xs hover:underline">ביטול וחזרה</button>
         </div>
@@ -178,8 +178,8 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
         <div className="space-y-8 animate-fadeIn">
           <div className="glass-card rounded-[2.5rem] p-8 border-white/5 bg-amber-500/5 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-right">
-              <h4 className="text-lg font-black text-white">קוד הצוות הפעיל: <span className="text-amber-500">{teamCode}</span></h4>
-              <p className="text-sm text-slate-400">שלח לינק זה לעובדים שלך לאיסוף נתונים אנונימי.</p>
+              <h4 className="text-lg font-black text-white">דשבורד מנהל פעיל: <span className="text-amber-500">{teamCode}</span></h4>
+              <p className="text-sm text-slate-400">התוצאות להלן הן שקלול של כל התשובות שנאספו תחת קוד זה.</p>
             </div>
             <button onClick={shareLink} className="p-4 bg-amber-500 text-slate-950 rounded-2xl transition-all font-black text-xs uppercase tracking-widest shadow-lg active:scale-95">
               {copySuccess ? 'הלינק הועתק!' : 'העתק לינק לעובדים'}
@@ -188,7 +188,7 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
 
           {aggregateMetrics ? (
             <div className="glass-card rounded-[3rem] p-10 border-amber-500/30 bg-slate-900/50 relative overflow-hidden">
-               <div className="absolute top-0 left-0 bg-amber-500 text-slate-950 px-6 py-1 font-black text-[10px] uppercase tracking-widest rounded-br-2xl shadow-lg">Team Overview ({aggregateMetrics.count} Respondents)</div>
+               <div className="absolute top-0 left-0 bg-amber-500 text-slate-950 px-6 py-1 font-black text-[10px] uppercase tracking-widest rounded-br-2xl shadow-lg">סיכום צוותי ({aggregateMetrics.count} משיבים)</div>
                <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-6">
                  {metrics.map(m => (
                    <div key={m.key} className="text-center space-y-2 group">
@@ -210,9 +210,14 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
       )}
 
       <div className="glass-card rounded-[3.5rem] p-12 space-y-12 border-amber-500/20 shadow-[0_0_100px_rgba(245,158,11,0.05)]">
-        {!isSurveyMode && !isManager && (
+        <div className="text-center space-y-2">
+          <h3 className="text-2xl font-black text-white underline decoration-amber-500/30 underline-offset-8">שאלון איכות הצוות</h3>
+          <p className="text-amber-500/80 font-bold text-lg">באיזו מידה הדברים הבאים מתקיימים בצוות שלך? (1 - כלל לא, 10 - במידה רבה מאוד)</p>
+        </div>
+
+        {!isSurveyMode && !isManager && !teamCode && (
            <div className="bg-amber-500/10 p-4 rounded-2xl text-amber-500 text-xs font-bold text-center border border-amber-500/20">
-             כדי לשמור את התשובות שלך ולקבל תובנות אישיות, יש להזין קוד צוות (אם קיבלת מהמנהל) או ליצור אחד.
+             לתשומת לבך: כדי לשלוח את התשובות למנהל, יש להזין "קוד צוות" (שניתן לך על ידו).
            </div>
         )}
         
@@ -257,7 +262,7 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
       {!isSurveyMode && (cloudHistory.length > 0 || history.length > 0) && (
         <div className="space-y-8 animate-fadeIn">
           <div className="flex justify-between items-center px-4">
-            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Synergy & Participation Logs</h4>
+            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">יומן פעילות וסינרגיה</h4>
             {isManager && <button onClick={loadCloudData} className="text-[9px] text-amber-500 font-bold hover:underline">רענן נתונים ↻</button>}
           </div>
           
