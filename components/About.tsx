@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 const About: React.FC = () => {
@@ -30,17 +29,27 @@ const About: React.FC = () => {
       {/* Profile Header */}
       <section className="flex flex-col md:flex-row gap-12 items-center md:items-start border-b border-white/5 pb-16">
         
-        {/* Photo Container - גלעד, כאן נכנסת התמונה שלך */}
+        {/* Photo Container */}
         <div className="relative shrink-0 group order-first md:order-last">
           <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full scale-110 opacity-50 group-hover:opacity-100 transition-opacity"></div>
           <div className="relative w-48 h-48 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl z-10 bg-slate-800 flex items-center justify-center">
+            {/* נתיב התמונה שונה ל- /gilad.jpg מתוך הנחה שהוא בתיקיית public */}
             <img 
-              src="gilad.jpg" 
+              src="/gilad.jpg" 
               alt="גלעד קילון"
               className="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
               onError={(e) => {
-                // Fallback in case the file isn't there yet
-                (e.target as HTMLImageElement).src = "https://via.placeholder.com/400x400?text=Gilad+Kilon";
+                // אם התמונה לא נמצאה, נציג רקע גרדיאנט עם האותיות הראשונות
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                const parent = target.parentElement;
+                if (parent) {
+                  parent.style.background = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)';
+                  const initials = document.createElement('div');
+                  initials.className = "absolute inset-0 flex items-center justify-center text-4xl font-black text-amber-500/40";
+                  initials.innerText = "GK";
+                  parent.appendChild(initials);
+                }
               }}
             />
           </div>
@@ -109,7 +118,7 @@ const About: React.FC = () => {
         <div className="relative z-10 max-w-3xl mx-auto space-y-6">
           <h3 className="text-2xl font-black text-white italic">בלי משחקים - פשוט תוצאות</h3>
           <p className="text-slate-400 text-lg leading-relaxed italic">
-            "הייחודיות שלי היא היכולת לשלב בין מתודולוגיות בינלאומיות (כמו Lumina) לבין הבנה עמוקה של הדינמיקה הישראלית. אני מחויב ליצור אצלכם שינוי אמיתי ופועל בביטחון תוך שותפות אמיתית עם לקוחותיי. כי בסוף, הכל מתחיל ונגמר באנשים."
+            "הייחודיות שלי היא היכולת לשלב בין מתודולוגיות בינלאומיות לבין הבנה עמוקה של הדינמיקה הישראלית. אני מחויב ליצור אצלכם שינוי אמיתי ופועל בביטחון תוך שותפות אמיתית עם לקוחותיי. כי בסוף, הכל מתחיל ונגמר באנשים."
           </p>
         </div>
       </section>

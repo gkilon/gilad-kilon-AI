@@ -1,7 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TeamSynergyPulse } from "./types";
 
-// Helper for system instructions
 const SYSTEM_INSTRUCTION = `
 אתה העוזר האסטרטגי הדיגיטלי של גלעד קילון. 
 תפקידך לסייע למנהלים ליישם את המתודולוגיה של גלעד: "~~מדברים~~ עושים AI בפיתוח ארגוני".
@@ -9,9 +8,7 @@ const SYSTEM_INSTRUCTION = `
 `;
 
 export const getToolRecommendation = async (userInput: string) => {
-  // Always use the named parameter initialization for GoogleGenAI.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  
   const prompt = `
 המשתמש משתף מה מעסיק אותו: "${userInput}".
 יש לנו את המודולות הבאות במערכת:
@@ -26,7 +23,6 @@ export const getToolRecommendation = async (userInput: string) => {
 החזר תשובה בפורמט JSON עם מזהה המודולה, הסבר קצר (2-3 משפטים) בגובה העיניים ומחויב לשינוי.
 `;
 
-  // Use the recommended model for basic text tasks.
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: prompt,
@@ -53,14 +49,11 @@ export const getToolRecommendation = async (userInput: string) => {
       }
     }
   });
-  
-  // Access .text property directly as it's a property, not a method.
   return JSON.parse(response.text || '{"recommendations": []}');
 };
 
 export const getCollaborativeFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
   const prompt = `נתח את שלב ${step} ב-WOOP עבור: "${currentData[step.toLowerCase() as keyof WoopData]}". החזר ניתוח אסטרטגי.`;
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
@@ -86,9 +79,7 @@ export const getCollaborativeFeedback = async (step: WoopStep, currentData: Part
 
 export const processIdea = async (content: string, projects: ProjectChange[], isAudio: boolean = false) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
   const projectsContext = projects.map(p => `ID: ${p.id}, Title: ${p.title}, Wish: ${p.woop.wish}`).join(' | ');
-
   const prompt = `נתח את הרעיון הבא: "${content}". צור כותרת, סיווג, סיכום ו-3 צעדים. בדוק התאמה לפרויקטים: [${projectsContext}].`;
   
   const response = await ai.models.generateContent({
@@ -117,7 +108,6 @@ export const processIdea = async (content: string, projects: ProjectChange[], is
 
 export const getSynergyInsight = async (pulse: Partial<TeamSynergyPulse>) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
   const prompt = `נתח השתתפות וסינרגיה בצוות לפי הפרמטרים הבאים:
   Ownership: ${pulse.ownership}, Role Clarity: ${pulse.roleClarity}, Routines: ${pulse.routines}, 
   Comm: ${pulse.communication}, Commitment: ${pulse.commitment}, Respect: ${pulse.respect}.
@@ -133,7 +123,6 @@ export const getSynergyInsight = async (pulse: Partial<TeamSynergyPulse>) => {
 
 export const analyzeExecutiveStrategy = async (title: string, description: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
   const prompt = `בצע Stress Test למהלך: "${title} - ${description}".`;
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
@@ -158,7 +147,6 @@ export const analyzeExecutiveStrategy = async (title: string, description: strin
 
 export const analyzeCommStyle = async (answers: Record<string, number>): Promise<CommStyleResult> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
   const prompt = `נתח סגנון תקשורת: ${JSON.stringify(answers)}`;
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
@@ -184,7 +172,6 @@ export const analyzeCommStyle = async (answers: Record<string, number>): Promise
 
 export const analyze360Feedback = async (self: string, peers: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
   const prompt = `בצע סינתזה של משוב 360: ${self} | ${JSON.stringify(peers)}`;
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',

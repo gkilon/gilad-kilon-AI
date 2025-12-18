@@ -73,7 +73,8 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
     setTimeout(() => setCopySuccess(false), 3000);
   };
 
-  const metrics = [
+  // Fixed: Explicitly typed metrics to only include valid numeric keys of TeamSynergyPulse to prevent type mismatch on access
+  const metrics: { key: keyof TeamSynergyPulse; label: string; icon: string }[] = [
     { key: 'ownership', label: 'תחושת Ownership על המטרה', icon: '🎯' },
     { key: 'roleClarity', label: 'בהירות בתפקידים ובאחריות', icon: '📋' },
     { key: 'routines', label: 'שגרות וסדר', icon: '🔄' },
@@ -118,11 +119,12 @@ const TeamSynergy: React.FC<{ history: TeamSynergyPulse[], onSave: (p: TeamSyner
                 <label className="text-lg font-bold text-slate-200 flex items-center gap-3">
                   <span className="opacity-50">{metric.icon}</span> {metric.label}
                 </label>
-                <span className="text-2xl font-black text-amber-500">{pulse[metric.key as keyof TeamSynergyPulse]}</span>
+                <span className="text-2xl font-black text-amber-500">{pulse[metric.key] as number}</span>
               </div>
+              {/* Fix: Explicitly cast the value to number to avoid TS error because of possible boolean values in TeamSynergyPulse union */}
               <input 
                 type="range" min="1" max="10" 
-                value={pulse[metric.key as keyof TeamSynergyPulse]} 
+                value={pulse[metric.key] as number} 
                 onChange={(e) => setPulse({...pulse, [metric.key]: parseInt(e.target.value)})}
                 className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
               />
