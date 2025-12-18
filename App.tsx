@@ -57,12 +57,14 @@ const App: React.FC = () => {
 
   const handleLogin = (teamId: string, isManager: boolean) => {
     setSession({ teamId, isManager });
-    setView(isManager ? 'dashboard' : 'synergy');
+    // הסרנו את setView הכפוי ל-dashboard. 
+    // המערכת תישאר ב-view הנוכחי (למשל synergy) ותציג את התוכן המתאים למחובר.
   };
 
   const handleLogout = () => {
     setSession(null);
     setView('home');
+    localStorage.removeItem('gk_session');
   };
 
   const handleSaveWoop = async (data: WoopData) => {
@@ -70,7 +72,6 @@ const App: React.FC = () => {
     setLoading(true);
     const id = editingProject?.id || Math.random().toString(36).substr(2, 9);
     
-    // AI Task Suggestion
     const suggestedTaskTexts = await suggestTasksForWoop(data);
     const aiTasks: Task[] = suggestedTaskTexts.map(text => ({
       id: Math.random().toString(36).substr(2, 5),
@@ -107,7 +108,7 @@ const App: React.FC = () => {
   };
 
   const renderView = () => {
-    if (loading) return <div className="py-40 text-center animate-pulse text-cyan-brand font-black text-2xl uppercase italic tracking-widest">סנכרון אסטרטגי מול הענן של גלעד...</div>;
+    if (loading) return <div className="py-40 text-center animate-pulse text-cyan-brand font-black text-2xl uppercase italic tracking-widest">סנכרון נתונים מול הענן של גלעד...</div>;
 
     if (!session && (view !== 'home' && view !== 'about' && view !== 'login')) {
       return <Login onLogin={handleLogin} />;
@@ -119,7 +120,7 @@ const App: React.FC = () => {
       case 'dashboard': return <Dashboard projects={projects} onNew={() => { setEditingProject(null); setView('wizard'); }} onDelete={id => deleteFromCloud('projects', id)} onToggleTask={toggleTask} />;
       case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={handleSaveWoop} initialData={editingProject?.woop} />;
       case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={i => { setIdeas([i, ...ideas]); syncToCloud('ideas', {...i, managerId: session?.teamId}); }} />;
-      case 'synergy': return <TeamSynergy history={[]} onSave={() => {}} />;
+      case 'synergy': return <TeamSynergy session={session} />;
       case 'executive': return <ExecutiveSynergy history={[]} onSave={() => {}} />;
       case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={t => { setGeneralTasks(t); t.forEach(task => syncToCloud('general_tasks', {...task, managerId: session?.teamId})) }} />;
       case 'about': return <About />;
@@ -135,9 +136,9 @@ const App: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 pt-4 flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-500">
            <div className="flex items-center gap-3">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Workspace: {session.teamId}</span>
+              <span>מחובר כ: {session.isManager ? 'מנהל' : 'עובד'} | צוות: {session.teamId}</span>
            </div>
-           <button onClick={handleLogout} className="hover:text-red-400 transition-colors">Logout [X]</button>
+           <button onClick={handleLogout} className="hover:text-red-400 transition-colors">התנתקות [X]</button>
         </div>
       )}
 
