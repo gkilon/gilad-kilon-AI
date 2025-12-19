@@ -122,9 +122,9 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <BrandLogo size={window.innerWidth < 768 ? 'sm' : 'md'} />
           <div className="mt-8 md:mt-12 space-y-3">
             <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-amber-300 italic tracking-tight drop-shadow-lg">
-              כלי בינה מלאכולתית לניהול בעולם תזזיתי
+              כלי בינה מלאכותית לניהול בעולם תזזיתי
             </h2>
-            <p className="text-[14px] md:text-[18px] lg:text-[24px] font-bold text-amber-300/80 uppercase tracking-widest opacity-90">
+            <p className="text-[14px] md:text-[18px] lg:text-[24px] font-bold text-amber-300/80 uppercase tracking-normal opacity-90">
               AI TOOLS FOR MANAGEMENT IN A FRANTIC WORLD
             </p>
           </div>
@@ -147,21 +147,15 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         </button>
       </div>
 
-      {/* Modules Section - Responsive Grid */}
+      {/* Modules Section */}
       <section className="w-full max-w-7xl px-6 mt-12 md:mt-24 z-20">
-        
-        {/* Desktop View: Side by Side (Creative on Right, Logic on Left in RTL) */}
         <div className="hidden md:grid grid-cols-2 gap-20">
-          
-          {/* RIGHT SIDE: Creative (Right Brain) */}
           <div className="space-y-8 order-1">
             <div className="flex items-center justify-start gap-6 mb-10 border-r-4 border-cyan-brand pr-8">
-              <div className="text-cyan-brand">
-                <CreativeGraphic />
-              </div>
+              <div className="text-cyan-brand"><CreativeGraphic /></div>
               <div className="flex flex-col items-start">
                 <h2 className="text-5xl font-black text-cyan-brand italic uppercase tracking-tighter">מוח ימני</h2>
-                <span className="text-xs text-slate-500 font-bold tracking-[0.4em]">CREATIVE INSIGHT & EMOTION</span>
+                <span className="text-xs text-slate-500 font-bold tracking-[0.4em]">CREATIVE INSIGHT</span>
               </div>
             </div>
             <div className="grid gap-6">
@@ -179,16 +173,13 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </div>
           </div>
 
-          {/* LEFT SIDE: Logic (Left Brain) */}
           <div className="space-y-8 order-2">
             <div className="flex items-center justify-end gap-6 mb-10 border-l-4 border-purple-500 pl-8">
               <div className="flex flex-col items-end">
                 <h2 className="text-5xl font-black text-purple-500 italic uppercase tracking-tighter">מוח שמאלי</h2>
-                <span className="text-xs text-slate-500 font-bold tracking-[0.4em]">ANALYTICAL LOGIC & STRUCTURE</span>
+                <span className="text-xs text-slate-500 font-bold tracking-[0.4em]">ANALYTICAL LOGIC</span>
               </div>
-              <div className="text-purple-500">
-                <AnalyticalGraphic />
-              </div>
+              <div className="text-purple-500"><AnalyticalGraphic /></div>
             </div>
             <div className="grid gap-6">
               {analyticalTools.map(tool => (
@@ -206,7 +197,6 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           </div>
         </div>
 
-        {/* Mobile View: Tabbed Cards */}
         <div className="md:hidden animate-fadeIn">
           <div className="grid gap-4">
             {(activeTab === 'creative' ? creativeTools : analyticalTools).map(tool => (
@@ -223,7 +213,6 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           </div>
         </div>
 
-        {/* Synthesis - Centered Bridge */}
         <div className="mt-16 md:mt-24 flex justify-center">
           <div onClick={() => onEnterTool('feedback360')} className="glass-card w-full max-w-2xl p-8 md:p-12 rounded-[3rem] md:rounded-[4rem] border-white/20 hover:border-white transition-all cursor-pointer group shadow-2xl relative overflow-hidden bg-gradient-to-br from-slate-900 to-black">
              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-white to-cyan-brand opacity-50"></div>
@@ -267,15 +256,12 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         </div>
       </section>
 
-      {/* Background Neural Graphics */}
       <div className="fixed inset-0 pointer-events-none -z-10 opacity-10">
         <svg width="100%" height="100%" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
-          <circle cx="200" cy="300" r="150" fill="url(#logicGrad)" fillOpacity="0.2" />
-          <circle cx="800" cy="700" r="200" fill="url(#creativeGrad)" fillOpacity="0.2" />
-          <path d="M 200 300 Q 500 500 800 700" stroke="white" strokeWidth="0.5" fill="none" strokeDasharray="5 5" />
+          <circle cx="200" cy="300" r="150" fill="purple" fillOpacity="0.2" />
+          <circle cx="800" cy="700" r="200" fill="teal" fillOpacity="0.2" />
         </svg>
       </div>
-
     </div>
   );
 };

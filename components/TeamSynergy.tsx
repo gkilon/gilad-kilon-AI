@@ -8,7 +8,6 @@ const LineChart: React.FC<{ data: TeamSynergyPulse[], metric: string, color: str
   if (data.length < 2) return <div className="h-1 bg-slate-800 rounded-full w-full opacity-10"></div>;
   const sorted = [...data].sort((a, b) => a.timestamp - b.timestamp);
   
-  // Calculate path
   const points = sorted.map((d, i) => {
     const x = (i / (sorted.length - 1)) * 100;
     const val = (d[metric as keyof TeamSynergyPulse] as number) || 3;
@@ -107,8 +106,8 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
   if (submitted && !session?.isManager) return (
     <div className="py-40 text-center space-y-8 animate-fadeIn">
       <div className="text-8xl">🚀</div>
-      <h2 className="text-5xl font-black text-white italic">תודה על השיתוף!</h2>
-      <p className="text-slate-400 text-xl font-bold">הקול שלך עוזר לצוות להשתפר ולהיות מסונכרן יותר.</p>
+      <h2 className="text-5xl font-bold text-white italic">תודה על השיתוף!</h2>
+      <p className="text-slate-400 text-xl">הקול שלך עוזר לצוות להשתפר ולהיות מסונכרן יותר.</p>
     </div>
   );
 
@@ -122,7 +121,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
              <span className="text-[10px] font-black text-cyan-brand uppercase tracking-widest">Team Performance Pulse</span>
              <div className="w-2 h-2 rounded-full bg-cyan-brand animate-pulse"></div>
           </div>
-          <h2 className="text-6xl font-black text-white tracking-tighter uppercase italic">דופק <span className="text-cyan-brand">צוותי</span></h2>
+          <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic">דופק <span className="text-cyan-brand">צוותי</span></h2>
           <p className="text-slate-400 text-xl font-medium max-w-2xl">מדידת מגמות, סנכרון ואיכות עבודת הצוות על בסיס קריטריונים אסטרטגיים.</p>
         </div>
 
@@ -130,14 +129,14 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <button 
               onClick={handleShare}
-              className="bg-slate-900 border border-white/10 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:border-cyan-brand transition-all flex items-center justify-center gap-3"
+              className="bg-slate-900 border border-white/10 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:border-cyan-brand transition-all flex items-center justify-center gap-3 shadow-xl"
             >
               {copyStatus ? "✓ הקישור הועתק" : "🔗 שלח שאלון לצוות"}
             </button>
             <button 
               onClick={handleAiAnalysis}
               disabled={isAiAnalyzing || cloudHistory.length === 0}
-              className="bg-cyan-brand text-slate-950 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white transition-all shadow-2xl disabled:opacity-20 flex items-center justify-center gap-3"
+              className="bg-cyan-brand text-slate-950 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white transition-all shadow-2xl disabled:opacity-20 flex items-center justify-center gap-3"
             >
               {isAiAnalyzing ? "מנתח נתונים..." : "🪄 ניתוח AI לתובנות מנהל"}
             </button>
@@ -185,7 +184,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
         </div>
       )}
 
-      {/* Input Section (Always visible for employees, hidden if manager just wants to see data) */}
+      {/* Input Section */}
       <div className="glass-card rounded-[3.5rem] p-12 space-y-12 border-white/5 shadow-2xl bg-slate-900/40 relative">
         <div className="flex items-center gap-4 mb-4">
            <span className="w-12 h-12 rounded-2xl bg-cyan-brand/10 flex items-center justify-center text-2xl">📊</span>
@@ -196,7 +195,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
           {metrics.map(metric => (
             <div key={metric.key} className="space-y-4 p-8 bg-white/[0.02] rounded-[2rem] border border-white/5 hover:border-cyan-brand/20 transition-all">
               <div className="flex justify-between items-center">
-                <label className="text-xl font-black text-white">{metric.label}</label>
+                <label className="text-xl font-bold text-white">{metric.label}</label>
                 <div className="flex items-center gap-2">
                    <span className="text-sm text-slate-500 font-bold uppercase">דירוג:</span>
                    <span className="text-3xl font-black text-cyan-brand">{pulse[metric.key]}</span>
@@ -222,7 +221,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
         <div className="space-y-4">
            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4">מה התחושה הכללית בצוות כרגע? (אופציונלי)</label>
            <textarea 
-             className="w-full bg-slate-950 rounded-3xl p-8 border border-white/5 text-slate-200 text-xl min-h-[160px] text-right focus:border-cyan-brand transition-all outline-none placeholder-slate-800" 
+             className="w-full bg-slate-950 rounded-3xl p-8 border border-white/5 text-slate-200 text-xl min-h-[160px] text-right focus:border-cyan-brand transition-all outline-none placeholder-slate-800 font-medium" 
              placeholder="שתף כאן מחשבות, תסכולים או הצלחות..." 
              value={pulse.vibe} 
              onChange={e => setPulse({...pulse, vibe: e.target.value})} 
@@ -243,7 +242,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
            <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] pr-4">היסטוריית תגובות מילוליות (Raw Vibe)</h3>
            <div className="grid gap-4">
               {cloudHistory.filter(h => h.vibe).slice(0, 5).map((h, i) => (
-                <div key={i} className="glass-card p-6 rounded-3xl border-white/5 text-slate-300 italic">
+                <div key={i} className="glass-card p-6 rounded-3xl border-white/5 text-slate-300 italic font-medium">
                    "{h.vibe}"
                    <div className="text-[9px] text-slate-600 mt-2 font-black uppercase">
                      {new Date(h.timestamp).toLocaleDateString('he-IL')}
