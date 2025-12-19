@@ -25,7 +25,7 @@ const About: React.FC = () => {
     },
     {
       title: 'ניהול בעידן הטכנולוגי',
-      desc: 'הטמעת כלי עבודה מתקדמים כחלק אינטגרלי מהניהול. שימוש בטכנולוגיה ובינה מלאכולתית כדי לפנות זמן למה שחשוב באמת - האנשים.',
+      desc: 'הטמעת כלי עבודה מתקדמים כחלק אינטגרלי מהניהול. שימוש בטכנולוגיה ובינה מלאכותית כדי לפנות זמן למה שחשוב באמת - האנשים.',
       icon: '🤖'
     },
     {
@@ -36,7 +36,7 @@ const About: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto py-12 animate-fadeIn space-y-20 pb-32 text-right px-6">
+    <div className="max-w-5xl mx-auto py-12 animate-fadeIn space-y-20 pb-32 text-right px-6" dir="rtl">
       
       {/* 1. Hero Section */}
       <section className="text-center space-y-8">
@@ -92,13 +92,23 @@ const About: React.FC = () => {
           <div className="relative shrink-0">
             <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl bg-slate-900 group">
               <img 
-                src="gilad.jpg" 
+                src="./gilad.jpg" 
                 alt="גלעד קילון" 
                 className="absolute inset-0 w-full h-full object-cover"
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  if (e.currentTarget.parentElement) {
-                    e.currentTarget.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-6xl bg-slate-800 text-white">🤵‍♂️</div>';
+                  console.warn("Retrying image load for gilad.jpg...");
+                  const target = e.currentTarget;
+                  if (!target.dataset.tried) {
+                    target.dataset.tried = "true";
+                    target.src = "gilad.jpg?t=" + Date.now();
+                  } else {
+                    target.style.display = 'none';
+                    if (target.parentElement) {
+                      const fallback = document.createElement('div');
+                      fallback.className = "w-full h-full flex items-center justify-center text-6xl bg-slate-800 text-white";
+                      fallback.innerHTML = '🤵‍♂️';
+                      target.parentElement.appendChild(fallback);
+                    }
                   }
                 }}
               />
@@ -111,8 +121,8 @@ const About: React.FC = () => {
           <div className="flex-1 space-y-6">
             <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.5em] mb-4">מאחורי הקלעים</h3>
             <div className="space-y-4 text-lg md:text-xl text-slate-200 leading-relaxed font-medium">
-              <p className="text-cyan-brand font-bold text-2xl mb-2">
-                עומק עם קלילות וחיוך.
+              <p className="text-amber-400 font-bold text-2xl mb-2 drop-shadow-sm">
+                עומק עם קלילות וחיוך ופשטות.
               </p>
               <p>
                 גדלתי בקיבוץ בצפון והשורשים האלה מלווים אותי בכל מהלך. עם השנים למדתי לקחת דברים מסוימים ולשחרר דברים אחרים, תובנה שעוזרת לי לזקק את העיקר מהטפל גם בעבודה עם הנהלות.

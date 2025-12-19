@@ -45,15 +45,13 @@ const DetailedBrain: React.FC<{ size?: number }> = ({ size = 100 }) => (
       d="M50 10 C30 10, 15 25, 15 50 C15 75, 30 90, 50 90 L50 10" 
       fill="url(#logicGrad)" 
       fillOpacity="0.1" 
-      stroke="#a855f7" 
-      strokeWidth="1.5" 
+      stroke="#a855f7"  strokeWidth="1.5" 
     />
     <path 
       d="M50 10 C70 10, 85 25, 85 50 C85 75, 70 90, 50 90 L50 10" 
       fill="url(#creativeGrad)" 
       fillOpacity="0.1" 
-      stroke="#2dd4bf" 
-      strokeWidth="1.5" 
+      stroke="#2dd4bf" strokeWidth="1.5" 
     />
     <circle cx="50" cy="50" r="5" fill="#fbbf24" className="animate-pulse shadow-[0_0_20px_#fbbf24]" />
   </svg>
@@ -122,9 +120,14 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         
         <div className="text-center">
           <BrandLogo size={window.innerWidth < 768 ? 'sm' : 'md'} />
-          <p className="text-[14px] md:text-[22px] font-black text-white uppercase tracking-[0.4em] md:tracking-[0.6em] mt-12 md:mt-16 opacity-90 drop-shadow-lg">
-            AI TOOLS FOR MANAGEMENT
-          </p>
+          <div className="mt-8 md:mt-12 space-y-3">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-amber-300 italic tracking-tight drop-shadow-lg">
+              כלי בינה מלאכולתית לניהול בעולם תזזיתי
+            </h2>
+            <p className="text-[14px] md:text-[18px] lg:text-[24px] font-bold text-amber-300/80 uppercase tracking-widest opacity-90">
+              AI TOOLS FOR MANAGEMENT IN A FRANTIC WORLD
+            </p>
+          </div>
         </div>
       </header>
 
