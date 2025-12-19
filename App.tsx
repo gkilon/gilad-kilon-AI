@@ -13,6 +13,8 @@ import TaskHub from './components/TaskHub';
 import About from './components/About';
 import Login from './components/Login';
 import AdminPanel from './components/AdminPanel';
+import Feedback360 from './components/Feedback360';
+import CommunicationDNA from './components/CommunicationDNA';
 
 type ViewType = 'home' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'login' | 'communication' | 'feedback360' | 'admin';
 
@@ -63,22 +65,12 @@ const App: React.FC = () => {
   };
 
   const navigateWithAuth = (targetView: ViewType) => {
-    if (targetView === 'communication') {
-      window.open('https://hilarious-kashata-9aafa2.netlify.app/', '_blank');
-      return;
-    }
-    if (targetView === 'feedback360') {
-      window.open('https://ubiquitous-nougat-41808d.netlify.app/', '_blank');
-      return;
-    }
-
-    const protectedViews: ViewType[] = ['dashboard', 'wizard', 'ideas', 'executive', 'tasks', 'synergy', 'admin'];
+    const protectedViews: ViewType[] = ['dashboard', 'wizard', 'ideas', 'executive', 'tasks', 'synergy', 'admin', 'feedback360', 'communication'];
     if (!session && protectedViews.includes(targetView)) {
-      setLoginMessage('יש להתחבר למערכת');
+      setLoginMessage('יש להתחבר למערכת כדי לגשת לכלי זה');
       setView('login');
       return;
     }
-
     setView(targetView);
   };
 
@@ -94,6 +86,8 @@ const App: React.FC = () => {
       case 'synergy': return <TeamSynergy session={session} />;
       case 'executive': return <ExecutiveSynergy session={session} />;
       case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={() => {}} />;
+      case 'feedback360': return <Feedback360 />;
+      case 'communication': return <CommunicationDNA />;
       case 'about': return <About />;
       default: return <Landing onEnterTool={(v) => navigateWithAuth(v as ViewType)} />;
     }

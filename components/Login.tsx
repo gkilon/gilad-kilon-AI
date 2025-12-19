@@ -21,6 +21,15 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
   const dbReady = isFirebaseReady();
 
   useEffect(() => {
+    // Check for teamId in URL
+    const params = new URLSearchParams(window.location.search);
+    const urlTeamId = params.get('teamId');
+    if (urlTeamId) {
+      setTeamId(urlTeamId);
+      setMode('employee');
+      setIsUnlocked(true);
+    }
+
     if (dbReady) {
       getSystemConfig().then(config => setMasterCode(config.masterCode));
     }
@@ -28,7 +37,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
-    // Case-insensitive comparison
     if (accessCode.trim().toLowerCase() === masterCode.toLowerCase()) {
       setIsUnlocked(true);
       setError('');
@@ -42,7 +50,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
     setError('');
 
     if (mode === 'admin') {
-      // Case-insensitive admin password check
       if (password.trim().toLowerCase() === 'gilad_admin_99') {
         onLogin('admin', true, true);
       } else {
@@ -69,6 +76,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
         if (res.success) onLogin(tid, true);
         else setError(res.error || "פרטי התחברות שגויים");
       } else {
+        // Employee entry - simple identification
         onLogin(tid, false);
       }
     } catch (err: any) {
@@ -124,7 +132,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
       <div className="glass-card w-full max-w-lg rounded-[3.5rem] p-12 border-white/10 shadow-2xl relative overflow-hidden">
         <div className="flex flex-col items-center mb-8">
           <BrandLogo size="sm" />
-          <h2 className="text-2xl font-black text-white mt-6 italic">התחברות</h2>
+          <h2 className="text-2xl font-black text-white mt-6 italic">{mode === 'employee' ? 'כניסת עובד למרחב' : 'התחברות ניהולית'}</h2>
         </div>
 
         <div className="flex bg-slate-900/50 p-1.5 rounded-2xl mb-8 border border-white/5">
@@ -136,69 +144,37 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
         <form onSubmit={handleAction} className="space-y-6">
           {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-center text-sm font-bold">{error}</div>}
           
-          {mode === 'admin' ? (
-            <div className="space-y-4 animate-fadeIn">
-              <div className="p-4 bg-purple-500/20 rounded-2xl border border-purple-500/40 text-center">
-                <p className="text-purple-400 font-black text-sm uppercase">ניהול מערכת (Admin)</p>
-              </div>
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4">סיסמת אבטחה</label>
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4 italic">שם המרחב הצוותי</label>
+            <input 
+              type="text" 
+              placeholder="management-2025"
+              className="w-full bg-slate-950 border border-white/10 rounded-2xl px-6 py-4 text-xl text-white outline-none text-right font-bold"
+              value={teamId}
+              disabled={!!(new URLSearchParams(window.location.search).get('teamId'))}
+              onChange={(e) => setTeamId(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
+            />
+          </div>
+
+          {(mode === 'login' || mode === 'signup') && (
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4 italic">סיסמה אישית</label>
               <input 
                 type="password" 
-                placeholder="סיסמת אדמין" 
-                value={password} 
-                onChange={e => setPassword(e.target.value)} 
-                className="w-full bg-slate-950 border border-purple-500/50 rounded-2xl px-6 py-4 text-white text-center font-bold outline-none focus:border-purple-500 shadow-inner" 
+                className="w-full bg-slate-950 border border-white/10 rounded-2xl px-6 py-4 text-xl text-white outline-none text-right font-bold"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-          ) : (
-            <>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4 italic">שם המרחב הצוותי</label>
-                <input 
-                  type="text" 
-                  placeholder="management-2025"
-                  className="w-full bg-slate-950 border border-white/10 rounded-2xl px-6 py-4 text-xl text-white outline-none text-right font-bold"
-                  value={teamId}
-                  onChange={(e) => setTeamId(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
-                />
-              </div>
-
-              {(mode === 'login' || mode === 'signup') && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4 italic">סיסמה אישית</label>
-                  <input 
-                    type="password" 
-                    className="w-full bg-slate-950 border border-white/10 rounded-2xl px-6 py-4 text-xl text-white outline-none text-right font-bold"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-              )}
-            </>
           )}
 
           <div className="pt-4 space-y-4">
             <button type="submit" disabled={loading} className={`w-full py-6 rounded-3xl font-black text-xl transition-all shadow-xl active:scale-95 ${mode === 'signup' ? 'bg-cyan-brand text-slate-950' : mode === 'admin' ? 'bg-purple-500 text-white' : 'bg-white text-slate-950'}`}>
-              {loading ? "מעבד..." : mode === 'admin' ? "כניסה לניהול" : "המשך"}
+              {loading ? "מעבד..." : mode === 'signup' ? "פתח מרחב חדש" : "כניסה למערכת"}
             </button>
             
-            {mode !== 'admin' && (
-              <>
-                <div className="h-px bg-white/5 w-full my-4"></div>
-                <button type="button" onClick={handlePersonalUse} className="w-full py-4 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-3xl font-black text-lg hover:bg-amber-500 hover:text-slate-950 transition-all">
-                  🧘‍♂️ כניסה לשימוש אישי
-                </button>
-                
-                <div className="mt-8 flex justify-center">
-                  <button onClick={() => { setMode('admin'); setError(''); }} className="px-6 py-3 bg-slate-950 border border-white/10 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-[0.4em] hover:bg-purple-500 hover:text-white transition-all">
-                    כניסת מנהל מערכת (ADMIN)
-                  </button>
-                </div>
-              </>
-            )}
-            
-            {mode === 'admin' && (
-              <button onClick={() => { setMode('login'); setError(''); }} className="w-full text-[10px] font-black text-slate-500 uppercase tracking-widest mt-6 hover:text-white transition-colors">חזרה להתחברות רגילה</button>
+            {mode === 'employee' && (
+              <p className="text-[10px] text-slate-500 text-center font-bold px-8">כניסת עובד נועדה למילוי שאלוני דופק ומשוב ללא גישה לנתוני הניהול וה-AI.</p>
             )}
           </div>
         </form>
