@@ -4,75 +4,145 @@ import React from 'react';
 const About: React.FC = () => {
   const expertises = [
     {
-      title: 'תהליכי פיתוח מנהיגות',
-      desc: 'חיזוק יכולות המנהל ביום-יום הארגוני. אני לא כאן כדי להרצות, אלא כדי לעבוד יחד איתך על התוצאות העסקיות והאנושיות.'
+      title: 'פיתוח מנהיגות ומנהלים',
+      desc: 'חיזוק יכולות המנהל ביום-יום הארגוני. אני לא כאן כדי להרצות, אלא כדי לעבוד יחד איתך על התוצאות העסקיות והאנושיות.',
+      icon: '🏔️'
     },
     {
-      title: 'בניית שותפויות פנים וחוץ',
-      desc: 'בניית ממשקי עבודה חזקים על בסיס מודל חמשת התנאים. שותפות אמיתית נבנית על אמון, בהירות ותוצאות.'
-    },
-    {
-      title: 'פיתוח הנהלות בכירות',
-      desc: 'גיבוש צוות ההנהלה ליחידה אחת מסונכרנת. קביעת כללי משחק ברורים שעובדים גם כשקשה, לא רק כשהכל הולך חלק.'
+      title: 'ליווי הנהלות וארגונים',
+      desc: 'גיבוש צוות ההנהלה ליחידה אחת מסונכרנת. קביעת כללי משחק ברורים שעובדים גם כשקשה, לא רק כשהכל הולך חלק.',
+      icon: '🤝'
     },
     {
       title: 'ייעוץ ארגוני מערכתי',
-      desc: 'ליווי שינויים עמוקים. אנחנו לא "מציירים" תרשימים, אנחנו מתאימים את הארגון למציאות משתנה ולנסיבות השטח.'
+      desc: 'ליווי שינויים עמוקים. אנחנו לא "מציירים" תרשימים, אנחנו מתאימים את הארגון למציאות משתנה ולנסיבות השטח.',
+      icon: '🏗️'
     },
     {
-      title: 'ייעוץ אישי (Executive Coaching)',
-      desc: 'ליווי אישי ודיסקרטי בצמתים קריטיים. חיזוק התפקוד הניהולי ואימון בדרכי פעולה חדשות שבאמת עובדות.'
+      title: 'בניית שותפויות וממשקים',
+      desc: 'בניית ממשקי עבודה חזקים על בסיס מודל חמשת התנאים. שותפות אמיתית נבנית על אמון, בהירות ותוצאות.',
+      icon: '💎'
+    },
+    {
+      title: 'ניהול בעידן הטכנולוגי',
+      desc: 'הטמעת כלי עבודה מתקדמים כחלק אינטגרלי מהניהול. שימוש בטכנולוגיה ובינה מלאכולתית כדי לפנות זמן למה שחשוב באמת - האנשים.',
+      icon: '🤖'
+    },
+    {
+      title: 'ייעוץ אישי (Coaching)',
+      desc: 'ליווי אישי ודיסקרטי בצמתים קריטיים. חיזוק התפקוד הניהולי ואימון בדרכי פעולה חדשות שבאמת עובדות.',
+      icon: '🎯'
     }
   ];
 
   return (
-    <div className="max-w-6xl mx-auto py-16 animate-fadeIn space-y-24 pb-32 text-right">
-      <section className="flex flex-col md:flex-row gap-20 items-center md:items-start border-b border-white/5 pb-24">
-        <div className="relative shrink-0 order-last">
-          <div className="relative w-[480px] h-[620px] rounded-[5rem] overflow-hidden border-2 border-white/10 shadow-2xl bg-slate-950 group">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-black flex flex-col items-center justify-center text-center p-16">
-               <div className="w-40 h-40 bg-amber-500/10 rounded-full flex items-center justify-center mb-10 border border-amber-500/20">
-                 <span className="text-9xl">🤵‍♂️</span>
-               </div>
-               <h3 className="text-6xl font-black text-white uppercase tracking-tighter leading-tight italic">GILAD<br/><span className="text-amber-500">KILON</span></h3>
-            </div>
-            <img src="./gilad.jpg" alt="גלעד קילון" className="absolute inset-0 w-full h-full object-cover grayscale-[10%] opacity-0 transition-opacity duration-1000" onLoad={(e) => (e.currentTarget.style.opacity = '1')} onError={(e) => (e.currentTarget.style.display = 'none')} />
-          </div>
-          <div className="absolute -bottom-8 -left-8 bg-slate-950 text-white p-8 rounded-[2.5rem] shadow-2xl z-20 border-2 border-white/10 flex flex-col items-center justify-center min-w-[120px]">
-            <span className="text-5xl font-black text-amber-500 leading-none">20</span>
-            <span className="text-[10px] font-black uppercase tracking-widest mt-2 text-slate-400">Years of Vision</span>
+    <div className="max-w-5xl mx-auto py-12 animate-fadeIn space-y-20 pb-32 text-right px-6">
+      
+      {/* 1. Hero Section */}
+      <section className="text-center space-y-8">
+        <div className="space-y-4">
+          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic uppercase">
+            גלעד קילון
+          </h1>
+          <div className="space-y-3">
+            <h2 className="text-xl md:text-2xl font-bold text-cyan-brand">
+              עבודה עם הנהלות | פיתוח מנהלים | ייעוץ ארגוני
+            </h2>
+            <p className="text-lg text-slate-400 font-bold italic opacity-90">
+              עם או בלי AI, תמיד חושב איך אפשר לחדש (ולפעמים גם מצליח)
+            </p>
           </div>
         </div>
-
-        <div className="flex-1 space-y-12">
-          <div className="space-y-6">
-            <h1 className="text-8xl md:text-9xl font-black text-white tracking-tighter italic">גלעד קילון</h1>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-400 leading-tight">ליווי אסטרטגי • פיתוח הנהלות • מנהיגות בעידן ה-AI</h2>
-          </div>
-          <p className="text-4xl md:text-5xl text-slate-100 leading-[1.1] font-black border-r-8 border-amber-500 pr-12 italic tracking-tight">
-            "אני לא ספק של שירותים, אני שותף לדרך. ב-20 השנים האחרונות למדתי ששינוי אמיתי קורה רק כשיורדים לשטח ומפסיקים לשחק בכאילו."
+        
+        <div className="max-w-3xl mx-auto space-y-4 pt-8 border-t border-white/5">
+          <p className="text-2xl font-black text-white leading-tight">
+            אני לא ספק שירות אלא שותף לדרך, מישהו לרוץ איתו...
+          </p>
+          <p className="text-xl text-slate-300 font-medium leading-relaxed">
+            אני מאמין ששינוי אמיתי קורה כשיורדים ללב הדברים ומפסיקים "לשחק בכאילו".
           </p>
         </div>
       </section>
 
-      <section className="space-y-20">
-        <h3 className="text-center text-base font-black text-slate-500 uppercase tracking-[0.8em] italic">תחומי המומחיות</h3>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+      {/* 2. Expertise Grid */}
+      <section className="space-y-12">
+        <div className="flex items-center gap-4 justify-center">
+           <div className="h-px bg-white/10 flex-1"></div>
+           <span className="text-cyan-brand font-black uppercase tracking-[0.4em] text-[10px] whitespace-nowrap">Core Expertise</span>
+           <div className="h-px bg-white/10 flex-1"></div>
+        </div>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {expertises.map((exp, idx) => (
-            <div key={idx} className="glass-card p-12 rounded-[4rem] border-white/5 hover:border-amber-500/30 transition-all group bg-slate-900/40 relative overflow-hidden">
-              <div className="relative z-10">
-                <h4 className="text-3xl font-black text-amber-500 leading-tight mb-6">{exp.title}</h4>
-                <p className="text-xl text-slate-300 leading-relaxed font-bold italic">"{exp.desc}"</p>
-              </div>
+            <div key={idx} className="glass-card p-8 rounded-[2.5rem] border-white/5 hover:border-cyan-brand/30 transition-all group bg-slate-900/40 relative flex flex-col items-center text-center">
+              <div className="text-4xl mb-6 group-hover:scale-110 transition-transform">{exp.icon}</div>
+              <h4 className="text-xl font-black text-white mb-4 group-hover:text-cyan-brand transition-colors">{exp.title}</h4>
+              <p className="text-slate-400 leading-relaxed text-sm font-medium">{exp.desc}</p>
             </div>
           ))}
-          <div className="glass-card p-12 rounded-[4rem] bg-cyan-brand/5 border-cyan-brand/20">
-            <span className="text-6xl block mb-4">🤖</span>
-            <h4 className="text-3xl font-black text-cyan-brand italic leading-tight">AI Augmented Leadership</h4>
-            <p className="text-xl text-cyan-50/70 leading-relaxed font-bold">הטכנולוגיה לא מחליפה את הלב הניהולי, היא משכללת אותו. הכלים שפיתחנו כאן נועדו להעניק לך יתרון אסטרטגי.</p>
+        </div>
+      </section>
+
+      {/* 3. Personal Section */}
+      <section className="glass-card p-10 md:p-16 rounded-[4rem] border-white/5 bg-slate-950/50 shadow-inner relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-brand/20 to-transparent"></div>
+        
+        <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+          {/* Profile Image */}
+          <div className="relative shrink-0">
+            <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl bg-slate-900 group">
+              <img 
+                src="gilad.jpg" 
+                alt="גלעד קילון" 
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  if (e.currentTarget.parentElement) {
+                    e.currentTarget.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center text-6xl bg-slate-800 text-white">🤵‍♂️</div>';
+                  }
+                }}
+              />
+            </div>
+            <div className="absolute -bottom-3 -right-3 bg-white text-slate-950 px-4 py-1.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl">
+              FOUNDER
+            </div>
+          </div>
+
+          <div className="flex-1 space-y-6">
+            <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.5em] mb-4">מאחורי הקלעים</h3>
+            <div className="space-y-4 text-lg md:text-xl text-slate-200 leading-relaxed font-medium">
+              <p className="text-cyan-brand font-bold text-2xl mb-2">
+                עומק עם קלילות וחיוך.
+              </p>
+              <p>
+                גדלתי בקיבוץ בצפון והשורשים האלה מלווים אותי בכל מהלך. עם השנים למדתי לקחת דברים מסוימים ולשחרר דברים אחרים, תובנה שעוזרת לי לזקק את העיקר מהטפל גם בעבודה עם הנהלות.
+              </p>
+              <p>
+                היום אני גר בקיבוץ משמרות, נשוי למיכל ואבא לחמישה ילדים: שחר, זהר, אדר, עמר ואדם. 
+              </p>
+              <p>
+                הריצה בשדות באופן קבוע היא מנוע הצמיחה האישי שלי, ואני חובב ספורט מושבע – גם כשזה דורש ממני מאמץ בשטח וגם כשזה קורה על הכורסה מול המסך.
+              </p>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* 4. Contact Footer */}
+      <div className="text-center pt-10 border-t border-white/5 space-y-8">
+        <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.6em]">Ready for a meaningful change?</p>
+        <div className="flex flex-wrap justify-center gap-12 md:gap-24">
+          <div className="flex flex-col items-center group">
+             <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 group-hover:text-cyan-brand transition-colors">Direct Line</span>
+             <a href="tel:+972526417512" className="text-2xl font-black text-white hover:text-cyan-brand transition-colors tracking-tight">052-6417512</a>
+          </div>
+          <div className="flex flex-col items-center group">
+             <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 group-hover:text-cyan-brand transition-colors">Email</span>
+             <a href="mailto:gilad@kilon.co.il" className="text-2xl font-black text-white hover:text-cyan-brand transition-colors tracking-tight">gilad@kilon.co.il</a>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };
