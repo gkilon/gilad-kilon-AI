@@ -16,7 +16,6 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView }) => {
         </div>
 
         <nav className="hidden lg:flex items-center gap-6 text-[10px] font-black uppercase tracking-[0.2em]">
-          {/* כפתור אודות מודגש בצבע אמבר (כתום) ובניסוח נגיש יותר */}
           <button 
             onClick={() => onNavigate('about')}
             className={`px-5 py-2.5 rounded-full transition-all duration-300 border font-bold ${
@@ -33,8 +32,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView }) => {
           {[
             { id: 'dashboard', label: 'ניהול השינוי' },
             { id: 'tasks', label: 'משימות' },
-            { id: 'executive', label: 'הנהלה' },
-            { id: 'synergy', label: 'איכות צוות' },
+            { id: 'executive', label: 'פורום הנהלה' },
+            { id: 'synergy', label: 'דופק צוותי' },
             { id: 'ideas', label: 'רעיונות' }
           ].map(item => (
             <button 

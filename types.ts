@@ -68,16 +68,21 @@ export interface TeamSynergyPulse {
   teamId: string;
 }
 
-export interface StrategyTest {
+export interface TowsAnalysis {
   id: string;
   title: string;
-  description: string;
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
   timestamp: number;
+  managerId: string;
   analysis?: {
-    risks: string[];
-    alignmentGaps: string[];
-    criticalQuestions: string[];
-    recommendation: string;
+    strategiesSO: string[]; // Strengths-Opportunities (Growth)
+    strategiesST: string[]; // Strengths-Threats (Defensive)
+    strategiesWO: string[]; // Weaknesses-Opportunities (Development)
+    strategiesWT: string[]; // Weaknesses-Threats (Survival)
+    executiveSummary: string;
   };
 }
 

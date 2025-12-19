@@ -30,7 +30,6 @@ const App: React.FC = () => {
 
   const dbReady = isFirebaseReady();
 
-  // מנגנון כניסה ישירה לצוות דרך URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const teamParam = params.get('team');
@@ -38,7 +37,6 @@ const App: React.FC = () => {
     if (teamParam && !session) {
       setSession({ teamId: teamParam.toLowerCase(), isManager: false });
       setView('synergy');
-      // ננקה את ה-URL למראה נקי אחרי הכניסה
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
@@ -46,9 +44,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (session) {
       localStorage.setItem('gk_session', JSON.stringify(session));
-      if (dbReady) {
-        loadAllData();
-      }
+      if (dbReady) loadAllData();
     } else {
       localStorage.removeItem('gk_session');
     }
@@ -64,7 +60,6 @@ const App: React.FC = () => {
         fetchFromCloud('ideas', managerId),
         fetchFromCloud('general_tasks', managerId)
       ]);
-      
       setProjects(p as ProjectChange[]);
       setIdeas(i as IdeaEntry[]);
       setGeneralTasks(t as Task[]);
@@ -147,7 +142,7 @@ const App: React.FC = () => {
     if (loading) return (
       <div className="py-40 text-center space-y-8 animate-fadeIn">
         <div className="w-16 h-16 border-4 border-cyan-brand border-t-transparent rounded-full animate-spin mx-auto"></div>
-        <div className="text-cyan-brand font-black text-2xl uppercase italic tracking-widest">טוען נתונים מהענן...</div>
+        <div className="text-cyan-brand font-black text-2xl uppercase italic tracking-widest">מסנכרן נתונים אסטרטגיים...</div>
       </div>
     );
 
@@ -162,7 +157,7 @@ const App: React.FC = () => {
       case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={handleSaveWoop} initialData={editingProject?.woop} />;
       case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={i => { setIdeas([i, ...ideas]); syncToCloud('ideas', {...i, managerId: session?.teamId}); }} />;
       case 'synergy': return <TeamSynergy session={session} />;
-      case 'executive': return <ExecutiveSynergy history={[]} onSave={() => {}} />;
+      case 'executive': return <ExecutiveSynergy session={session} />;
       case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={t => { setGeneralTasks(t); t.forEach(task => syncToCloud('general_tasks', {...task, managerId: session?.teamId})) }} />;
       case 'about': return <About />;
       default: return <Landing onEnterTool={(v) => setView(v as any)} />;
@@ -172,26 +167,6 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen app-frame" dir="rtl">
       <Header onNavigate={(v) => setView(v as any)} currentView={view} />
-      
-      <div className="max-w-7xl mx-auto px-6 pt-4 flex justify-between items-center">
-        {session ? (
-          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
-            <div className="flex items-center gap-2 text-emerald-400">
-               <span className={`w-2 h-2 rounded-full ${dbReady ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
-               <span>{dbReady ? 'מחובר ומסונכרן' : 'שגיאת תקשורת'}</span>
-            </div>
-            <span className="text-slate-500">|</span>
-            <span className="text-slate-400">מרחב: {session.teamId}</span>
-            <button onClick={handleLogout} className="text-red-400/60 hover:text-red-400 transition-colors mr-2">התנתקות [X]</button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-600">
-            <span className={`w-1.5 h-1.5 rounded-full ${dbReady ? 'bg-cyan-brand' : 'bg-red-500'}`}></span>
-            <span>מצב מערכת: {dbReady ? 'פעיל' : 'לא מחובר'}</span>
-          </div>
-        )}
-      </div>
-
       <main className="max-w-7xl mx-auto px-6 py-8">
         {renderView()}
       </main>

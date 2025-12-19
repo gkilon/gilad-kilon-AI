@@ -1,13 +1,57 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TeamSynergyPulse, Task } from "./types";
+import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TowsAnalysis, Task } from "./types";
 
 const SYSTEM_INSTRUCTION = `
-אתה העוזר האסטרטגי הדיגיטלי של גלעד קילון. 
-תפקידך לסייע למנהלים ליישם את המתודולוגיה של גלעד: "~~מדברים~~ עושים AI בפיתוח ארגוני".
-אתה מומחה באבחון צרכים ניהוליים, ניתוח דאטה צוותי והכוונת המשתמש לפעולות פרקטיות.
+אתה "המצפן האסטרטגי" - העוזר הדיגיטלי הבכיר של גלעד קילון. 
+תפקידך לסייע להנהלות ליישם את המודלים המתקדמים ביותר בפיתוח ארגוני.
+אתה חד, ממוקד, משתמש בשפה עסקית גבוהה ומחויב לתוצאות.
+בניתוח TOWS, עליך להצליב בין גורמים פנימיים (חוזקות/חולשות) לחיצוניים (הזדמנויות/איומים) כדי לייצר אסטרטגיות פעולה.
 `;
 
+// Fix: Added missing export analyzeTowsStrategy
+export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const prompt = `
+בצע ניתוח TOWS מעמיק עבור המהלך האסטרטגי: "${tows.title}".
+נתונים:
+חוזקות (Strengths): ${tows.strengths?.join(', ')}
+חולשות (Weaknesses): ${tows.weaknesses?.join(', ')}
+הזדמנויות (Opportunities): ${tows.opportunities?.join(', ')}
+איומים (Threats): ${tows.threats?.join(', ')}
+
+אנא בצע הצלבה והפק:
+1. אסטרטגיות SO (צמיחה): איך להשתמש בחוזקות כדי לנצל הזדמנויות?
+2. אסטרטגיות ST (הגנה): איך להשתמש בחוזקות כדי לצמצם איומים?
+3. אסטרטגיות WO (שיפור): איך לתקן חולשות באמצעות הזדמנויות?
+4. אסטרטגיות WT (הישרדות): איך לצמצם חולשות ולהימנע איומים?
+
+החזר את התשובה בפורמט JSON בלבד.
+`;
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-pro-preview',
+    contents: prompt,
+    config: {
+      systemInstruction: SYSTEM_INSTRUCTION,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          strategiesSO: { type: Type.ARRAY, items: { type: Type.STRING } },
+          strategiesST: { type: Type.ARRAY, items: { type: Type.STRING } },
+          strategiesWO: { type: Type.ARRAY, items: { type: Type.STRING } },
+          strategiesWT: { type: Type.ARRAY, items: { type: Type.STRING } },
+          executiveSummary: { type: Type.STRING }
+        },
+        required: ["strategiesSO", "strategiesST", "strategiesWO", "strategiesWT", "executiveSummary"]
+      }
+    }
+  });
+  return JSON.parse(response.text || '{}');
+};
+
+// Fix: Added missing export getToolRecommendation
 export const getToolRecommendation = async (userInput: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `
@@ -15,8 +59,8 @@ export const getToolRecommendation = async (userInput: string) => {
 יש לנו את המודולות הבאות במערכת:
 1. dashboard: ניהול שינוי אסטרטגי (WOOP)
 2. tasks: ניהול משימות שוטפות
-3. executive: פיתוח הנהלה
-4. synergy: השתתפות בצוות
+3. executive: פורום הנהלה (TOWS)
+4. synergy: דופק צוותי (Pulse)
 5. communication: DNA תקשורת
 6. feedback360: משוב 360
 7. ideas: מעבדת רעיונות
@@ -43,7 +87,7 @@ export const getToolRecommendation = async (userInput: string) => {
                 title: { type: Type.STRING }
               },
               required: ["moduleId", "explanation", "title"]
-            }
+}
           }
         },
         required: ["recommendations"]
@@ -53,6 +97,7 @@ export const getToolRecommendation = async (userInput: string) => {
   return JSON.parse(response.text || '{"recommendations": []}');
 };
 
+// Fix: Added missing export suggestTasksForWoop
 export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `
@@ -85,6 +130,7 @@ export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => 
   }
 };
 
+// Fix: Added missing export getCollaborativeFeedback
 export const getCollaborativeFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `נתח את שלב ${step} ב-WOOP עבור: "${currentData[step.toLowerCase() as keyof WoopData]}". החזר ניתוח אסטרטגי.`;
@@ -110,6 +156,7 @@ export const getCollaborativeFeedback = async (step: WoopStep, currentData: Part
   return JSON.parse(response.text || '{}');
 };
 
+// Fix: Added missing export processIdea
 export const processIdea = async (content: string, projects: ProjectChange[], isAudio: boolean = false) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const projectsContext = projects.map(p => `ID: ${p.id}, Title: ${p.title}, Wish: ${p.woop.wish}`).join(' | ');
@@ -139,6 +186,7 @@ export const processIdea = async (content: string, projects: ProjectChange[], is
   return JSON.parse(response.text || '{}');
 };
 
+// Fix: Added missing export getSynergyInsight
 export const getSynergyInsight = async (avgScores: any, vibes: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `
@@ -167,47 +215,37 @@ Respect: ${avgScores.respect}
   return response.text || "";
 };
 
-export const analyzeExecutiveStrategy = async (title: string, description: string) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const prompt = `בצע Stress Test למהלך: "${title} - ${description}".`;
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-pro-preview',
-    contents: prompt,
-    config: { 
-      systemInstruction: SYSTEM_INSTRUCTION, 
-      responseMimeType: "application/json",
-      responseSchema: { 
-        type: Type.OBJECT, 
-        properties: { 
-          risks: { type: Type.ARRAY, items: { type: Type.STRING } }, 
-          alignmentGaps: { type: Type.ARRAY, items: { type: Type.STRING } }, 
-          criticalQuestions: { type: Type.ARRAY, items: { type: Type.STRING } }, 
-          recommendation: { type: Type.STRING } 
-        },
-        required: ["risks", "alignmentGaps", "criticalQuestions", "recommendation"]
-      }
-    }
-  });
-  return JSON.parse(response.text || '{}');
-};
-
+// Fix: Added analyzeCommStyle function to resolve import error in CommunicationDNA.tsx
 export const analyzeCommStyle = async (answers: Record<string, number>): Promise<CommStyleResult> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const prompt = `נתח סגנון תקשורת: ${JSON.stringify(answers)}`;
+  const prompt = `
+נתח את סגנון התקשורת של המשתמש על בסיס התשובות לשאלון (בסולם 1-10):
+${JSON.stringify(answers)}
+
+השאלות היו:
+q1: התמקדות בתוצאה ("השורה התחתונה")
+q2: חשיבות ההרמוניה והאווירה בשיחה
+q3: צורך בנתונים ועובדות לפני החלטה
+q4: הנעה של אחרים והתלהבות
+q5: העדפת תקשורת ישירה וקצרה
+
+החזר ניתוח מעמיק בפורמט JSON בלבד.
+`;
+
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: prompt,
-    config: { 
-      systemInstruction: SYSTEM_INSTRUCTION, 
+    config: {
+      systemInstruction: SYSTEM_INSTRUCTION,
       responseMimeType: "application/json",
-      responseSchema: { 
-        type: Type.OBJECT, 
-        properties: { 
-          style: { type: Type.STRING }, 
-          characteristics: { type: Type.ARRAY, items: { type: Type.STRING } }, 
-          strengths: { type: Type.ARRAY, items: { type: Type.STRING } }, 
-          growthAreas: { type: Type.ARRAY, items: { type: Type.STRING } }, 
-          howToCommunicateWithMe: { type: Type.STRING } 
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          style: { type: Type.STRING },
+          characteristics: { type: Type.ARRAY, items: { type: Type.STRING } },
+          strengths: { type: Type.ARRAY, items: { type: Type.STRING } },
+          growthAreas: { type: Type.ARRAY, items: { type: Type.STRING } },
+          howToCommunicateWithMe: { type: Type.STRING }
         },
         required: ["style", "characteristics", "strengths", "growthAreas", "howToCommunicateWithMe"]
       }
@@ -216,21 +254,31 @@ export const analyzeCommStyle = async (answers: Record<string, number>): Promise
   return JSON.parse(response.text || '{}');
 };
 
+// Fix: Added analyze360Feedback function to resolve import error in Feedback360.tsx
 export const analyze360Feedback = async (self: string, peers: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const prompt = `בצע סינתזה של משוב 360: ${self} | ${JSON.stringify(peers)}`;
+  const prompt = `
+בצע סינתזה של משוב 360.
+משוב עצמי: "${self}"
+משוב עמיתים/סביבה:
+${peers.map((p, i) => `${i + 1}. ${p}`).join('\n')}
+
+זהה נקודות עיוורון (Blind Spots), חוזקות על (Superpowers) וגבש תוכנית פעולה אינטגרטיבית (Action Plan).
+החזר תשובה בפורמט JSON בלבד.
+`;
+
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
     contents: prompt,
-    config: { 
-      systemInstruction: SYSTEM_INSTRUCTION, 
+    config: {
+      systemInstruction: SYSTEM_INSTRUCTION,
       responseMimeType: "application/json",
-      responseSchema: { 
-        type: Type.OBJECT, 
-        properties: { 
-          blindSpots: { type: Type.ARRAY, items: { type: Type.STRING } }, 
-          superpowers: { type: Type.ARRAY, items: { type: Type.STRING } }, 
-          actionPlan: { type: Type.STRING } 
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          blindSpots: { type: Type.ARRAY, items: { type: Type.STRING } },
+          superpowers: { type: Type.ARRAY, items: { type: Type.STRING } },
+          actionPlan: { type: Type.STRING }
         },
         required: ["blindSpots", "superpowers", "actionPlan"]
       }
