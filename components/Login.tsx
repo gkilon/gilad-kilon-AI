@@ -1,29 +1,53 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrandLogo } from './Landing';
-import { createWorkspace, loginToWorkspace, isFirebaseReady } from '../firebase';
+import { createWorkspace, loginToWorkspace, isFirebaseReady, getSystemConfig } from '../firebase';
 
 interface LoginProps {
-  onLogin: (teamId: string, isManager: boolean) => void;
+  onLogin: (teamId: string, isManager: boolean, isAdmin?: boolean) => void;
+  message?: string;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [mode, setMode] = useState<'login' | 'signup' | 'employee'>('login');
+const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [accessCode, setAccessCode] = useState('');
+  const [mode, setMode] = useState<'login' | 'signup' | 'employee' | 'admin'>('login');
   const [teamId, setTeamId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
+  const [masterCode, setMasterCode] = useState('GILAD2025');
 
   const dbReady = isFirebaseReady();
+
+  useEffect(() => {
+    if (dbReady) {
+      getSystemConfig().then(config => setMasterCode(config.masterCode));
+    }
+  }, [dbReady]);
+
+  const handleUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Case-insensitive comparison
+    if (accessCode.trim().toLowerCase() === masterCode.toLowerCase()) {
+      setIsUnlocked(true);
+      setError('');
+    } else {
+      setError("קוד גישה למערכת שגוי");
+    }
+  };
 
   const handleAction = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccessMsg('');
-    
-    if (!dbReady) {
-      setError("המערכת חווה קשיי תקשורת זמניים. נא לרענן.");
+
+    if (mode === 'admin') {
+      // Case-insensitive admin password check
+      if (password.trim().toLowerCase() === 'gilad_admin_99') {
+        onLogin('admin', true, true);
+      } else {
+        setError("סיסמת ניהול שגויה");
+      }
       return;
     }
 
@@ -37,135 +61,147 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
     try {
       if (mode === 'signup') {
-        if (password.length < 4) {
-          setError("הסיסמה חייבת להכיל לפחות 4 תווים");
-          setLoading(false);
-          return;
-        }
         const res = await createWorkspace(tid, password);
-        if (res.success) {
-          setSuccessMsg("מרחב העבודה נוצר! מתחבר...");
-          setTimeout(() => onLogin(tid, true), 1500);
-        } else {
-          setError(res.error || "שם המרחב כבר תפוס במערכת");
-        }
+        if (res.success) onLogin(tid, true);
+        else setError(res.error || "שגיאה ביצירת המרחב");
       } else if (mode === 'login') {
         const res = await loginToWorkspace(tid, password);
-        if (res.success) {
-          onLogin(tid, true);
-        } else {
-          setError(res.error || "פרטי התחברות שגויים");
-        }
-      } else if (mode === 'employee') {
+        if (res.success) onLogin(tid, true);
+        else setError(res.error || "פרטי התחברות שגויים");
+      } else {
         onLogin(tid, false);
       }
     } catch (err: any) {
-      setError(`אירעה שגיאה. נא לנסות שוב.`);
+      setError("שגיאת תקשורת");
     }
     setLoading(false);
   };
 
+  const handlePersonalUse = () => {
+    onLogin(`personal-${accessCode.toLowerCase()}`, true);
+  };
+
+  if (!isUnlocked) {
+    return (
+      <div className="min-h-[80vh] flex flex-col items-center justify-center p-6 animate-fadeIn">
+        <div className="glass-card w-full max-w-md rounded-[3rem] p-12 border-amber-500/20 shadow-2xl text-center">
+          <div className="w-20 h-20 bg-amber-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-amber-500/30">
+            <span className="text-5xl">🔐</span>
+          </div>
+          <h2 className="text-3xl font-black text-white mb-4 italic">שער כניסה</h2>
+          <p className="text-slate-400 mb-8 font-medium">הזן את קוד הגישה שקיבלת מגלעד.</p>
+          <form onSubmit={handleUnlock} className="space-y-6">
+            <input 
+              type="text" 
+              placeholder="קוד גישה"
+              className="w-full bg-slate-950 border border-white/10 rounded-2xl px-8 py-5 text-center text-xl text-white outline-none focus:border-amber-500 transition-all font-bold"
+              value={accessCode}
+              onChange={(e) => setAccessCode(e.target.value)}
+            />
+            {error && <p className="text-red-400 font-bold text-sm">{error}</p>}
+            <button className="w-full py-5 bg-amber-500 text-slate-950 rounded-2xl font-black text-xl hover:bg-white transition-all shadow-lg active:scale-95">המשך ←</button>
+          </form>
+
+          <div className="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-4">
+             <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">System Management</p>
+             <button onClick={() => { setIsUnlocked(true); setMode('admin'); }} className="px-6 py-3 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:bg-purple-500 hover:text-white transition-all">
+               כניסת מנהל מערכת (ADMIN)
+             </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-[80vh] flex items-center justify-center p-6 animate-fadeIn">
-      <div className="glass-card w-full max-w-lg rounded-[3.5rem] p-12 border-white/10 shadow-[0_0_80px_rgba(45,212,191,0.1)] relative overflow-hidden">
-        {/* Progress Bar Indicator */}
-        <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent ${dbReady ? 'via-cyan-brand' : 'via-red-500 animate-pulse'} to-transparent opacity-50`}></div>
-        
+    <div className="min-h-[80vh] flex flex-col items-center justify-center p-6 animate-fadeIn">
+      {message && (
+        <div className="w-full max-w-lg mb-8 bg-amber-500/10 border border-amber-500/30 p-6 rounded-[2rem] text-center shadow-lg">
+          <p className="text-amber-500 font-black text-xl italic">{message}</p>
+        </div>
+      )}
+
+      <div className="glass-card w-full max-w-lg rounded-[3.5rem] p-12 border-white/10 shadow-2xl relative overflow-hidden">
         <div className="flex flex-col items-center mb-8">
           <BrandLogo size="sm" />
-          <h2 className="text-3xl font-black text-white mt-6 tracking-tight italic">
-            {mode === 'signup' ? 'Open New Workspace' : mode === 'login' ? 'Manager Access' : 'Team Pulse Entry'}
-          </h2>
-          <div className="flex items-center gap-2 mt-2">
-            <span className={`w-1.5 h-1.5 rounded-full ${dbReady ? 'bg-cyan-brand' : 'bg-red-500'}`}></span>
-            <span className={`text-[9px] font-black uppercase tracking-widest ${dbReady ? 'text-slate-500' : 'text-red-400'}`}>
-              {dbReady ? 'Cloud Environment Active' : 'Offline Mode'}
-            </span>
-          </div>
+          <h2 className="text-2xl font-black text-white mt-6 italic">התחברות</h2>
         </div>
 
         <div className="flex bg-slate-900/50 p-1.5 rounded-2xl mb-8 border border-white/5">
-          <button 
-            type="button"
-            onClick={() => { setMode('login'); setError(''); setSuccessMsg(''); }}
-            className={`flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${mode === 'login' ? 'bg-amber-500 text-slate-950 shadow-lg' : 'text-slate-500 hover:text-white'}`}
-          >
-            כניסת מנהל
-          </button>
-          <button 
-            type="button"
-            onClick={() => { setMode('signup'); setError(''); setSuccessMsg(''); }}
-            className={`flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${mode === 'signup' ? 'bg-cyan-brand text-slate-950 shadow-lg' : 'text-slate-500 hover:text-white'}`}
-          >
-            פתיחת מרחב
-          </button>
-          <button 
-            type="button"
-            onClick={() => { setMode('employee'); setError(''); setSuccessMsg(''); }}
-            className={`flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${mode === 'employee' ? 'bg-white text-slate-950 shadow-lg' : 'text-slate-500 hover:text-white'}`}
-          >
-            Pulse צוות
-          </button>
+          <button onClick={() => setMode('login')} className={`flex-1 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${mode === 'login' ? 'bg-purple-500 text-white' : 'text-slate-500 hover:text-white'}`}>כניסת מנהל</button>
+          <button onClick={() => setMode('signup')} className={`flex-1 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${mode === 'signup' ? 'bg-cyan-brand text-slate-950' : 'text-slate-500 hover:text-white'}`}>פתיחת מרחב</button>
+          <button onClick={() => setMode('employee')} className={`flex-1 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${mode === 'employee' ? 'bg-white text-slate-950' : 'text-slate-500 hover:text-white'}`}>כניסת עובד</button>
         </div>
 
         <form onSubmit={handleAction} className="space-y-6">
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-center text-sm font-bold animate-shake">
-              {error}
-            </div>
-          )}
+          {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-center text-sm font-bold">{error}</div>}
           
-          {successMsg && (
-            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl text-center text-sm font-bold animate-fadeIn">
-              {successMsg}
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] pr-4">שם מרחב עבודה / צוות</label>
-            <input 
-              type="text" 
-              placeholder="למשל: gilad-team"
-              className="w-full bg-slate-950 border border-white/10 rounded-2xl px-8 py-5 text-xl text-white outline-none focus:border-cyan-brand transition-all text-right font-bold"
-              value={teamId}
-              onChange={(e) => setTeamId(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
-            />
-          </div>
-
-          {(mode === 'login' || mode === 'signup') && (
-            <div className="space-y-2 animate-slideDown">
-              <label className="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em] pr-4">סיסמת המרחב</label>
+          {mode === 'admin' ? (
+            <div className="space-y-4 animate-fadeIn">
+              <div className="p-4 bg-purple-500/20 rounded-2xl border border-purple-500/40 text-center">
+                <p className="text-purple-400 font-black text-sm uppercase">ניהול מערכת (Admin)</p>
+              </div>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4">סיסמת אבטחה</label>
               <input 
                 type="password" 
-                placeholder="****"
-                className="w-full bg-slate-950 border border-white/10 rounded-2xl px-8 py-5 text-xl text-white outline-none focus:border-amber-500 transition-all text-right font-bold"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                placeholder="סיסמת אדמין" 
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                className="w-full bg-slate-950 border border-purple-500/50 rounded-2xl px-6 py-4 text-white text-center font-bold outline-none focus:border-purple-500 shadow-inner" 
               />
             </div>
+          ) : (
+            <>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4 italic">שם המרחב הצוותי</label>
+                <input 
+                  type="text" 
+                  placeholder="management-2025"
+                  className="w-full bg-slate-950 border border-white/10 rounded-2xl px-6 py-4 text-xl text-white outline-none text-right font-bold"
+                  value={teamId}
+                  onChange={(e) => setTeamId(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
+                />
+              </div>
+
+              {(mode === 'login' || mode === 'signup') && (
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4 italic">סיסמה אישית</label>
+                  <input 
+                    type="password" 
+                    className="w-full bg-slate-950 border border-white/10 rounded-2xl px-6 py-4 text-xl text-white outline-none text-right font-bold"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              )}
+            </>
           )}
 
-          <button 
-            type="submit"
-            disabled={loading || !dbReady}
-            className={`w-full py-6 rounded-3xl font-black text-2xl transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-4 ${mode === 'signup' ? 'bg-cyan-brand text-slate-950' : mode === 'login' ? 'bg-amber-500 text-slate-950' : 'bg-white text-slate-950'} disabled:opacity-20`}
-          >
-            {loading ? (
-              <div className="w-8 h-8 border-4 border-slate-950 border-t-transparent rounded-full animate-spin"></div>
-            ) : (
+          <div className="pt-4 space-y-4">
+            <button type="submit" disabled={loading} className={`w-full py-6 rounded-3xl font-black text-xl transition-all shadow-xl active:scale-95 ${mode === 'signup' ? 'bg-cyan-brand text-slate-950' : mode === 'admin' ? 'bg-purple-500 text-white' : 'bg-white text-slate-950'}`}>
+              {loading ? "מעבד..." : mode === 'admin' ? "כניסה לניהול" : "המשך"}
+            </button>
+            
+            {mode !== 'admin' && (
               <>
-                <span>{mode === 'signup' ? 'צור מרחב חדש' : mode === 'login' ? 'כניסה למרחב' : 'כניסה ל-Pulse'}</span>
-                <span className="text-3xl">→</span>
+                <div className="h-px bg-white/5 w-full my-4"></div>
+                <button type="button" onClick={handlePersonalUse} className="w-full py-4 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-3xl font-black text-lg hover:bg-amber-500 hover:text-slate-950 transition-all">
+                  🧘‍♂️ כניסה לשימוש אישי
+                </button>
+                
+                <div className="mt-8 flex justify-center">
+                  <button onClick={() => { setMode('admin'); setError(''); }} className="px-6 py-3 bg-slate-950 border border-white/10 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-[0.4em] hover:bg-purple-500 hover:text-white transition-all">
+                    כניסת מנהל מערכת (ADMIN)
+                  </button>
+                </div>
               </>
             )}
-          </button>
+            
+            {mode === 'admin' && (
+              <button onClick={() => { setMode('login'); setError(''); }} className="w-full text-[10px] font-black text-slate-500 uppercase tracking-widest mt-6 hover:text-white transition-colors">חזרה להתחברות רגילה</button>
+            )}
+          </div>
         </form>
-
-        <p className="mt-8 text-center text-slate-600 text-[9px] font-bold uppercase tracking-[0.3em] leading-relaxed">
-          {mode === 'signup' 
-            ? 'Creating a workspace defines your strategic boundary.' 
-            : 'All strategic data is synchronized in real-time.'}
-        </p>
       </div>
     </div>
   );

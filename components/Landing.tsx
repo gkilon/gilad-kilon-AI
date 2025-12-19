@@ -6,32 +6,80 @@ interface LandingProps {
   onEnterTool: (view: string, url?: string) => void;
 }
 
-const IconTaskHub = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform">
-    <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+const AnalyticalGraphic: React.FC = () => (
+  <svg width="60" height="60" viewBox="0 0 40 40" className="opacity-80">
+    <defs>
+      <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+        <path d="M 8 0 L 0 0 0 8" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3"/>
+      </pattern>
+    </defs>
+    <rect width="40" height="40" fill="url(#grid)" />
+    <path d="M 5 20 L 15 20 L 20 10 L 25 30 L 30 20 L 35 20" stroke="currentColor" strokeWidth="1.5" fill="none" className="animate-[pulse_2s_infinite]" />
+    <circle cx="20" cy="10" r="1.5" fill="currentColor" />
+    <circle cx="25" cy="30" r="1.5" fill="currentColor" />
   </svg>
 );
 
-const IconTeamSynergy = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-12 transition-transform">
-    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87" /><path d="M16 3.13a4 4 0 010 7.75" />
+const CreativeGraphic: React.FC = () => (
+  <svg width="60" height="60" viewBox="0 0 40 40" className="opacity-80">
+    <path d="M10 20 Q 20 5 30 20 T 10 20" fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="1" className="animate-[spin_10s_linear_infinite]" />
+    <circle cx="20" cy="20" r="8" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 2" className="animate-[ping_3s_linear_infinite]" />
+    <path d="M15 15 L25 25 M15 25 L25 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="20" cy="20" r="2" fill="currentColor" className="animate-pulse" />
   </svg>
 );
 
-export const BrandLogo: React.FC<{ size?: 'sm' | 'lg' }> = ({ size = 'lg' }) => {
-  const isLarge = size === 'lg';
+const DetailedBrain: React.FC<{ size?: number }> = ({ size = 100 }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" className="group-hover:rotate-6 transition-transform duration-1000">
+    <defs>
+      <linearGradient id="creativeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#2dd4bf" />
+        <stop offset="100%" stopColor="#fbbf24" />
+      </linearGradient>
+      <linearGradient id="logicGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#a855f7" />
+        <stop offset="100%" stopColor="#3b82f6" />
+      </linearGradient>
+    </defs>
+    <path 
+      d="M50 10 C30 10, 15 25, 15 50 C15 75, 30 90, 50 90 L50 10" 
+      fill="url(#logicGrad)" 
+      fillOpacity="0.1" 
+      stroke="#a855f7" 
+      strokeWidth="1.5" 
+    />
+    <path 
+      d="M50 10 C70 10, 85 25, 85 50 C85 75, 70 90, 50 90 L50 10" 
+      fill="url(#creativeGrad)" 
+      fillOpacity="0.1" 
+      stroke="#2dd4bf" 
+      strokeWidth="1.5" 
+    />
+    <circle cx="50" cy="50" r="5" fill="#fbbf24" className="animate-pulse shadow-[0_0_20px_#fbbf24]" />
+  </svg>
+);
+
+const ModuleIcon: React.FC<{ type: string; color: string }> = ({ type, color }) => {
+  const commonProps = { stroke: color, strokeWidth: "2.5", fill: "none" };
+  switch (type) {
+    case 'executive': return <svg width="32" height="32" viewBox="0 0 40 40"><rect x="8" y="8" width="12" height="12" {...commonProps} /><rect x="20" y="20" width="12" height="12" {...commonProps} strokeOpacity="0.4" /></svg>;
+    case 'dashboard': return <svg width="32" height="32" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" {...commonProps} strokeDasharray="4 2" /></svg>;
+    case 'tasks': return <svg width="32" height="32" viewBox="0 0 40 40"><path d="M10 12h20M10 20h20" stroke={color} strokeWidth="3" /></svg>;
+    case 'synergy': return <svg width="32" height="32" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" {...commonProps} /><path d="M20 10v20" stroke={color} strokeWidth="2" /></svg>;
+    case 'ideas': return <svg width="32" height="32" viewBox="0 0 40 40"><path d="M20 5l10 25H10z" {...commonProps} /></svg>;
+    case 'communication': return <svg width="32" height="32" viewBox="0 0 40 40"><path d="M10 10c10 20 20 0 20 20" {...commonProps} /></svg>;
+    case 'feedback360': return <svg width="32" height="32" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" {...commonProps} /><circle cx="20" cy="20" r="6" fill={color} fillOpacity="0.2" /></svg>;
+    default: return null;
+  }
+};
+
+export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'lg' }) => {
+  const scale = size === 'lg' ? 0.8 : size === 'md' ? 0.6 : 0.45;
   return (
-    <div className="flex flex-col items-center select-none group transition-all duration-1000" dir="ltr">
-      <div className={`${isLarge ? 'mb-4' : 'mb-1'} relative`}>
-        <div className={`absolute inset-0 bg-cyan-brand/20 blur-xl rounded-full ${isLarge ? 'scale-150' : 'scale-75'} opacity-0 group-hover:opacity-100 transition-opacity`}></div>
-        <svg width={isLarge ? "40" : "20"} height={isLarge ? "40" : "20"} viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M30 5L55 20V40L30 55L5 40V20L30 5Z" stroke="white" strokeWidth={isLarge ? "1.5" : "3"} strokeOpacity="0.8"/>
-          <circle cx="30" cy="30" r="10" fill="#2dd4bf" />
-        </svg>
-      </div>
-      <div className={`flex flex-col items-center ${isLarge ? 'leading-[0.7] tracking-[-0.09em]' : 'leading-[0.75] tracking-tighter'}`}>
-        <h1 className={`${isLarge ? 'text-[5rem] md:text-[7rem]' : 'text-[12px]'} font-black text-white uppercase`}>GILAD</h1>
-        <h1 className={`${isLarge ? 'text-[5rem] md:text-[7rem]' : 'text-[12px]'} font-black text-white uppercase relative`}>KILON<span className={`absolute ${isLarge ? 'bottom-[1.2rem] -right-4 w-4 h-4' : 'bottom-[1px] -right-1.5 w-1 h-1'} bg-cyan-brand rounded-full shadow-[0_0_20px_#2dd4bf]`}></span></h1>
+    <div className="flex flex-col items-center select-none origin-center" dir="ltr" style={{ transform: `scale(${scale})` }}>
+      <div className="flex flex-col items-center leading-[0.65] tracking-[-0.09em]">
+        <h1 className="text-[5.5rem] font-black text-white uppercase">GILAD</h1>
+        <h1 className="text-[5.5rem] font-black text-white uppercase relative">KILON<span className="absolute bottom-[1.4rem] -right-4 w-4 h-4 bg-cyan-brand rounded-full"></span></h1>
       </div>
     </div>
   );
@@ -39,160 +87,192 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'lg' }> = ({ size = 'lg' }) => 
 
 const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   const [consultationText, setConsultationText] = useState('');
-  const [recommendations, setRecommendations] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'logic' | 'creative'>('creative');
 
-  const tools = [
-    { id: 'dashboard', icon: <span className="text-lg">⚡</span>, title: 'ניהול השינוי', subtitle: 'STRATEGIC FLOW', desc: 'דיוק מטרות WOOP ותוכנית פעולה.', labelColor: 'text-cyan-400' },
-    { id: 'tasks', icon: <IconTaskHub />, title: 'משימות שוטפות', subtitle: 'OPERATIONAL HUB', desc: 'ניהול ביצוע יומיומי ותיעדוף.', labelColor: 'text-emerald-400' },
-    { id: 'executive', icon: <span className="text-lg">🧠</span>, title: 'פיתוח הנהלה', subtitle: 'EXECUTIVE SYNERGY', desc: 'סנכרון ו-Stress Test להחלטות.', labelColor: 'text-purple-400' },
-    { id: 'synergy', icon: <IconTeamSynergy />, title: 'איכות עבודת צוות', subtitle: 'TEAM QUALITY', desc: 'מדידת אמון וזרימת מידע.', labelColor: 'text-amber-400' },
-    { id: 'communication', icon: <span className="text-lg">📡</span>, title: 'DNA תקשורת', subtitle: 'STYLE AUDIT', desc: 'אבחון סגנונות והתאמת תדרים.', labelColor: 'text-rose-400', url: 'https://hilarious-kashata-9aafa2.netlify.app/' },
-    { id: 'feedback360', icon: <span className="text-lg">🔄</span>, title: 'משוב 360', subtitle: 'TRUTH ENGINE', desc: 'סינתזת קולות לתמונת מצב.', labelColor: 'text-fuchsia-400', url: 'https://ubiquitous-nougat-41808d.netlify.app/' },
-    { id: 'ideas', icon: <span className="text-lg">💡</span>, title: 'מעבדת רעיונות', subtitle: 'IDEA FORGE', desc: 'הקלטה, עיבוד AI וקישור חכם לפרויקטים אסטרטגיים.', labelColor: 'text-blue-400', isWide: true }
+  const analyticalTools = [
+    { id: 'executive', title: 'פורום הנהלה', desc: 'אסטרטגיה ו-TOWS', color: '#a855f7' },
+    { id: 'dashboard', title: 'ניהול שינוי', desc: 'הובלת מהלכי WOOP', color: '#a855f7' },
+    { id: 'tasks', title: 'משימות', desc: 'ביצוע שוטף ויעדים', color: '#a855f7' },
+  ];
+
+  const creativeTools = [
+    { id: 'synergy', title: 'דופק צוותי', desc: 'ניטור אקלים וסנכרון', color: '#2dd4bf' },
+    { id: 'ideas', title: 'מעבדת רעיונות', desc: 'פיצוח אתגרים ב-AI', color: '#2dd4bf' },
+    { id: 'communication', title: 'DNA תקשורת', desc: 'סגנונות תקשורת', color: '#2dd4bf' },
   ];
 
   const handleConsult = async () => {
     if (!consultationText.trim()) return;
-    setIsLoading(true);
+    setIsAiLoading(true);
     try {
       const result = await getToolRecommendation(consultationText);
-      setRecommendations(result.recommendations || []);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
+      if (result.recommendations?.[0]) onEnterTool(result.recommendations[0].moduleId);
+    } catch (e) { console.error(e); } finally { setIsAiLoading(false); }
   };
 
-  const getToolById = (id: string) => tools.find(t => t.id === id);
-
   return (
-    <div className="animate-fadeIn space-y-16 pb-16 max-w-5xl mx-auto flex flex-col items-center">
-      <section className="text-center pt-2 relative flex flex-col items-center w-full">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-cyan-brand/5 rounded-full blur-[100px] -z-10"></div>
-        <BrandLogo size="lg" />
-        <div className="mt-8 mb-2 text-lg md:text-2xl font-light tracking-tight flex items-center gap-4">
-          <span className="text-slate-200 font-black line-through italic decoration-white/40">מדברים</span>
-          <span className="font-black text-cyan-brand drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">עושים AI</span>
-          <span className="text-cyan-brand font-bold">בפיתוח ארגוני</span>
+    <div className="min-h-screen flex flex-col items-center relative pb-20 overflow-x-hidden">
+      
+      {/* Central Header Area */}
+      <header className="w-full flex flex-col items-center mt-6 md:mt-12 z-30 px-4">
+        <div className="glass-card p-5 md:p-7 rounded-full border-white/10 shadow-2xl mb-6 cursor-pointer group transition-all" onClick={() => onEnterTool('about')}>
+          <DetailedBrain size={window.innerWidth < 768 ? 80 : 120} />
         </div>
-      </section>
-
-      <section className="w-full">
-        <div className="glass-card p-10 rounded-[3rem] border-amber-500/40 bg-slate-900/80 relative overflow-hidden group shadow-[0_0_60px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/20">
-          <div className="absolute -top-24 -right-24 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-orange-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-          
-          <div className="flex flex-col gap-8 relative z-10">
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 text-right">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-3 px-6 py-2.5 bg-amber-500 text-slate-950 rounded-full text-[13px] font-black uppercase tracking-[0.25em] shadow-[0_0_30px_rgba(245,158,11,0.5)] transform -rotate-1">
-                  <span className="animate-pulse text-lg">✦</span>
-                  דלפק התייעצות ראשונית
-                </div>
-                <h2 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mt-2">
-                  מה מעסיק אותך <span className="text-amber-500">בימים אלה?</span>
-                </h2>
-                <p className="text-slate-300 text-lg font-medium opacity-90 max-w-xl">שתף אותי באתגר הניהולי, בדילמה או בשינוי שאתה רוצה להוביל. ה-AI ימפה עבורך את הכלי המדויק ביותר.</p>
-              </div>
-            </div>
-
-            <div className="relative">
-              <textarea 
-                className="w-full bg-slate-950/80 border-2 border-white/5 rounded-[2.5rem] px-10 py-10 text-2xl text-white outline-none focus:border-amber-500/60 focus:bg-slate-950 transition-all min-h-[180px] resize-none shadow-2xl placeholder-slate-700 font-medium text-right"
-                placeholder="אני מרגיש שהצוות שלי לא מסונכרן... / אני רוצה להוביל שינוי במודל העבודה..."
-                value={consultationText}
-                onChange={(e) => setConsultationText(e.target.value)}
-              />
-              <button 
-                onClick={handleConsult}
-                disabled={isLoading || !consultationText.trim()}
-                className="absolute bottom-8 left-8 bg-amber-500 text-slate-950 px-12 py-5 rounded-2xl font-black text-lg hover:bg-white hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] transition-all flex items-center gap-4 disabled:opacity-30 shadow-2xl active:scale-95 group/btn"
-              >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-3 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <>
-                    <span>אבחן והמלץ לי</span> 
-                    <span className="text-2xl group-hover:translate-x-[-8px] transition-transform">←</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {recommendations.length > 0 && (
-              <div className="mt-6 space-y-8 animate-fadeIn text-right">
-                <div className="flex items-center gap-6">
-                  <div className="h-px bg-amber-500/30 flex-1"></div>
-                  <span className="text-[12px] font-black text-amber-500 uppercase tracking-[0.4em] bg-slate-900 px-4 py-1 rounded-full border border-amber-500/20">AI Recommended Path</span>
-                  <div className="h-px bg-amber-500/30 flex-1"></div>
-                </div>
-                
-                <div className="grid sm:grid-cols-2 gap-6">
-                  {recommendations.map((rec, idx) => {
-                    const tool = getToolById(rec.moduleId);
-                    if (!tool) return null;
-                    return (
-                      <div 
-                        key={idx} 
-                        onClick={() => onEnterTool(tool.id, tool.url)}
-                        className="p-10 rounded-[3rem] bg-amber-500/5 border-2 border-amber-500/20 hover:border-amber-500 hover:bg-amber-500/15 transition-all cursor-pointer group/rec flex flex-col gap-5 shadow-2xl"
-                      >
-                        <div className="flex justify-between items-center">
-                          <h4 className="font-black text-white text-2xl group-hover/rec:text-amber-500">{tool.title}</h4>
-                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-slate-950 border border-amber-500/30 text-amber-500 group-hover/rec:bg-amber-500 group-hover/rec:text-slate-950 transition-all shadow-lg`}>
-                            {tool.icon}
-                          </div>
-                        </div>
-                        <p className="text-base text-slate-200 leading-relaxed font-bold italic pr-4 border-r-4 border-amber-500/40 bg-white/5 py-3 rounded-l-2xl">"{rec.explanation}"</p>
-                        <div className="flex items-center gap-3 text-[11px] font-black uppercase text-amber-500 mt-2">
-                           <span className="tracking-widest">כניסה למודולה המומלצת</span>
-                           <span className="group-hover/rec:translate-x-[-8px] transition-transform text-lg">←</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
+        
+        <div className="text-center">
+          <BrandLogo size={window.innerWidth < 768 ? 'sm' : 'md'} />
+          <p className="text-[14px] md:text-[22px] font-black text-white uppercase tracking-[0.4em] md:tracking-[0.6em] mt-12 md:mt-16 opacity-90 drop-shadow-lg">
+            AI TOOLS FOR MANAGEMENT
+          </p>
         </div>
-      </section>
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
-        {tools.map((tool) => (
-          <div 
-            key={tool.id} 
-            onClick={() => onEnterTool(tool.id, tool.url)} 
-            className={`glass-card p-5 md:p-6 rounded-[1.5rem] cursor-pointer transition-all duration-500 group relative overflow-hidden flex flex-col justify-between min-h-[160px] md:min-h-[180px] shadow-lg hover:-translate-y-1 ${tool.isWide ? 'md:col-span-2' : ''}`}
-          >
-            <div className={`absolute top-0 left-6 right-6 h-0.5 bg-current opacity-10 group-hover:opacity-100 transition-all rounded-b-full ${tool.labelColor}`}></div>
-            
-            <div className="flex justify-between items-start">
-              <div className={`w-9 h-9 bg-slate-800/80 rounded-lg flex items-center justify-center border border-white/5 group-hover:bg-white group-hover:text-slate-900 transition-all text-cyan-brand`}>
-                {tool.icon}
-              </div>
-              <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${tool.labelColor} opacity-70 group-hover:opacity-100 drop-shadow-[0_0_8px_currentColor]`}>
-                {tool.subtitle}
-              </span>
-            </div>
-
-            <div className="mt-4 text-right">
-              <h3 className="text-lg md:text-xl font-black text-white group-hover:text-cyan-brand transition-colors">
-                {tool.title}
-                {tool.url && <span className="mr-1 text-[10px] opacity-40">↗</span>}
-              </h3>
-              <p className="text-slate-500 text-[11px] leading-snug group-hover:text-slate-300 transition-all line-clamp-2 mt-1">{tool.desc}</p>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-slate-600 group-hover:text-cyan-brand">
-              <span>{tool.url ? 'External App' : 'Internal Hub'}</span>
-              <span className="text-xs">←</span>
-            </div>
-          </div>
-        ))}
+      {/* Mobile Tab Switcher */}
+      <div className="flex md:hidden w-[90%] bg-slate-900/50 p-1.5 rounded-2xl mt-12 border border-white/5 z-40">
+        <button 
+          onClick={() => setActiveTab('creative')}
+          className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'creative' ? 'bg-cyan-brand text-slate-900 shadow-lg' : 'text-slate-500'}`}
+        >
+          מוח ימני
+        </button>
+        <button 
+          onClick={() => setActiveTab('logic')}
+          className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'logic' ? 'bg-purple-600 text-white shadow-lg' : 'text-slate-500'}`}
+        >
+          מוח שמאלי
+        </button>
       </div>
+
+      {/* Modules Section - Responsive Grid */}
+      <section className="w-full max-w-7xl px-6 mt-12 md:mt-24 z-20">
+        
+        {/* Desktop View: Side by Side (Creative on Right, Logic on Left in RTL) */}
+        <div className="hidden md:grid grid-cols-2 gap-20">
+          
+          {/* RIGHT SIDE: Creative (Right Brain) */}
+          <div className="space-y-8 order-1">
+            <div className="flex items-center justify-start gap-6 mb-10 border-r-4 border-cyan-brand pr-8">
+              <div className="text-cyan-brand">
+                <CreativeGraphic />
+              </div>
+              <div className="flex flex-col items-start">
+                <h2 className="text-5xl font-black text-cyan-brand italic uppercase tracking-tighter">מוח ימני</h2>
+                <span className="text-xs text-slate-500 font-bold tracking-[0.4em]">CREATIVE INSIGHT & EMOTION</span>
+              </div>
+            </div>
+            <div className="grid gap-6">
+              {creativeTools.map(tool => (
+                <div key={tool.id} onClick={() => onEnterTool(tool.id)} className="glass-card p-8 rounded-[2.5rem] border-cyan-brand/10 hover:border-cyan-brand hover:scale-[1.02] transition-all cursor-pointer flex items-center gap-8 group">
+                  <div className="p-4 bg-cyan-brand/10 rounded-2xl group-hover:bg-cyan-brand/20 transition-colors">
+                    <ModuleIcon type={tool.id} color={tool.color} />
+                  </div>
+                  <div className="text-right">
+                    <h4 className="text-2xl font-black text-white uppercase tracking-tight">{tool.title}</h4>
+                    <p className="text-sm text-slate-400 font-bold">{tool.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* LEFT SIDE: Logic (Left Brain) */}
+          <div className="space-y-8 order-2">
+            <div className="flex items-center justify-end gap-6 mb-10 border-l-4 border-purple-500 pl-8">
+              <div className="flex flex-col items-end">
+                <h2 className="text-5xl font-black text-purple-500 italic uppercase tracking-tighter">מוח שמאלי</h2>
+                <span className="text-xs text-slate-500 font-bold tracking-[0.4em]">ANALYTICAL LOGIC & STRUCTURE</span>
+              </div>
+              <div className="text-purple-500">
+                <AnalyticalGraphic />
+              </div>
+            </div>
+            <div className="grid gap-6">
+              {analyticalTools.map(tool => (
+                <div key={tool.id} onClick={() => onEnterTool(tool.id)} className="glass-card p-8 rounded-[2.5rem] border-purple-500/10 hover:border-purple-500 hover:scale-[1.02] transition-all cursor-pointer flex flex-row-reverse items-center gap-8 group">
+                  <div className="p-4 bg-purple-500/10 rounded-2xl group-hover:bg-purple-500/20 transition-colors">
+                    <ModuleIcon type={tool.id} color={tool.color} />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="text-2xl font-black text-white uppercase tracking-tight">{tool.title}</h4>
+                    <p className="text-sm text-slate-400 font-bold">{tool.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile View: Tabbed Cards */}
+        <div className="md:hidden animate-fadeIn">
+          <div className="grid gap-4">
+            {(activeTab === 'creative' ? creativeTools : analyticalTools).map(tool => (
+              <div key={tool.id} onClick={() => onEnterTool(tool.id)} className={`glass-card p-6 rounded-[2rem] border-white/5 active:scale-95 transition-all flex items-center gap-5 ${activeTab === 'logic' ? 'border-purple-500/20' : 'border-cyan-brand/20'}`}>
+                <div className={`p-3 rounded-xl ${activeTab === 'logic' ? 'bg-purple-500/10' : 'bg-cyan-brand/10'}`}>
+                  <ModuleIcon type={tool.id} color={tool.color} />
+                </div>
+                <div className="text-right">
+                  <h4 className="text-xl font-black text-white">{tool.title}</h4>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{tool.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Synthesis - Centered Bridge */}
+        <div className="mt-16 md:mt-24 flex justify-center">
+          <div onClick={() => onEnterTool('feedback360')} className="glass-card w-full max-w-2xl p-8 md:p-12 rounded-[3rem] md:rounded-[4rem] border-white/20 hover:border-white transition-all cursor-pointer group shadow-2xl relative overflow-hidden bg-gradient-to-br from-slate-900 to-black">
+             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-white to-cyan-brand opacity-50"></div>
+             <div className="flex flex-col items-center text-center gap-4">
+                <div className="bg-white text-slate-950 px-4 py-1 rounded-full text-[9px] font-black tracking-widest uppercase mb-2">The Synthesis</div>
+                <ModuleIcon type="feedback360" color="#ffffff" />
+                <h4 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter italic">משוב 360: תמונת אמת</h4>
+                <p className="text-xs md:text-sm text-slate-400 font-bold max-w-md">הנקודה שבה הלוגיקה והיצירתיות נפגשות ליצירת תובנה ניהולית שלמה.</p>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Consultation Area */}
+      <section className="w-full max-w-4xl px-6 mt-16 md:mt-32 z-30">
+        <div className="glass-card p-8 md:p-12 rounded-[2.5rem] md:rounded-[4rem] bg-slate-950/80 border-white/10 shadow-2xl">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl flex items-center justify-center text-3xl md:text-4xl shrink-0">🤖</div>
+            <div className="flex-1 text-center md:text-right space-y-4">
+              <h3 className="text-2xl md:text-4xl font-black text-white italic uppercase tracking-tight">דלפק ההתייעצות</h3>
+              <div className="flex flex-col gap-4">
+                <textarea 
+                  className="w-full bg-slate-950 border-b-2 border-white/10 p-4 text-base md:text-xl text-slate-200 outline-none focus:border-cyan-brand transition-all text-right placeholder-slate-800 min-h-[80px] md:min-h-[120px] rounded-t-2xl resize-none font-medium"
+                  placeholder="מה מעסיק אותך בצוות או בהנהלה?..."
+                  value={consultationText}
+                  onChange={e => setConsultationText(e.target.value)}
+                />
+                <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                   <button onClick={() => onEnterTool('login')} className="text-[10px] md:text-[12px] font-black text-slate-600 uppercase tracking-widest hover:text-white transition-all">SYSTEM ADMIN</button>
+                   <button 
+                    onClick={handleConsult}
+                    disabled={isAiLoading || !consultationText.trim()}
+                    className="w-full md:w-auto bg-white text-slate-950 px-10 py-4 rounded-2xl font-black text-sm md:text-lg uppercase tracking-widest hover:bg-cyan-brand transition-all shadow-2xl active:scale-95 disabled:opacity-20"
+                   >
+                    {isAiLoading ? "מנתח..." : "קבל המלצה חכמה ←"}
+                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Background Neural Graphics */}
+      <div className="fixed inset-0 pointer-events-none -z-10 opacity-10">
+        <svg width="100%" height="100%" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+          <circle cx="200" cy="300" r="150" fill="url(#logicGrad)" fillOpacity="0.2" />
+          <circle cx="800" cy="700" r="200" fill="url(#creativeGrad)" fillOpacity="0.2" />
+          <path d="M 200 300 Q 500 500 800 700" stroke="white" strokeWidth="0.5" fill="none" strokeDasharray="5 5" />
+        </svg>
+      </div>
+
     </div>
   );
 };

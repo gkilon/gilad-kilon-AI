@@ -23,9 +23,7 @@ const firebaseConfig = {
   appId: process.env.VITE_FIREBASE_APP_ID
 };
 
-// וודא שהקונפיגורציה קיימת לפני האתחול
-const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined";
-
+const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined" && firebaseConfig.projectId !== "undefined";
 const app = isConfigValid ? initializeApp(firebaseConfig) : null;
 export const db = app ? getFirestore(app) : null;
 
@@ -33,143 +31,136 @@ export const isFirebaseReady = () => !!db;
 
 const normalizeId = (id: string) => id ? id.trim().toLowerCase() : "";
 
-/**
- * פונקציה לבדיקת תקינות מסד הנתונים לפני פעולה
- */
-const ensureDb = (): Firestore => {
-  if (!db) throw new Error("Firebase is not initialized. Check your environment variables.");
-  return db;
+// Helper for local storage fallback when Firebase is not configured
+const getLocal = (key: string) => JSON.parse(localStorage.getItem(`gk_mock_${key}`) || "[]");
+const setLocal = (key: string, data: any) => localStorage.setItem(`gk_mock_${key}`, JSON.stringify(data));
+
+// --- System Configuration ---
+export const getSystemConfig = async () => {
+  if (!db) {
+    const local = localStorage.getItem('gk_mock_system_config');
+    if (local) return JSON.parse(local);
+    return { 
+      masterCode: "GILAD2025", 
+      metrics: [
+        { key: 'ownership', label: 'Ownership על היעדים', icon: '🎯' },
+        { key: 'roleClarity', label: 'בהירות בתחומי אחריות', icon: '📋' },
+        { key: 'routines', label: 'שגרות וסדר יום', icon: '🔄' },
+        { key: 'communication', label: 'איכות התקשורת', icon: '💬' },
+        { key: 'commitment', label: 'רמת מחויבות', icon: '🤝' },
+        { key: 'respect', label: 'כבוד ואמון הדדי', icon: '✨' }
+      ]
+    };
+  }
+  const docRef = doc(db, "system", "config");
+  const snap = await getDoc(docRef);
+  if (snap.exists()) return snap.data();
+  return { masterCode: "GILAD2025", metrics: [] };
 };
 
-// --- Workspace Management (Pure Firestore) ---
+export const updateSystemConfig = async (config: any) => {
+  if (!db) {
+    localStorage.setItem('gk_mock_system_config', JSON.stringify(config));
+    return;
+  }
+  await setDoc(doc(db, "system", "config"), config, { merge: true });
+};
 
+// --- Workspace Management ---
 export const createWorkspace = async (teamId: string, password: string) => {
   const tid = normalizeId(teamId);
-  const database = ensureDb();
-  
-  try {
-    const docRef = doc(database, "workspaces", tid);
-    const existing = await getDoc(docRef);
-    if (existing.exists()) return { success: false, error: "מרחב עבודה בשם זה כבר קיים במערכת" };
-    
-    await setDoc(docRef, { 
-      id: tid, 
-      password, 
-      createdAt: Date.now(),
-      status: 'active'
-    });
+  if (!db) {
+    const workspaces = getLocal('workspaces');
+    if (workspaces.find((w: any) => w.id === tid)) return { success: false, error: "מרחב כבר קיים" };
+    setLocal('workspaces', [...workspaces, { id: tid, password, createdAt: Date.now() }]);
     return { success: true };
-  } catch (e: any) {
-    console.error("Firestore Error:", e);
-    return { success: false, error: `שגיאת תקשורת: ${e.message}` };
   }
+  const docRef = doc(db, "workspaces", tid);
+  const existing = await getDoc(docRef);
+  if (existing.exists()) return { success: false, error: "מרחב כבר קיים" };
+  await setDoc(docRef, { id: tid, password, createdAt: Date.now() });
+  return { success: true };
 };
 
 export const loginToWorkspace = async (teamId: string, password: string) => {
   const tid = normalizeId(teamId);
-  const database = ensureDb();
-
-  try {
-    const docRef = doc(database, "workspaces", tid);
-    const snap = await getDoc(docRef);
-    
-    if (!snap.exists()) return { success: false, error: "מרחב עבודה לא נמצא" };
-    
-    if (snap.data().password === password) {
-      return { success: true };
-    }
-    return { success: false, error: "סיסמה שגויה" };
-  } catch (e: any) {
-    return { success: false, error: "בעיית גישה למסד הנתונים" };
+  if (!db) {
+    const workspaces = getLocal('workspaces');
+    const ws = workspaces.find((w: any) => w.id === tid && w.password === password);
+    if (ws) return { success: true };
+    return { success: false, error: "פרטים שגויים" };
   }
+  const docRef = doc(db, "workspaces", tid);
+  const snap = await getDoc(docRef);
+  if (snap.exists() && snap.data().password === password) return { success: true };
+  return { success: false, error: "פרטים שגויים" };
 };
 
 export const checkWorkspaceExists = async (teamId: string) => {
   const tid = normalizeId(teamId);
-  if (!db) return false;
-  try {
-    const snap = await getDoc(doc(db, "workspaces", tid));
-    return snap.exists();
-  } catch (e) {
-    return false;
+  if (!db) {
+    const workspaces = getLocal('workspaces');
+    return workspaces.some((w: any) => w.id === tid);
   }
+  const snap = await getDoc(doc(db, "workspaces", tid));
+  return snap.exists();
 };
 
-// --- Data Operations (Strict Firestore) ---
-
+// --- Data Sync ---
 export const syncToCloud = async (collectionName: string, data: any) => {
-  const database = ensureDb();
-  if (!data.managerId) throw new Error("managerId (teamId) is required for syncing data");
-
-  const id = data.id || Math.random().toString(36).substr(2, 9);
-  const dataToSave = { ...data, id, updatedAt: Date.now() };
-
-  try {
-    await setDoc(doc(database, collectionName, id), dataToSave, { merge: true });
-  } catch (e) {
-    console.error(`Sync error for ${collectionName}:`, e);
-    throw e;
+  if (!db) {
+    const list = getLocal(collectionName);
+    const id = data.id || Math.random().toString(36).substr(2, 9);
+    const index = list.findIndex((item: any) => item.id === id);
+    const newItem = { ...data, id, updatedAt: Date.now() };
+    if (index > -1) list[index] = newItem;
+    else list.push(newItem);
+    setLocal(collectionName, list);
+    return;
   }
+  const id = data.id || Math.random().toString(36).substr(2, 9);
+  await setDoc(doc(db, collectionName, id), { ...data, id, updatedAt: Date.now() }, { merge: true });
 };
 
 export const fetchFromCloud = async (collectionName: string, managerId: string) => {
-  const database = ensureDb();
   const mid = normalizeId(managerId);
-
-  try {
-    const q = query(collection(database, collectionName), where("managerId", "==", mid));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-  } catch (e) {
-    console.error(`Fetch error for ${collectionName}:`, e);
-    return [];
+  if (!db) {
+    const list = getLocal(collectionName);
+    return list.filter((item: any) => normalizeId(item.managerId) === mid);
   }
+  const q = query(collection(db, collectionName), where("managerId", "==", mid));
+  const snap = await getDocs(q);
+  return snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
 };
 
 export const deleteFromCloud = async (collectionName: string, id: string) => {
-  const database = ensureDb();
-  try {
-    await deleteDoc(doc(database, collectionName, id));
-  } catch (e) {
-    console.error("Firebase delete error", e);
-    throw e;
+  if (!db) {
+    const list = getLocal(collectionName);
+    setLocal(collectionName, list.filter((item: any) => item.id !== id));
+    return;
   }
+  await deleteDoc(doc(db, collectionName, id));
 };
 
 export const saveTeamPulse = async (teamId: string, data: any) => {
-  const database = ensureDb();
   const tid = normalizeId(teamId);
-  
-  // וידוא קיום מרחב לפני כתיבה
-  const exists = await checkWorkspaceExists(tid);
-  if (!exists) throw new Error("Workspace does not exist");
-
-  const pulseData = { 
-    teamId: tid, 
-    ...data, 
-    timestamp: Date.now() 
-  };
-
-  try {
-    await addDoc(collection(database, "team_pulses"), pulseData);
+  if (!db) {
+    const pulses = getLocal('team_pulses');
+    pulses.push({ teamId: tid, ...data, timestamp: Date.now() });
+    setLocal('team_pulses', pulses);
     return true;
-  } catch (e) {
-    console.error("Pulse save error:", e);
-    return false;
   }
+  await addDoc(collection(db, "team_pulses"), { teamId: tid, ...data, timestamp: Date.now() });
+  return true;
 };
 
 export const getTeamPulses = async (teamId: string) => {
-  const database = ensureDb();
   const tid = normalizeId(teamId);
-  
-  try {
-    const q = query(collection(database, "team_pulses"), where("teamId", "==", tid));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
-      .sort((a: any, b: any) => b.timestamp - a.timestamp);
-  } catch (e) {
-    console.error("Fetch pulses error:", e);
-    return [];
+  if (!db) {
+    const pulses = getLocal('team_pulses');
+    return pulses.filter((p: any) => normalizeId(p.teamId) === tid).sort((a: any, b: any) => b.timestamp - a.timestamp);
   }
+  const q = query(collection(db, "team_pulses"), where("teamId", "==", tid));
+  const snap = await getDocs(q);
+  return snap.docs.map(doc => doc.data()).sort((a: any, b: any) => b.timestamp - a.timestamp);
 };
