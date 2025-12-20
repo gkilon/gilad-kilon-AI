@@ -4,14 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>גלעד קילון | פיתוח אישי, צוותי וניהול שינוי</title>
+    <title>גלעד קילון | פשטות. עומק. אנושיות.</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'cyan-brand': '#2dd4bf',
+                        'brand-dark': '#1a1a1a',
+                        'brand-beige': '#f2f1ed',
+                        'brand-accent': '#2563eb',
+                        'brand-muted': '#4b5563',
                     }
                 }
             }
@@ -21,43 +24,53 @@
     <style>
         body {
             font-family: 'Assistant', sans-serif;
-            background: #0f172a; 
-            background: radial-gradient(circle at 50% -20%, #1e293b 0%, #0f172a 70%, #020617 100%);
-            color: #f8fafc;
+            background: #f2f1ed; 
+            color: #1a1a1a;
             min-height: 100vh;
             overflow-x: hidden;
             margin: 0;
             -webkit-tap-highlight-color: transparent;
         }
-        .app-frame {
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 0px;
-            margin: 0px;
-            background: transparent;
+        .studio-card {
+            background: #ffffff;
+            border: 2px solid #1a1a1a;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @media (min-width: 768px) {
-            .app-frame {
-                border-radius: 40px;
-                margin: 10px;
-                background: rgba(15, 23, 42, 0.2);
-            }
+        .studio-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 6px 6px 0px #1a1a1a;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        .studio-border {
+            border: 1px solid rgba(26, 26, 26, 0.15);
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .text-kern {
+            letter-spacing: -0.04em;
         }
-        .animate-fadeIn {
-            animation: fadeIn 0.6s ease-out forwards;
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #1a1a1a; }
+        
+        .nav-underline {
+            position: relative;
         }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .nav-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1a1a1a;
+            transition: width 0.3s ease;
+        }
+        .nav-underline:hover::after {
+            width: 100%;
+        }
+        
+        /* Studio Grid Pattern */
+        .bg-grid {
+            background-image: radial-gradient(rgba(26, 26, 26, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
     </style>
 <script type="importmap">
 {
@@ -78,7 +91,7 @@
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body>
+<body class="bg-grid">
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
 <script type="module" src="/index.tsx"></script>

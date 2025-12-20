@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { ProjectChange, IdeaEntry, Task, UserSession } from './types';
-import { fetchFromCloud, isFirebaseReady } from './firebase';
+import { ProjectChange, IdeaEntry, Task, UserSession, Article } from './types';
+import { fetchFromCloud, isFirebaseReady, getSystemConfig } from './firebase';
 import Dashboard from './components/Dashboard';
 import WoopWizard from './components/WoopWizard';
 import Header from './components/Header';
-import Landing from './components/Landing';
+import Landing, { ArticleCard } from './components/Landing';
 import IdeaManager from './components/IdeaManager';
 import TeamSynergy from './components/TeamSynergy';
 import ExecutiveSynergy from './components/ExecutiveSynergy';
@@ -15,13 +15,18 @@ import Login from './components/Login';
 import AdminPanel from './components/AdminPanel';
 import Feedback360 from './components/Feedback360';
 import CommunicationDNA from './components/CommunicationDNA';
+import TheLab from './components/TheLab';
+import ToolTeaser from './components/ToolTeaser';
+import ClientsPage from './components/ClientsPage';
 
-type ViewType = 'home' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'login' | 'communication' | 'feedback360' | 'admin';
+type ViewType = 'home' | 'lab' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'clients' | 'login' | 'communication' | 'feedback360' | 'admin' | 'articles' | 'article_detail';
 
 const App: React.FC = () => {
   const [projects, setProjects] = useState<ProjectChange[]>([]);
   const [ideas, setIdeas] = useState<IdeaEntry[]>([]);
   const [generalTasks, setGeneralTasks] = useState<Task[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(false);
   const [loginMessage, setLoginMessage] = useState<string>('');
   
@@ -33,7 +38,31 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewType>('home');
   const dbReady = isFirebaseReady();
 
+  // Provided Articles
+  const defaultArticles: Article[] = [
+    {
+      id: 'market-vs-strategy-2024',
+      title: 'קניות בשוק או אסטרטגיה?',
+      subtitle: 'כמה מחשבות על עובדים תפקידים וסדר כאוטי',
+      category: 'אסטרטגיה וניהול',
+      date: '2024',
+      content: `"איטלקי אמיתי לא בא לשוק עם רשימת קניות" סיפר לי פעם מכר איטלקי.\n\nלמה?\nכי הוא לא יודע איזה סחורה הוא יפגוש ביום נתון. הוא בא לשוק מסתכל על הסחורה ולפי חומרי הגלם האיכותיים שיש באותו יום הוא בונה את התפריט. \n\nמקסים, אה? \nקצת בלאגן קצת שכונה אבל יש פה משהו יפה ורומנטי בזה. \nואולי גם פרקטי לארגונים דווקא היום...\n\nהעולם המתוכנן והתכליתי שלנו עובד הפוך. יש כבר מסורת שלמה של רעיונות וסיפורים שמבססים את עקרון התכנון מהסוף להתחלה-תגיד לאן אתה רוצה להגיע, ולפי זה תחליט באיזו דרך ללכת. סה"כ הגיוני ונכון.\n\nבאחת החברות שליוויתי בשנים האחרונות היתה תופעה מרתקת - כפוגשים מועמד טוב קודם כל מביאים אותו אח"כ מוצאים מה לעשות איתו. \nזה הגיע לרמת כאוס אבל היה לי ברור שאי אפשר ולא נכון להפסיק את זה לחלוטין אלא קצת לתחום את זה. \nמה ההיגיון המארגן? היגיון השוק באיטליה. יש סחורה טובה אני לוקח. אח"כ נראה מה בדיוק לעשות עם זה ויש מצב שנצטרך ללמוד תוך כדי תנועה. \n\nאולי עכשיו זה זמן טוב לקחת משהו מההיגיון הזה גם לארגונים אחרים. \nלייצר טיפה יותר תנועה וטיפה וגמישות מבנית ותפקודית שתאפשר לנו לזוז קצת אחרת. \n\nהיום בהרבה מאוד מקרים עולם הגיוס שבוי בתוך הקונספט הזה (שלא הוא בנה) וצריך להתאים אנשים לתפקידים ספציפיים עם כישורים ספציפיים עם ניסיון ספציפי בתעשייה ספציפית (ולפעמים עם עוד רזולוציות). תשאלו את הג'וניורים... \nאז מחפשים בפינצטה מועמדים שיתאימו בדיוק לתפקיד ומשקיעים המון משאבים פיזיים ומנטליים עד שמוצאים\nופתאום אין...אז עובדים יותר קשה? אז מה עושים? \nאולי אולי לפעמים במקומות מסוימים אפשר קצת להתחיל לפתוח את היום בשוק ולא בספר מתכונים.\nזה לא עניין טכני וזו לא סוגיה של גיוס. זה מתחיל מאסטרטגיה.\nועכשיו זה זמן מצוין להסתכל עליה מחדש`
+    },
+    {
+      id: 'senior-leadership-2025',
+      title: 'מחשבות על פיתוח ניהולי לבכירים',
+      category: 'פיתוח מנהיגות',
+      date: '2025',
+      content: `באחת הסדנאות שהיו לי החודש עם קבוצת מנהלים בכירים, מישהו העלה שאלה פשוטה לכאורה:\n“איך אני יודע מתי אני חלק מהקבוצה, ומתי אני פשוט הולך לאיבוד בתוכה?”\n\nהשאלה הזו נראתה בהתחלה מובנת מאליה. כאילו שאלה בסיסית– הרי לכולנו חשוב להשתייך, וגם להיות חלק ממשהו גדול יותר.\nאבל אז התחיל לעלות משהו נוסף:\nמתי הרצון להשתלב ולשמור על הרמוניה גורם לנו לוותר קצת על עצמנו והופך מעקרון מאזן לעקרון מעכב?\nומתי הרצון להתבלט ולהוביל גורם לנו להתרחק מהאחרים והאם בכלל אפשר לשלב שניהול בכיר ובדידות באים יחד באותה חבילה?\n\nהשאלות האלו לוקחות אותנו ללב העשייה הניהולית. ככל שעולים בהיררכיה, המתח הזה – בין השייכות לבידול – הופך למרכיב מרכזי בתפקוד.\nולא , אין פה פתרון פשוט.\nאי אפשר “לפתור” את המתח הזה.\nאבל אפשר להכיר בו, להבין אותו, וללמוד לעבוד איתו.\nאפשר להכיר את עצמנו טוב יותר ולהבין אילו ״כפתורים״ נלחצים לנו ובאילו סיטואציות זה קורה ואיך כל אדם מנהל אחרת את המתח הזה.\n\nמבחינתי, זו הדגמה מצויינת ללב של תהליך פיתוח מנהלים בכירים. זה לא עניין של כלים, שיטות או טכניקות. מה שמביא לקפיצת מדרגה זה עיסוק בשאלות מהותיות שמחברות בין עומק לפרקטיקה.\n\nכי בסוף, מנהיגות בכירה היא לא על “להשתייך” או “להתבלט”.\nהיא על לדעת מתי כל אחד מהכוחות האלה משרת אותך – ומתי הם תוקעים אותך.`
+    }
+  ];
+
   useEffect(() => {
+    getSystemConfig().then(config => {
+      const dbArticles = config.articles || [];
+      setArticles(dbArticles.length > 0 ? dbArticles : defaultArticles);
+    });
+    
     if (session) {
       localStorage.setItem('gk_session', JSON.stringify(session));
       if (dbReady) loadAllData();
@@ -64,23 +93,25 @@ const App: React.FC = () => {
     else setView('home');
   };
 
-  const navigateWithAuth = (targetView: ViewType) => {
-    const protectedViews: ViewType[] = ['dashboard', 'wizard', 'ideas', 'executive', 'tasks', 'synergy', 'admin', 'feedback360', 'communication'];
-    if (!session && protectedViews.includes(targetView)) {
-      setLoginMessage('יש להתחבר למערכת כדי לגשת לכלי זה');
-      setView('login');
-      return;
-    }
+  const navigateToView = (targetView: ViewType) => {
     setView(targetView);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const renderView = () => {
-    if (loading) return <div className="py-40 text-center text-cyan-brand font-black animate-pulse">טוען נתונים...</div>;
+    if (loading) return <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען נתונים...</div>;
+
+    const protectedViews: ViewType[] = ['dashboard', 'wizard', 'ideas', 'executive', 'tasks', 'synergy'];
+    if (!session && protectedViews.includes(view)) {
+      return <ToolTeaser toolId={view} onLogin={() => setView('login')} />;
+    }
+
     switch(view) {
       case 'login': return <Login onLogin={handleLogin} message={loginMessage} />;
-      case 'home': return <Landing onEnterTool={(v) => navigateWithAuth(v as ViewType)} />;
+      case 'home': return <Landing onEnterTool={(v) => navigateToView(v as ViewType)} />;
+      case 'lab': return <TheLab onEnterTool={(v) => navigateToView(v as ViewType)} isLoggedIn={!!session} />;
       case 'admin': return <AdminPanel onBack={() => setView('home')} />;
-      case 'dashboard': return <Dashboard projects={projects} onNew={() => navigateWithAuth('wizard')} onDelete={() => {}} onToggleTask={() => {}} />;
+      case 'dashboard': return <Dashboard projects={projects} onNew={() => setView('wizard')} onDelete={() => {}} onToggleTask={() => {}} />;
       case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={() => setView('dashboard')} />;
       case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={() => {}} />;
       case 'synergy': return <TeamSynergy session={session} />;
@@ -89,14 +120,61 @@ const App: React.FC = () => {
       case 'feedback360': return <Feedback360 />;
       case 'communication': return <CommunicationDNA />;
       case 'about': return <About />;
-      default: return <Landing onEnterTool={(v) => navigateWithAuth(v as ViewType)} />;
+      case 'clients': return <ClientsPage />;
+      case 'article_detail': 
+        if (!selectedArticle) { setView('articles'); return null; }
+        return (
+          <div className="max-w-4xl mx-auto py-24 md:py-32 px-6 animate-fadeIn text-right">
+            <button onClick={() => setView('articles')} className="text-brand-muted font-black text-xs uppercase tracking-widest border-b-2 border-brand-dark mb-16 hover:text-brand-dark transition-all">← חזרה למאמרים</button>
+            <div className="space-y-12">
+               <div className="space-y-6">
+                  <span className="text-[12px] font-black text-brand-accent uppercase tracking-[0.4em]">{selectedArticle.category}</span>
+                  <h1 className="text-5xl md:text-8xl font-black italic tracking-tighter leading-none">{selectedArticle.title}</h1>
+                  {selectedArticle.subtitle && <p className="text-2xl md:text-3xl text-brand-muted font-bold italic">{selectedArticle.subtitle}</p>}
+                  <div className="h-2 w-32 bg-brand-dark"></div>
+               </div>
+               <div className="text-2xl md:text-3xl text-brand-dark leading-relaxed font-medium whitespace-pre-line border-r-8 border-brand-beige pr-10">
+                  {selectedArticle.content}
+               </div>
+               <div className="pt-20 border-t border-brand-dark/10">
+                  <p className="text-sm font-black text-brand-muted uppercase tracking-widest">{selectedArticle.date} • Gilad Kilon Focus</p>
+               </div>
+            </div>
+          </div>
+        );
+      case 'articles': return (
+        <div className="max-w-5xl mx-auto py-32 px-6 space-y-24">
+          <div className="space-y-6 text-right">
+            <span className="text-[12px] font-black text-brand-accent uppercase tracking-[0.5em]">KNOWLEDGE HUB</span>
+            <h2 className="text-6xl md:text-9xl font-black italic tracking-tighter leading-none">חומרים<br/>מקצועיים.</h2>
+            <div className="h-3 w-40 bg-brand-dark"></div>
+          </div>
+
+          <div className="flex flex-col">
+            {articles.map(article => (
+              <ArticleCard 
+                key={article.id} 
+                title={article.title} 
+                subtitle={article.subtitle}
+                category={article.category} 
+                date={article.date} 
+                onClick={() => {
+                  setSelectedArticle(article);
+                  setView('article_detail');
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      );
+      default: return <Landing onEnterTool={(v) => navigateToView(v as ViewType)} />;
     }
   };
 
   return (
-    <div className="min-h-screen app-frame" dir="rtl">
-      <Header onNavigate={(v) => navigateWithAuth(v as ViewType)} currentView={view} session={session} onLogout={() => setSession(null)} />
-      <main className="max-w-7xl mx-auto px-6 py-8">{renderView()}</main>
+    <div className="min-h-screen" dir="rtl">
+      <Header onNavigate={(v) => navigateToView(v as ViewType)} currentView={view} session={session} onLogout={() => setSession(null)} />
+      <main className="w-full mx-auto">{renderView()}</main>
     </div>
   );
 };

@@ -31,16 +31,13 @@ export const isFirebaseReady = () => !!db;
 
 const normalizeId = (id: string) => id ? id.trim().toLowerCase() : "";
 
-// Helper for local storage fallback when Firebase is not configured
 const getLocal = (key: string) => JSON.parse(localStorage.getItem(`gk_mock_${key}`) || "[]");
 const setLocal = (key: string, data: any) => localStorage.setItem(`gk_mock_${key}`, JSON.stringify(data));
 
-// --- System Configuration ---
 export const getSystemConfig = async () => {
   if (!db) {
     const local = localStorage.getItem('gk_mock_system_config');
-    if (local) return JSON.parse(local);
-    return { 
+    const defaultConfig = { 
       masterCode: "GILAD2025", 
       metrics: [
         { key: 'ownership', label: 'Ownership על היעדים', icon: '🎯' },
@@ -49,13 +46,25 @@ export const getSystemConfig = async () => {
         { key: 'communication', label: 'איכות התקשורת', icon: '💬' },
         { key: 'commitment', label: 'רמת מחויבות', icon: '🤝' },
         { key: 'respect', label: 'כבוד ואמון הדדי', icon: '✨' }
-      ]
+      ],
+      articles: [],
+      clients: []
     };
+    if (local) return { ...defaultConfig, ...JSON.parse(local) };
+    return defaultConfig;
   }
   const docRef = doc(db, "system", "config");
   const snap = await getDoc(docRef);
-  if (snap.exists()) return snap.data();
-  return { masterCode: "GILAD2025", metrics: [] };
+  if (snap.exists()) {
+    const data = snap.data();
+    return {
+      masterCode: data.masterCode || "GILAD2025",
+      metrics: data.metrics || [],
+      articles: data.articles || [],
+      clients: data.clients || []
+    };
+  }
+  return { masterCode: "GILAD2025", metrics: [], articles: [], clients: [] };
 };
 
 export const updateSystemConfig = async (config: any) => {
@@ -66,7 +75,6 @@ export const updateSystemConfig = async (config: any) => {
   await setDoc(doc(db, "system", "config"), config, { merge: true });
 };
 
-// --- Workspace Management ---
 export const createWorkspace = async (teamId: string, password: string) => {
   const tid = normalizeId(teamId);
   if (!db) {
@@ -106,7 +114,6 @@ export const checkWorkspaceExists = async (teamId: string) => {
   return snap.exists();
 };
 
-// --- Data Sync ---
 export const syncToCloud = async (collectionName: string, data: any) => {
   if (!db) {
     const list = getLocal(collectionName);

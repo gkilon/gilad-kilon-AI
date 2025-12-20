@@ -2,152 +2,110 @@
 import React from 'react';
 
 const About: React.FC = () => {
-  const expertises = [
-    {
-      title: 'פיתוח מנהיגות ומנהלים',
-      desc: 'חיזוק יכולות המנהל ביום-יום הארגוני. אני לא כאן כדי להרצות, אלא כדי לעבוד יחד איתך על התוצאות העסקיות והאנושיות.',
-      icon: '🏔️'
-    },
-    {
-      title: 'ליווי הנהלות וארגונים',
-      desc: 'גיבוש צוות ההנהלה ליחידה אחת מסונכרנת. קביעת כללי משחק ברורים שעובדים גם כשקשה, לא רק כשהכל הולך חלק.',
-      icon: '🤝'
-    },
-    {
-      title: 'ייעוץ ארגוני מערכתי',
-      desc: 'ליווי שינויים עמוקים. אנחנו לא "מציירים" תרשימים, אנחנו מתאימים את הארגון למציאות משתנה ולנסיבות השטח.',
-      icon: '🏗️'
-    },
-    {
-      title: 'בניית שותפויות וממשקים',
-      desc: 'בניית ממשקי עבודה חזקים על בסיס מודל חמשת התנאים. שותפות אמיתית נבנית על אמון, בהירות ותוצאות.',
-      icon: '💎'
-    },
-    {
-      title: 'ניהול בעידן הטכנולוגי',
-      desc: 'הטמעת כלי עבודה מתקדמים כחלק אינטגרלי מהניהול. שימוש בטכנולוגיה ובינה מלאכותית כדי לפנות זמן למה שחשוב באמת - האנשים.',
-      icon: '🤖'
-    },
-    {
-      title: 'ייעוץ אישי (Coaching)',
-      desc: 'ליווי אישי ודיסקרטי בצמתים קריטיים. חיזוק התפקוד הניהולי ואימון בדרכי פעולה חדשות שבאמת עובדות.',
-      icon: '🎯'
-    }
-  ];
-
   return (
-    <div className="max-w-5xl mx-auto py-12 animate-fadeIn space-y-20 pb-32 text-right px-6" dir="rtl">
+    <div className="max-w-5xl mx-auto py-24 animate-fadeIn space-y-24 pb-48 text-right px-6" dir="rtl">
       
-      {/* 1. Hero Section */}
+      {/* 1. Profile Title */}
       <section className="text-center space-y-8">
-        <div className="space-y-4">
-          <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter italic uppercase">
-            גלעד קילון
+        <div className="inline-block border-2 border-brand-dark p-8 shadow-[8px_8px_0px_#1a1a1a] bg-white">
+          <h1 className="text-5xl md:text-8xl font-black text-brand-dark tracking-tighter italic uppercase leading-none">
+            קצת עליי.
           </h1>
-          <div className="space-y-3">
-            <h2 className="text-xl md:text-2xl font-bold text-amber-300">
-              עבודה עם הנהלות | פיתוח מנהלים | ייעוץ ארגוני
-            </h2>
-            <p className="text-sm md:text-lg text-amber-300/70 font-bold uppercase tracking-tighter opacity-90">
-              AI TOOLS FOR MANAGEMENT IN A FRANTIC WORLD
+        </div>
+      </section>
+
+      {/* 2. Personal Story Section */}
+      <section className="flex flex-col md:flex-row-reverse items-start gap-16">
+        
+        {/* Profile Image Area */}
+        <div className="relative shrink-0 w-full md:w-1/3">
+          <div className="relative aspect-square md:aspect-[3/4] overflow-hidden border-2 border-brand-dark shadow-[12px_12px_0px_#1a1a1a] bg-brand-beige">
+            <img 
+              src="/gilad.jpg" 
+              alt="גלעד קילון" 
+              className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-dark/5 text-brand-dark z-10 pointer-events-none">
+              <div className="text-9xl font-bold opacity-10 tracking-tighter">GK</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 space-y-10">
+          <div className="space-y-6 text-xl md:text-2xl text-brand-dark leading-relaxed font-medium">
+            <p className="text-brand-accent font-black text-3xl md:text-4xl italic mb-8 border-r-4 border-brand-accent pr-6">
+              "עומק עם קלילות וחיוך ופשטות."
+            </p>
+            <p>
+              גדלתי בקיבוץ בצפון והשורשים האלה מלווים אותי בכל מהלך. עם השנים למדתי לקחת דברים מסוימים ולשחרר דברים אחרים, תובנה שעוזרת לי לזקק את העיקר מהטפל גם בעבודה עם הנהלות.
+            </p>
+            <p>
+              היום אני גר בקיבוץ משמרות, נשוי למיכל ואבא לחמישה ילדים: שחר, זהר, אדר, עמר ואדם. 
+            </p>
+            <p>
+              הריצה בשדות באופן קבוע היא מנוע הצמיחה האישי שלי, ואני חובב ספורט מושבע – גם כשזה דורש ממני מאמץ בשטח וגם כשזה קורה על הכורסה מול המסך.
+            </p>
+            <p>
+              אני לא ספק שירות אלא שותף לדרך, מישהו לרוץ איתו. אני מאמין ששינוי אמיתי קורה כשיורדים ללב הדברים ומפסיקים "לשחק בכאילו".
             </p>
           </div>
-        </div>
-        
-        <div className="max-w-3xl mx-auto space-y-4 pt-8 border-t border-white/5">
-          <p className="text-2xl font-bold text-white leading-tight">
-            אני לא ספק שירות אלא שותף לדרך, מישהו לרוץ איתו...
-          </p>
-          <p className="text-xl text-slate-300 font-medium leading-relaxed">
-            אני מאמין ששינוי אמיתי קורה כשיורדים ללב הדברים ומפסיקים "לשחק בכאילו".
-          </p>
-        </div>
-      </section>
-
-      {/* 2. Expertise Grid */}
-      <section className="space-y-12">
-        <div className="flex items-center gap-4 justify-center">
-           <div className="h-px bg-white/10 flex-1"></div>
-           <span className="text-amber-300 font-bold uppercase tracking-widest text-[10px] whitespace-nowrap">Core Expertise</span>
-           <div className="h-px bg-white/10 flex-1"></div>
-        </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {expertises.map((exp, idx) => (
-            <div key={idx} className="glass-card p-8 rounded-[2.5rem] border-white/5 hover:border-amber-300/30 transition-all group bg-slate-900/40 relative flex flex-col items-center text-center">
-              <div className="text-4xl mb-6 group-hover:scale-110 transition-transform">{exp.icon}</div>
-              <h4 className="text-xl font-bold text-white mb-4 group-hover:text-amber-300 transition-colors">{exp.title}</h4>
-              <p className="text-slate-400 leading-relaxed text-sm font-medium">{exp.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. Personal Section (Behind the Scenes) */}
-      <section className="glass-card p-10 md:p-16 rounded-[4rem] border-white/5 bg-slate-950/50 shadow-inner relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-300/20 to-transparent"></div>
-        
-        <div className="flex flex-col md:flex-row-reverse items-center gap-12">
           
-          {/* Profile Image Area */}
-          <div className="relative shrink-0">
-            <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-[3rem] overflow-hidden border-2 border-white/10 shadow-2xl bg-slate-900 group">
-              {/* THE FIX: Using a direct path string instead of import to avoid module errors */}
-              <img 
-                src="/gilad.jpg" 
-                alt="גלעד קילון" 
-                className="absolute inset-0 w-full h-full object-cover z-20 transition-opacity duration-500"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-              {/* Visual placeholder shown only if image fails to load or file is missing */}
-              <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-950 text-white z-10">
-                <div className="text-6xl font-bold text-amber-300/20 tracking-tighter">GK</div>
-                <span className="text-[9px] font-bold text-slate-500 mt-4 uppercase tracking-widest opacity-40 italic text-center px-4">
-                  Gilad Kilon<br/>Strategic Partner
-                </span>
+          <div className="pt-10 border-t border-brand-dark/10 grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div className="flex items-center gap-4">
+              <div className="shrink-0 w-10 h-10 flex items-center justify-center bg-brand-dark/5 rounded-full">
+                <svg className="w-5 h-5 fill-brand-muted" viewBox="0 0 24 24">
+                  <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                </svg>
+              </div>
+              <div>
+                <p className="font-bold text-lg">קיבוץ משמרות</p>
               </div>
             </div>
-            <div className="absolute -bottom-3 -right-3 bg-amber-300 text-slate-950 px-5 py-2 rounded-2xl font-bold text-[11px] uppercase tracking-tighter shadow-xl z-30">
-              FOUNDER
-            </div>
-          </div>
-
-          <div className="flex-1 space-y-6">
-            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">מאחורי הקלעים</h3>
-            <div className="space-y-4 text-lg md:text-xl text-slate-200 leading-relaxed font-bold">
-              <p className="text-amber-300 font-bold text-2xl mb-2 drop-shadow-sm">
-                עומק עם קלילות וחיוך ופשטות.
-              </p>
-              <p>
-                גדלתי בקיבוץ בצפון והשורשים האלה מלווים אותי בכל מהלך. עם השנים למדתי לקחת דברים מסוימים ולשחרר דברים אחרים, תובנה שעוזרת לי לזקק את העיקר מהטפל גם בעבודה עם הנהלות.
-              </p>
-              <p>
-                היום אני גר בקיבוץ משמרות, נשוי למיכל ואבא לחמישה ילדים: שחר, זהר, אדר, עמר ואדם. 
-              </p>
-              <p>
-                הריצה בשדות באופן קבוע היא מנוע הצמיחה האישי שלי, ואני חובב ספורט מושבע – גם כשזה דורש ממני מאמץ בשטח וגם כשזה קורה על הכורסה מול המסך.
-              </p>
+            <div className="flex items-center gap-4">
+              <div className="shrink-0 w-10 h-10 flex items-center justify-center bg-brand-dark/5 rounded-full">
+                <svg className="w-5 h-5 fill-brand-muted" viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </div>
+              <div>
+                <p className="font-bold text-lg">ריצה | ספורט | נגינה | מוזיקה | שחמט</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. Contact Footer */}
-      <div className="text-center pt-10 border-t border-white/5 space-y-8">
-        <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Ready for a meaningful change?</p>
-        <div className="flex flex-wrap justify-center gap-12 md:gap-24">
+      {/* 3. Contact Footer - Reduced sizes and added small LinkedIn */}
+      <section className="text-center pt-16 border-t border-brand-dark/20 space-y-10">
+        <h3 className="text-[10px] font-black text-brand-muted uppercase tracking-[0.5em]">KEEP IN TOUCH</h3>
+        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
           <div className="flex flex-col items-center group">
-             <span className="text-[9px] font-bold text-slate-600 uppercase tracking-tighter mb-2 group-hover:text-amber-300 transition-colors">Direct Line</span>
-             <a href="tel:+972526417512" className="text-2xl font-bold text-white hover:text-amber-300 transition-colors tracking-tight">052-6417512</a>
+             <span className="text-[9px] font-bold text-brand-muted uppercase tracking-tighter mb-2 group-hover:text-brand-accent transition-colors">Direct Line</span>
+             <a href="tel:+972526417512" className="text-xl md:text-3xl font-black text-brand-dark hover:text-brand-accent transition-colors tracking-tighter">052-6417512</a>
           </div>
+          
           <div className="flex flex-col items-center group">
-             <span className="text-[9px] font-bold text-slate-600 uppercase tracking-tighter mb-2 group-hover:text-amber-300 transition-colors">Email</span>
-             <a href="mailto:gilad@kilon.co.il" className="text-2xl font-bold text-white hover:text-amber-300 transition-colors tracking-tight">gilad@kilon.co.il</a>
+             <span className="text-[9px] font-bold text-brand-muted uppercase tracking-tighter mb-2 group-hover:text-brand-accent transition-colors">Email</span>
+             <a href="mailto:gilad@kilon.co.il" className="text-xl md:text-3xl font-black text-brand-dark hover:text-brand-accent transition-colors tracking-tighter">gilad@kilon.co.il</a>
+          </div>
+
+          <div className="flex flex-col items-center group">
+             <span className="text-[9px] font-bold text-brand-muted uppercase tracking-tighter mb-2 group-hover:text-brand-accent transition-colors">LinkedIn</span>
+             <a 
+               href="https://www.linkedin.com/in/giladkilon/" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               className="p-2 border border-brand-dark hover:bg-brand-dark group transition-all"
+               title="LinkedIn"
+             >
+               <svg className="w-5 h-5 fill-brand-dark group-hover:fill-white transition-colors" viewBox="0 0 24 24">
+                 <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+               </svg>
+             </a>
           </div>
         </div>
-      </div>
+      </section>
 
     </div>
   );

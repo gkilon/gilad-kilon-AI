@@ -11,120 +11,118 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onToggleTask }) => {
   return (
-    <div className="space-y-10 animate-fadeIn pt-6 text-right">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-        <div>
-          <h2 className="text-4xl font-black text-white leading-tight uppercase tracking-tighter">ניהול השינוי</h2>
-          <p className="text-slate-400 mt-2 text-lg">מעקב אחר יוזמות אסטרטגיות והוצאה לפועל של מהלכי שינוי מבוססי WOOP.</p>
+    <div className="space-y-16 animate-fadeIn pt-12 text-right max-w-7xl mx-auto px-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b-4 border-brand-dark pb-12">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 justify-end">
+             <span className="text-[11px] font-black text-brand-accent uppercase tracking-[0.4em]">Strategy Implementation</span>
+             <div className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></div>
+          </div>
+          <h2 className="text-6xl md:text-8xl font-black text-brand-dark tracking-tighter italic uppercase leading-none">ניהול השינוי</h2>
+          <p className="text-brand-muted text-2xl font-bold italic">הפיכת רצון לתוכנית עבודה מיוצבת (🏠) ומלאת תשוקה (❤️).</p>
         </div>
         <button 
           onClick={onNew}
-          className="bg-transparent hover:bg-cyan-brand text-cyan-brand hover:text-slate-950 px-10 py-4 rounded-2xl font-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 border-2 border-cyan-brand/30 hover:border-cyan-brand shadow-xl hover:shadow-cyan-brand/20"
+          className="bg-brand-dark text-white px-12 py-6 rounded-none font-black text-xl hover:bg-brand-accent transition-all shadow-[12px_12px_0px_rgba(37,99,235,0.2)] active:scale-95 flex items-center justify-center gap-4 border-4 border-brand-dark"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
-          הגדר מהלך שינוי (WOOP)
+          <span>הגדר מהלך חדש</span>
+          <span className="text-2xl">➕</span>
         </button>
       </div>
 
       {projects.length === 0 ? (
-        <div className="grid lg:grid-cols-12 gap-10 items-stretch">
-          <div className="lg:col-span-7 glass-card rounded-[3rem] p-12 border-dashed border-white/10 flex flex-col items-center justify-center text-center space-y-8">
-            <div className="bg-slate-900/50 w-24 h-24 rounded-3xl flex items-center justify-center shadow-inner">
-              <span className="text-5xl">🎯</span>
+        <div className="grid lg:grid-cols-12 gap-12 items-stretch">
+          <div className="lg:col-span-7 studio-card p-16 border-brand-dark/20 bg-white/50 border-dashed flex flex-col items-center justify-center text-center space-y-10">
+            <div className="bg-brand-beige w-32 h-32 border-4 border-brand-dark flex items-center justify-center shadow-[10px_10px_0px_#1a1a1a]">
+              <span className="text-6xl">🏠</span>
             </div>
-            <div className="space-y-4">
-              <h3 className="text-3xl font-black text-white">סביבת העבודה שלך מוכנה</h3>
-              <p className="text-slate-400 max-w-md mx-auto text-xl leading-relaxed">
-                כאן יופיעו תוכניות העבודה שלך. כרגע אין מהלכים פעילים בצוות. 
-                <br/>
-                <span className="text-cyan-brand font-bold">הגיע הזמן להפוך רצון למציאות.</span>
+            <div className="space-y-6">
+              <h3 className="text-4xl font-black text-brand-dark italic">סביבת העבודה מוכנה</h3>
+              <p className="text-brand-muted max-w-md mx-auto text-xl font-medium leading-relaxed">
+                כאן יופיעו מהלכי השינוי שלך. השלב הראשון הוא לייצב את הבית (Home) ולחבר אותו לתשוקה (Passion).
               </p>
             </div>
             <button 
               onClick={onNew}
-              className="px-16 py-6 bg-white text-slate-950 rounded-[2rem] font-black text-2xl hover:bg-cyan-brand transition-all shadow-2xl active:scale-95"
+              className="px-16 py-7 bg-brand-dark text-white rounded-none font-black text-2xl hover:bg-brand-accent transition-all shadow-2xl active:scale-95"
             >
               צור את הפרויקט הראשון
             </button>
           </div>
 
-          <div className="lg:col-span-5 glass-card rounded-[3rem] p-10 bg-cyan-brand/5 border-cyan-brand/20 space-y-8">
-            <h4 className="text-xs font-black text-cyan-brand uppercase tracking-[0.4em]">Why WOOP?</h4>
-            <div className="space-y-6">
+          <div className="lg:col-span-5 studio-card p-12 bg-brand-beige/40 border-brand-dark/10 space-y-10">
+            <h4 className="text-[12px] font-black text-brand-dark uppercase tracking-[0.5em] italic">Why WOOP?</h4>
+            <div className="space-y-8">
               {[
-                { l: 'W', t: 'Wish', d: 'מגדירים מה באמת רוצים להשיג.' },
-                { l: 'O', t: 'Outcome', d: 'מדמיינים את תחושת ההצלחה.' },
-                { l: 'O', t: 'Obstacle', d: 'מזהים את החסם הפנימי האמיתי.' },
-                { l: 'P', t: 'Plan', d: 'בונים תגובה אוטומטית למכשול.' }
+                { l: '🏠', t: 'Stability (Context)', d: 'מגדירים את בסיס הבית והצורך האסטרטגי.' },
+                { l: '❤️', t: 'Passion (Wish)', d: 'מה באמת בוער בך להשיג?' },
+                { l: '🧱', t: 'Barrier (Obstacle)', d: 'זיהוי החסם הפנימי שמפריע ליציבות.' },
+                { l: '🚀', t: 'Action (Plan)', d: 'בונים תגובה אוטומטית למכשול.' }
               ].map((step, i) => (
                 <div key={i} className="flex gap-6 items-start">
-                  <span className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center text-cyan-brand font-black text-xl border border-cyan-brand/20 shadow-lg">{step.l}</span>
+                  <span className="w-12 h-12 bg-brand-dark text-white flex items-center justify-center text-2xl shadow-lg shrink-0">{step.l}</span>
                   <div>
-                    <p className="text-white font-black text-lg">{step.t}</p>
-                    <p className="text-slate-400 text-sm font-medium">{step.d}</p>
+                    <p className="text-brand-dark font-black text-xl italic">{step.t}</p>
+                    <p className="text-brand-muted text-sm font-bold">{step.d}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="pt-4 border-t border-cyan-brand/10 text-[11px] text-cyan-brand/60 font-medium italic">
-              "ה-AI של גלעד ילווה אותך בניסוח ובניית משימות אופרטיביות אוטומטית."
-            </div>
           </div>
         </div>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <div key={project.id} className="glass-card rounded-[2.5rem] overflow-hidden group hover:border-cyan-brand/30 transition-all duration-500 flex flex-col h-full shadow-2xl">
-              <div className="p-8 flex-1">
-                <div className="flex justify-between items-start mb-6">
+            <div key={project.id} className="studio-card border-brand-dark group hover:border-brand-accent transition-all duration-500 flex flex-col h-full shadow-[12px_12px_0px_rgba(26,26,26,0.05)] bg-white">
+              <div className="p-10 flex-1">
+                <div className="flex justify-between items-start mb-8">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-cyan-brand uppercase tracking-widest mb-1">STRATEGIC INITIATIVE</span>
-                    <h3 className="text-xl font-bold text-white group-hover:text-cyan-brand transition-colors line-clamp-1">{project.title}</h3>
+                    <span className="text-[10px] font-black text-brand-accent uppercase tracking-[0.5em] mb-2 italic">STRATEGIC MOVE</span>
+                    <h3 className="text-3xl font-black text-brand-dark group-hover:text-brand-accent transition-colors tracking-tighter line-clamp-2 leading-none">{project.title}</h3>
                   </div>
-                  <button onClick={() => onDelete(project.id)} className="p-2 text-slate-600 hover:text-red-400 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <button onClick={() => onDelete(project.id)} className="p-2 text-brand-muted hover:text-red-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 100-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
                   </button>
                 </div>
 
-                <div className="space-y-4 mb-8">
-                   <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                      <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">היעד האסטרטגי</p>
-                      <p className="text-sm text-slate-300 line-clamp-3 leading-relaxed font-medium italic">"{project.woop.wish}"</p>
+                <div className="space-y-6 mb-10">
+                   <div className="bg-brand-beige/50 p-6 border-r-8 border-brand-accent">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-lg">❤️</span>
+                        <p className="text-[10px] font-black text-brand-muted uppercase">המשאלה (Passion)</p>
+                      </div>
+                      <p className="text-lg text-brand-dark leading-relaxed font-bold italic">"{project.woop.wish}"</p>
                    </div>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center px-2 mb-2">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase">AI Suggested Tasks:</p>
-                    <span className="text-[9px] bg-cyan-brand/10 text-cyan-brand px-2 py-0.5 rounded-full font-black">READY</span>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center px-2 mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm">🏠</span>
+                      <p className="text-[11px] font-black text-brand-dark uppercase tracking-widest">משימות לייצוב הבית</p>
+                    </div>
                   </div>
                   {project.tasks.map(task => (
                     <div 
                       key={task.id} 
                       onClick={() => onToggleTask(project.id, task.id)}
-                      className={`flex items-center gap-3 p-3 rounded-xl border border-white/5 cursor-pointer transition-all ${task.completed ? 'opacity-40 bg-slate-900/20' : 'bg-slate-900/50 hover:bg-slate-800 hover:scale-[1.02]'}`}
+                      className={`flex items-center gap-4 p-4 border-2 transition-all ${task.completed ? 'opacity-30 border-transparent bg-brand-beige' : 'bg-white border-brand-dark/10 hover:border-brand-accent active:scale-95 cursor-pointer'}`}
                     >
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${task.completed ? 'bg-cyan-brand border-cyan-brand text-slate-950' : 'border-slate-700'}`}>
-                        {task.completed && (
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        )}
+                      <div className={`w-6 h-6 border-2 flex items-center justify-center transition-colors ${task.completed ? 'bg-brand-dark border-brand-dark text-white' : 'border-brand-dark/20'}`}>
+                        {task.completed && <span className="text-[10px] font-black">✓</span>}
                       </div>
-                      <span className={`text-xs font-medium ${task.completed ? 'line-through text-slate-600' : 'text-slate-200'}`}>{task.text}</span>
+                      <span className={`text-sm font-bold italic ${task.completed ? 'line-through' : 'text-brand-dark'}`}>{task.text}</span>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="bg-slate-900/80 px-8 py-4 flex justify-between items-center text-[10px] text-slate-500 font-bold border-t border-white/5">
+              <div className="bg-brand-dark px-10 py-5 flex justify-between items-center text-[10px] text-white/50 font-black uppercase tracking-widest">
                 <span>Created: {new Date(project.createdAt).toLocaleDateString('he-IL')}</span>
-                <div className="flex items-center gap-2">
-                   <span className="text-cyan-brand font-black">
-                     {project.tasks.filter(t => t.completed).length} / {project.tasks.length} משימות הושלמו
+                <div className="flex items-center gap-3">
+                   <span className="text-brand-accent font-black">
+                     {project.tasks.filter(t => t.completed).length} / {project.tasks.length} DONE
                    </span>
                 </div>
               </div>

@@ -10,11 +10,11 @@ interface WoopWizardProps {
 }
 
 const steps = [
-  { id: WoopStep.CONTEXT, title: 'Context', label: 'הקשר ואסטרטגיה', desc: 'מהי התמונה הגדולה ולמה זה חשוב עכשיו?', color: 'slate' },
-  { id: WoopStep.WISH, title: 'Goal', label: 'המשאלה הניהולית', desc: 'מהו היעד הספציפי שאתה שואף אליו?', color: 'cyan' },
-  { id: WoopStep.OUTCOME, title: 'Vision', label: 'התוצאה הרצויה', desc: 'איך נראית ההצלחה במציאות?', color: 'blue' },
-  { id: WoopStep.OBSTACLE, title: 'Barrier', label: 'זיהוי החסם', desc: 'מהו הדבר האמיתי שעוצר אותך מלפעול?', color: 'amber' },
-  { id: WoopStep.PLAN, title: 'Response', label: 'תוכנית תגובה', desc: 'איך תפעל ברגע האמת כשהחסם יופיע?', color: 'emerald' }
+  { id: WoopStep.CONTEXT, title: 'Context', label: 'הקשר ואסטרטגיה', desc: 'מהי התמונה הגדולה ולמה זה חשוב עכשיו?', color: 'brand-dark', icon: '🏠' },
+  { id: WoopStep.WISH, title: 'Goal', label: 'המשאלה הניהולית', desc: 'מהו היעד הספציפי שאתה שואף אליו?', color: 'brand-accent', icon: '❤️' },
+  { id: WoopStep.OUTCOME, title: 'Vision', label: 'התוצאה הרצויה', desc: 'איך נראית ההצלחה במציאות?', color: 'brand-accent', icon: '✨' },
+  { id: WoopStep.OBSTACLE, title: 'Barrier', label: 'זיהוי החסם', desc: 'מהו הדבר האמיתי שעוצר אותך מלפעול?', color: 'brand-muted', icon: '🧱' },
+  { id: WoopStep.PLAN, title: 'Response', label: 'תוכנית תגובה', desc: 'איך תפעל ברגע האמת כשהחסם יופיע?', color: 'brand-dark', icon: '🚀' }
 ];
 
 const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }) => {
@@ -86,24 +86,24 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-8 px-4 animate-fadeIn text-right">
-      {/* Dynamic Breadcrumbs */}
+    <div className="max-w-6xl mx-auto py-12 px-6 animate-fadeIn text-right">
+      {/* Dynamic Breadcrumbs with Icons */}
       <div className="flex items-center justify-between mb-16 px-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {steps.map((s, i) => (
             <React.Fragment key={s.id}>
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-black transition-all duration-500 ${
-                i === currentStepIdx ? 'bg-amber-500 text-slate-950 scale-125 shadow-lg shadow-amber-500/20' : i < currentStepIdx ? 'bg-slate-800 text-amber-500 border border-amber-500/30' : 'bg-slate-900 text-slate-600'
+              <div className={`flex items-center justify-center w-10 h-10 border-2 transition-all duration-500 ${
+                i === currentStepIdx ? 'bg-brand-dark text-white border-brand-dark scale-125' : i < currentStepIdx ? 'bg-brand-beige border-brand-dark text-brand-dark' : 'bg-white border-brand-dark/10 text-brand-muted opacity-30'
               }`}>
-                {i + 1}
+                <span className="text-sm font-black">{s.icon}</span>
               </div>
-              {i < steps.length - 1 && <div className="w-8 h-px bg-slate-800" />}
+              {i < steps.length - 1 && <div className="w-6 h-px bg-brand-dark/10" />}
             </React.Fragment>
           ))}
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">Step Insight</span>
-          <span className="text-white font-bold">{currentStep.title}</span>
+          <span className="text-[10px] font-black text-brand-accent uppercase tracking-[0.2em]">WOOP PROCESS</span>
+          <span className="text-brand-dark font-black text-2xl italic">{currentStep.title}</span>
         </div>
       </div>
 
@@ -111,99 +111,93 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
         {/* Editor Area */}
         <div className="lg:col-span-7 flex flex-col gap-8">
           <div className="space-y-6">
-            <div>
-              <h2 className="text-5xl font-black text-white leading-tight mb-3">{currentStep.label}</h2>
-              <p className="text-slate-400 text-xl font-medium">{currentStep.desc}</p>
+            <div className="flex items-center gap-4 justify-end">
+              <div className="text-right">
+                <h2 className="text-5xl font-black text-brand-dark leading-tight mb-2">{currentStep.label}</h2>
+                <p className="text-brand-muted text-xl font-medium italic">{currentStep.desc}</p>
+              </div>
+              <div className="text-6xl">{currentStep.icon}</div>
             </div>
             
             <div className="relative">
                <textarea
                 autoFocus
-                className="w-full h-[400px] p-10 rounded-[3rem] bg-slate-900/40 border border-white/5 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/5 shadow-2xl transition-all text-2xl font-medium placeholder-slate-700 leading-relaxed resize-none text-slate-100 text-right"
+                className="w-full h-[350px] p-10 studio-card border-brand-dark focus:border-brand-accent outline-none text-2xl font-medium placeholder-brand-dark/10 leading-relaxed resize-none text-brand-dark text-right bg-white"
                 placeholder="שתף את המחשבות שלך כאן..."
                 value={currentVal}
                 onChange={(e) => handleInputChange(e.target.value)}
               />
-              <div className="absolute bottom-10 right-10 flex items-center gap-2">
-                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Editing Mode</span>
-                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-6 right-8 flex items-center gap-2">
+                <span className="text-[10px] font-bold text-brand-muted uppercase tracking-widest">Studio Editor</span>
+                <div className="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
 
           <div className="flex justify-between items-center px-4">
-            <button onClick={handleBack} className="text-lg font-bold text-slate-500 hover:text-white transition-all py-2">
-              {currentStepIdx === 0 ? 'ביטול וחזרה' : 'חזרה לשלב הקודם'}
+            <button onClick={handleBack} className="text-lg font-bold text-brand-muted hover:text-brand-dark transition-all py-2">
+              {currentStepIdx === 0 ? 'ביטול וחזרה' : 'חזרה'}
             </button>
             <button 
               onClick={handleNext}
               disabled={!currentVal.trim()}
-              className="bg-white hover:bg-amber-500 text-slate-950 px-14 py-6 rounded-[2rem] font-black text-xl shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 disabled:opacity-10"
+              className="bg-brand-dark text-white px-14 py-6 font-black text-xl shadow-[8px_8px_0px_#2563eb] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all active:scale-95 disabled:opacity-10"
             >
-              {currentStepIdx === steps.length - 1 ? 'סיים וייצא תוכנית' : 'המשך לשלב הבא'}
+              {currentStepIdx === steps.length - 1 ? 'צור תוכנית עבודה' : 'המשך לשלב הבא'}
             </button>
           </div>
         </div>
 
         {/* AI Assistant Area */}
         <div className="lg:col-span-5 flex flex-col gap-8">
-          <div className="glass-card rounded-[3rem] p-12 flex flex-col min-h-[550px] relative overflow-hidden border-white/5 shadow-2xl">
-            {/* Logo Watermark */}
-            <div className="absolute top-10 right-10 flex gap-1 items-end h-8 opacity-20">
-              <div className="w-2 h-4 bg-slate-700 rounded-full"></div>
-              <div className="w-2 h-8 bg-amber-500 rounded-full"></div>
-            </div>
-
-            <div className="flex items-center gap-4 mb-12">
-              <div className="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center border border-white/5 shadow-inner">
-                <span className="text-2xl">💡</span>
+          <div className="studio-card p-10 border-brand-dark bg-brand-beige shadow-[12px_12px_0px_#1a1a1a] flex flex-col min-h-[500px] relative overflow-hidden">
+            <div className="flex items-center gap-4 mb-10 justify-end">
+              <div className="text-right">
+                <h4 className="font-black text-2xl text-brand-dark">סוכן AI אסטרטגי</h4>
+                <p className="text-[10px] text-brand-accent font-black uppercase tracking-widest mt-1">GK CO-PILOT</p>
               </div>
-              <div>
-                <h4 className="font-black text-2xl text-white">העוזר האסטרטגי</h4>
-                <p className="text-[10px] text-amber-500 font-black uppercase tracking-widest mt-1">מבית גלעד קילון</p>
+              <div className="w-14 h-14 bg-white border-2 border-brand-dark flex items-center justify-center">
+                <span className="text-2xl">🪄</span>
               </div>
             </div>
 
-            <div className="flex-1 space-y-10 overflow-y-auto">
+            <div className="flex-1 space-y-8 overflow-y-auto">
               {isAiLoading ? (
                 <div className="flex flex-col items-center justify-center h-full gap-6 opacity-40">
                   <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
-                    <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-brand-accent rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-brand-accent rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-brand-accent rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
-                  <p className="text-xs font-black uppercase tracking-[0.3em] text-amber-500">Deep Analysis...</p>
+                  <p className="text-xs font-black uppercase tracking-widest text-brand-dark">ANALYZING STRATEGY...</p>
                 </div>
               ) : feedback ? (
-                <div className="space-y-10 animate-fadeIn">
+                <div className="space-y-8 animate-fadeIn text-right">
                   <div className="space-y-4">
-                    <h5 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">תובנה אישית:</h5>
-                    <p className="text-xl text-slate-300 leading-relaxed font-medium italic border-r-4 border-amber-500/30 pr-6 py-2">
+                    <h5 className="text-[10px] font-black text-brand-muted uppercase tracking-widest">תובנה ניהולית:</h5>
+                    <p className="text-xl text-brand-dark leading-relaxed font-bold italic border-r-4 border-brand-accent pr-6">
                       "{feedback.analysis}"
                     </p>
                   </div>
 
                   {!confirmed && (
-                    <div className="space-y-8">
-                      <div className="bg-white/[0.03] p-8 rounded-[2rem] border border-white/5 hover:border-amber-500/20 transition-all group">
-                        <h5 className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-4">הצעה לניסוח מורחב ודיוק המהלך:</h5>
-                        <p className="text-lg font-medium text-slate-200 leading-relaxed mb-8">
+                    <div className="space-y-6">
+                      <div className="bg-white p-8 border-2 border-brand-dark shadow-[6px_6px_0px_rgba(26,26,26,0.1)]">
+                        <h5 className="text-[10px] font-black text-brand-accent uppercase tracking-widest mb-4">הצעה לדיוק הניסוח (Home & Passion):</h5>
+                        <p className="text-lg font-medium text-brand-dark leading-relaxed mb-8">
                           {feedback.refinedText}
                         </p>
                         <button 
                           onClick={handleAdoptRefined}
-                          className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3"
+                          className="w-full bg-brand-dark text-white font-black py-4 hover:bg-brand-accent transition-all flex items-center justify-center gap-3"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          אמץ את הניסוח האסטרטגי
+                          אמץ את הניסוח המקצועי
                         </button>
                       </div>
 
-                      <div className="p-8 rounded-[2rem] bg-amber-500/5 border border-amber-500/10">
-                        <h5 className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-4">לדיוק נוסף כדאי לחשוב:</h5>
-                        <p className="text-lg font-bold text-amber-50 leading-tight">
+                      <div className="p-6 border-r-4 border-brand-accent bg-white/50 italic">
+                        <h5 className="text-[10px] font-black text-brand-muted uppercase tracking-widest mb-2">שאלה למחשבה:</h5>
+                        <p className="text-lg font-bold text-brand-dark leading-tight">
                           {feedback.clarifyingQuestion}
                         </p>
                       </div>
@@ -211,35 +205,29 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
                   )}
 
                   {confirmed && (
-                    <div className="bg-amber-500/5 p-10 rounded-[2.5rem] border border-amber-500/20 flex flex-col items-center text-center gap-6 animate-fadeIn">
-                      <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
+                    <div className="bg-white p-10 border-2 border-brand-dark flex flex-col items-center text-center gap-6 animate-fadeIn">
+                      <div className="text-5xl">✅</div>
                       <div>
-                        <h6 className="text-2xl font-black text-white mb-2">השלב דויק בהצלחה</h6>
-                        <p className="text-slate-400">הניסוח המקצועי עודכן. אנחנו מוכנים להתקדם לשלב הבא.</p>
+                        <h6 className="text-2xl font-black text-brand-dark mb-2">השלב דויק בהצלחה</h6>
+                        <p className="text-brand-muted font-medium italic">הניסוח המקצועי עודכן במערכת.</p>
                       </div>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="h-full flex flex-col items-center justify-center text-center px-12 opacity-30">
-                  <div className="w-24 h-24 border-2 border-dashed border-white/10 rounded-full flex items-center justify-center mb-8">
-                    <span className="text-4xl">✍️</span>
-                  </div>
-                  <h6 className="text-2xl font-bold text-white mb-4">אני מקשיב ומנתח...</h6>
-                  <p className="text-lg leading-relaxed">תתחיל לכתוב את המחשבות שלך, ואני אעזור לך להפוך אותן לתוכנית עבודה מנצחת.</p>
+                <div className="h-full flex flex-col items-center justify-center text-center px-8 opacity-30">
+                  <div className="text-6xl mb-8">✍️</div>
+                  <h6 className="text-2xl font-bold text-brand-dark mb-4">אני מקשיב ומנתח...</h6>
+                  <p className="text-lg font-medium">תתחיל לכתוב, ואני אעזור לך להפוך את המשאלה לתוכנית עבודה מיוצבת (Home) ומלאת תשוקה (Passion).</p>
                 </div>
               )}
             </div>
             
-            <div className="mt-12 pt-8 border-t border-white/5 flex justify-between items-center text-[10px] font-black text-slate-700 tracking-[0.3em]">
-              <span>FEEDBACK 360 CORE</span>
+            <div className="mt-8 pt-6 border-t border-brand-dark/5 flex justify-between items-center text-[10px] font-black text-brand-muted tracking-widest">
+              <span>GK AI AGENT v2</span>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
-                <span>ACTIVE SYNC</span>
+                <div className="w-1.5 h-1.5 bg-brand-accent rounded-full"></div>
+                <span>CONNECTED</span>
               </div>
             </div>
           </div>

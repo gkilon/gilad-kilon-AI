@@ -78,10 +78,10 @@ export interface TowsAnalysis {
   timestamp: number;
   managerId: string;
   analysis?: {
-    strategiesSO: string[]; // Strengths-Opportunities (Growth)
-    strategiesST: string[]; // Strengths-Threats (Defensive)
-    strategiesWO: string[]; // Weaknesses-Opportunities (Development)
-    strategiesWT: string[]; // Weaknesses-Threats (Survival)
+    strategiesSO: string[];
+    strategiesST: string[];
+    strategiesWO: string[];
+    strategiesWT: string[];
     executiveSummary: string;
   };
 }
@@ -97,4 +97,27 @@ export interface CommStyleResult {
 export interface UserSession {
   isManager: boolean;
   teamId: string;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  subtitle?: string;
+  category: string;
+  date: string;
+  link?: string;
+  content?: string;
+}
+
+export interface ClientLogo {
+  id: string;
+  name: string;
+  url: string;
+}
+
+export interface SystemConfig {
+  masterCode: string;
+  metrics: any[];
+  articles: Article[];
+  clients: ClientLogo[];
 }
