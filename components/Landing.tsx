@@ -10,11 +10,31 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
     md: 'text-4xl md:text-6xl', 
     lg: 'text-7xl md:text-[9rem]' 
   };
+  
+  const subSizes = {
+    sm: 'text-[5px] md:text-[6px]',
+    md: 'text-[8px] md:text-[10px]',
+    lg: 'text-[12px] md:text-[16px]'
+  };
+
+  const dotSizes = {
+    sm: 'w-1 h-1 md:w-1.5 md:h-1.5',
+    md: 'w-2 h-2 md:w-3 md:h-3',
+    lg: 'w-4 h-4 md:w-6 md:h-6'
+  };
+
   const color = dark ? 'text-brand-dark' : 'text-white';
+  
   return (
-    <div className={`flex flex-col items-center select-none font-black uppercase tracking-[-0.04em] leading-[0.75] ${color} ${sizes[size]}`} dir="ltr">
-      <div className="drop-shadow-sm">GILAD</div>
-      <div className="relative drop-shadow-sm">KILON<span className="absolute bottom-[20%] -right-2 w-1.5 h-1.5 md:w-3 md:h-3 bg-brand-accent rounded-full shadow-[0_0_15px_rgba(37,99,235,0.4)]"></span></div>
+    <div className={`flex flex-col items-center select-none font-black uppercase tracking-[-0.04em] leading-[0.75] ${color}`} dir="ltr">
+      <div className={`${sizes[size]} drop-shadow-sm`}>GILAD</div>
+      <div className={`relative ${sizes[size]} drop-shadow-sm`}>
+        KILON
+        <span className={`absolute bottom-[18%] -right-[12%] rounded-full bg-brand-accent shadow-[0_0_15px_rgba(37,99,235,0.4)] ${dotSizes[size]}`}></span>
+      </div>
+      <div className={`${subSizes[size]} tracking-[0.5em] mt-2 md:mt-4 font-bold opacity-60 whitespace-nowrap`}>
+        MANAGEMENT CONSULTING
+      </div>
     </div>
   );
 };
@@ -125,7 +145,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         </div>
       </section>
 
-      {/* 3. Clients Section - HIGH VISIBILITY with Placeholders */}
+      {/* 3. Clients Section */}
       <section className="w-full max-w-6xl mb-48">
         <div className="flex items-center justify-between mb-20 px-6">
           <h2 className="text-[13px] font-black uppercase tracking-[0.6em] text-brand-dark">לקוחות ושותפים</h2>
@@ -146,7 +166,6 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
                 </div>
               ))
             ) : (
-              // Default placeholders for visibility
               [1, 2, 3, 4, 5].map(i => (
                 <div key={i} className="grayscale opacity-20 flex items-center justify-center h-16 w-32 border border-brand-dark/10 font-black text-[10px] tracking-widest italic">
                   CLIENT_LOGOS_PENDING_{i}
