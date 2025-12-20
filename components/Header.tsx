@@ -11,6 +11,8 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLogout }) => {
+  const isAdmin = session?.teamId === 'admin';
+
   return (
     <header className="px-6 md:px-12 py-6 sticky top-0 z-50 bg-brand-beige/90 backdrop-blur-xl border-b border-brand-dark/5">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -48,7 +50,16 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
         <div className="flex items-center gap-4">
           {session ? (
             <div className="flex items-center gap-6">
-              <span className="text-[10px] font-black text-brand-dark/40 uppercase hidden md:inline">Team: {session.teamId}</span>
+              {isAdmin && (
+                <button 
+                  onClick={() => onNavigate('admin')}
+                  className={`flex items-center gap-2 px-4 py-2 border-2 border-brand-accent text-brand-accent font-black text-[10px] uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-all ${currentView === 'admin' ? 'bg-brand-accent text-white' : ''}`}
+                >
+                  <span>אזור עריכה</span>
+                  <span className="text-sm">⚙️</span>
+                </button>
+              )}
+              <span className="text-[10px] font-black text-brand-dark/40 uppercase hidden md:inline">{isAdmin ? 'ADMIN MODE' : `Team: ${session.teamId}`}</span>
               <button onClick={onLogout} className="text-[11px] font-black text-brand-muted hover:text-brand-dark uppercase tracking-widest transition-colors">Logout</button>
             </div>
           ) : (
