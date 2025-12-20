@@ -26,7 +26,6 @@ const About: React.FC = () => {
               className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 z-0"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
-            {/* Removed the GK overlay div that was here */}
           </div>
         </div>
 
@@ -74,10 +73,15 @@ const About: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. Contact Footer - Reduced sizes and added small LinkedIn */}
+      {/* 3. Contact Footer */}
       <section className="text-center pt-16 border-t border-brand-dark/20 space-y-10">
         <h3 className="text-[10px] font-black text-brand-muted uppercase tracking-[0.5em]">KEEP IN TOUCH</h3>
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+          <div className="flex flex-col items-center group">
+             <span className="text-[9px] font-bold text-brand-muted uppercase tracking-tighter mb-2 group-hover:text-brand-accent transition-colors">WhatsApp</span>
+             <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="text-xl md:text-3xl font-black text-brand-accent hover:text-brand-dark transition-colors tracking-tighter">Direct Chat</a>
+          </div>
+
           <div className="flex flex-col items-center group">
              <span className="text-[9px] font-bold text-brand-muted uppercase tracking-tighter mb-2 group-hover:text-brand-accent transition-colors">Direct Line</span>
              <a href="tel:+972526417512" className="text-xl md:text-3xl font-black text-brand-dark hover:text-brand-accent transition-colors tracking-tighter">052-6417512</a>

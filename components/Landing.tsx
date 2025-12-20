@@ -237,7 +237,11 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         <div className="text-brand-muted text-[12px] font-black uppercase tracking-[0.5em]">
           © 2025 GILAD KILON. BASED IN ISRAEL.
         </div>
-        <div className="flex gap-20">
+        <div className="flex flex-wrap justify-center md:justify-end gap-10 md:gap-20">
+          <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xl font-black text-brand-accent border-b-4 border-transparent hover:border-brand-accent transition-all tracking-tighter group">
+            <span className="w-8 h-8 flex items-center justify-center bg-brand-accent text-white rounded-full text-sm group-hover:scale-110 transition-transform">💬</span>
+            WhatsApp
+          </a>
           <a href="tel:+972526417512" className="text-xl font-black text-brand-dark border-b-4 border-transparent hover:border-brand-accent transition-all tracking-tighter">052-6417512</a>
           <a href="mailto:gilad@kilon.co.il" className="text-xl font-black text-brand-dark border-b-4 border-transparent hover:border-brand-accent transition-all tracking-tighter">gilad@kilon.co.il</a>
         </div>
