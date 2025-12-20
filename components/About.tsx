@@ -23,12 +23,10 @@ const About: React.FC = () => {
             <img 
               src="/gilad.jpg" 
               alt="גלעד קילון" 
-              className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 z-0"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-dark/5 text-brand-dark z-10 pointer-events-none">
-              <div className="text-9xl font-bold opacity-10 tracking-tighter">GK</div>
-            </div>
+            {/* Removed the GK overlay div that was here */}
           </div>
         </div>
 
