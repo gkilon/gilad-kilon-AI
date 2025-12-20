@@ -5,7 +5,7 @@ import { saveTeamPulse, getTeamPulses, getSystemConfig } from '../firebase';
 import { getSynergyInsight } from '../geminiService';
 
 const LineChart: React.FC<{ data: TeamSynergyPulse[], metric: string, color: string }> = ({ data, metric, color }) => {
-  if (data.length < 2) return <div className="h-1 bg-slate-800 rounded-full w-full opacity-10"></div>;
+  if (data.length < 2) return <div className="h-1 bg-brand-dark/5 rounded-full w-full"></div>;
   const sorted = [...data].sort((a, b) => a.timestamp - b.timestamp);
   
   const points = sorted.map((d, i) => {
@@ -21,24 +21,23 @@ const LineChart: React.FC<{ data: TeamSynergyPulse[], metric: string, color: str
         <polyline 
           fill="none" 
           stroke={color} 
-          strokeWidth="4" 
+          strokeWidth="6" 
           strokeLinecap="round" 
           strokeLinejoin="round"
           points={points} 
-          className="drop-shadow-[0_0_8px_rgba(45,212,191,0.5)]"
         />
         {sorted.map((d, i) => {
           const x = (i / (sorted.length - 1)) * 100;
           const val = (d[metric as keyof TeamSynergyPulse] as number) || 3;
           const y = 100 - ((val - 1) / 5) * 100;
-          return <circle key={i} cx={x} cy={y} r="3" fill={color} />;
+          return <circle key={i} cx={x} cy={y} r="4" fill="#1a1a1a" />;
         })}
       </svg>
     </div>
   );
 };
 
-const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => {
+const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }> = ({ session, onBack }) => {
   const [metrics, setMetrics] = useState<any[]>([]);
   const [pulse, setPulse] = useState<any>({ vibe: '', timestamp: Date.now(), teamId: session?.teamId || '' });
   const [loading, setLoading] = useState(false);
@@ -104,102 +103,110 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
   };
 
   if (submitted && !session?.isManager) return (
-    <div className="py-40 text-center space-y-8 animate-fadeIn">
+    <div className="py-40 text-center space-y-8 animate-fadeIn text-right px-6">
       <div className="text-8xl">🚀</div>
-      <h2 className="text-5xl font-bold text-white italic">תודה על השיתוף!</h2>
-      <p className="text-slate-400 text-xl">הקול שלך עוזר לצוות להשתפר ולהיות מסונכרן יותר.</p>
+      <h2 className="text-5xl font-black text-brand-dark italic">תודה על השיתוף!</h2>
+      <p className="text-brand-muted text-xl font-bold">הקול שלך עוזר לצוות להשתפר ולהיות מסונכרן יותר.</p>
     </div>
   );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-12 animate-fadeIn pb-20 text-right">
+    <div className="max-w-7xl mx-auto space-y-12 animate-fadeIn pt-28 pb-24 text-right px-6">
       
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+      {onBack && (
+        <div className="mb-8">
+          <button 
+            onClick={onBack} 
+            className="flex items-center gap-2 text-brand-accent font-black text-sm uppercase tracking-widest hover:text-brand-dark transition-all group"
+          >
+            <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
+            <span>חזרה לתפריט המעבדה</span>
+          </button>
+        </div>
+      )}
+
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-end gap-10 border-b-4 border-brand-dark pb-12">
         <div className="space-y-4">
           <div className="flex items-center gap-3 justify-end">
-             <span className="text-[10px] font-black text-cyan-brand uppercase tracking-widest">Team Performance Pulse</span>
-             <div className="w-2 h-2 rounded-full bg-cyan-brand animate-pulse"></div>
+             <span className="text-[11px] font-black text-brand-accent uppercase tracking-[0.4em]">Performance Pulse</span>
+             <div className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></div>
           </div>
-          <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter uppercase italic">דופק <span className="text-cyan-brand">צוותי</span></h2>
-          <p className="text-slate-400 text-xl font-medium max-w-2xl">מדידת מגמות, סנכרון ואיכות עבודת הצוות על בסיס קריטריונים אסטרטגיים.</p>
+          <h2 className="text-6xl md:text-8xl font-black text-brand-dark tracking-tighter uppercase italic leading-none">דופק צוותי</h2>
+          <p className="text-brand-muted text-2xl font-bold italic max-w-2xl">מדידת מגמות, סנכרון ואיכות עבודת הצוות על בסיס קריטריונים אסטרטגיים.</p>
         </div>
 
         {session?.isManager && (
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <button 
               onClick={handleShare}
-              className="bg-slate-900 border border-white/10 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:border-cyan-brand transition-all flex items-center justify-center gap-3 shadow-xl"
+              className="bg-white border-4 border-brand-dark text-brand-dark px-8 py-4 font-black text-xs uppercase tracking-[0.2em] hover:bg-brand-dark hover:text-white transition-all shadow-[8px_8px_0px_rgba(0,0,0,0.1)] active:scale-95"
             >
               {copyStatus ? "✓ הקישור הועתק" : "🔗 שלח שאלון לצוות"}
             </button>
             <button 
               onClick={handleAiAnalysis}
               disabled={isAiAnalyzing || cloudHistory.length === 0}
-              className="bg-cyan-brand text-slate-950 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white transition-all shadow-2xl disabled:opacity-20 flex items-center justify-center gap-3"
+              className="bg-brand-accent text-white px-8 py-4 font-black text-xs uppercase tracking-[0.2em] hover:bg-brand-dark transition-all shadow-[8px_8px_0px_rgba(37,99,235,0.2)] disabled:opacity-20 active:scale-95"
             >
-              {isAiAnalyzing ? "מנתח נתונים..." : "🪄 ניתוח AI לתובנות מנהל"}
+              {isAiAnalyzing ? "מנתח נתונים..." : "🪄 ניתוח AI לתובנות"}
             </button>
           </div>
         )}
       </div>
 
-      {/* Manager's View: Analytics & Progress */}
+      {/* Manager Dashboard */}
       {session?.isManager && (
-        <div className="space-y-10 animate-fadeIn">
+        <div className="space-y-12 animate-fadeIn">
           {aggregateMetrics ? (
-            <div className="glass-card rounded-[3.5rem] p-10 border-white/5 bg-slate-900/50 shadow-2xl grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {metrics.map(m => (
-                <div key={m.key} className="p-8 bg-white/[0.02] rounded-[2.5rem] border border-white/5 group hover:border-cyan-brand/30 transition-all">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-2xl group-hover:scale-125 transition-transform">{m.icon}</span>
+                <div key={m.key} className="studio-card p-10 bg-white border-brand-dark shadow-[10px_10px_0px_rgba(0,0,0,0.05)] group">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-4xl">{m.icon}</span>
                     <div className="text-right">
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{m.label}</p>
-                      <h4 className="text-4xl font-black text-white">{aggregateMetrics[m.key]} <span className="text-sm text-slate-600">/ 6</span></h4>
+                      <p className="text-[10px] font-black text-brand-muted uppercase tracking-widest">{m.label}</p>
+                      <h4 className="text-5xl font-black text-brand-dark">{aggregateMetrics[m.key]} <span className="text-sm text-brand-muted">/ 6</span></h4>
                     </div>
                   </div>
-                  <LineChart data={cloudHistory} metric={m.key} color="#2dd4bf" />
-                  <p className="text-[9px] font-bold text-slate-600 uppercase tracking-tight mt-4">מגמה לאורך {cloudHistory.length} דגימות</p>
+                  <LineChart data={cloudHistory} metric={m.key} color="#2563eb" />
+                  <p className="text-[9px] font-bold text-brand-muted uppercase tracking-tight mt-6">מגמה לאורך {cloudHistory.length} דגימות</p>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="glass-card rounded-[3.5rem] p-20 text-center border-dashed border-white/10 opacity-40 italic">
-               אין עדיין מספיק נתונים להצגת גרף מגמות. שלח את הקישור לצוות כדי להתחיל.
+            <div className="studio-card p-24 text-center border-dashed border-brand-dark/20 opacity-40 italic bg-white/50">
+               אין עדיין נתונים. שלח את הקישור לצוות כדי להתחיל במדידה.
             </div>
           )}
 
           {aiInsight && (
-            <div className="glass-card p-12 rounded-[3.5rem] bg-gradient-to-br from-slate-950 to-black border-cyan-brand/20 shadow-inner relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-2 h-full bg-cyan-brand"></div>
+            <div className="studio-card p-12 md:p-16 bg-brand-dark text-white shadow-[16px_16px_0px_rgba(37,99,235,0.2)] relative overflow-hidden">
                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 bg-cyan-brand/10 rounded-xl flex items-center justify-center text-2xl">🪄</div>
-                  <h3 className="text-xs font-black text-cyan-brand uppercase tracking-[0.5em]">AI STRATEGIC SYNTHESIS</h3>
+                  <span className="text-3xl">🪄</span>
+                  <h3 className="text-[11px] font-black text-brand-accent uppercase tracking-[0.6em] italic">AI STRATEGIC INSIGHT</h3>
                </div>
-               <div className="text-2xl font-bold text-white leading-relaxed whitespace-pre-wrap italic">
-                 {aiInsight}
+               <div className="text-2xl md:text-4xl font-black italic leading-tight whitespace-pre-wrap">
+                 "{aiInsight}"
                </div>
             </div>
           )}
         </div>
       )}
 
-      {/* Input Section */}
-      <div className="glass-card rounded-[3.5rem] p-12 space-y-12 border-white/5 shadow-2xl bg-slate-900/40 relative">
-        <div className="flex items-center gap-4 mb-4">
-           <span className="w-12 h-12 rounded-2xl bg-cyan-brand/10 flex items-center justify-center text-2xl">📊</span>
-           <h3 className="text-2xl font-black text-white">עדכון דופק שוטף</h3>
+      {/* Data Input Form */}
+      <div className="studio-card p-12 md:p-16 border-brand-dark bg-white shadow-[16px_16px_0px_rgba(26,26,26,0.05)] space-y-16">
+        <div className="flex items-center gap-4 border-b-2 border-brand-dark pb-6">
+           <span className="text-4xl">📊</span>
+           <h3 className="text-3xl font-black text-brand-dark italic">עדכון דופק שוטף</h3>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-x-12 gap-y-10">
+        <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
           {metrics.map(metric => (
-            <div key={metric.key} className="space-y-4 p-8 bg-white/[0.02] rounded-[2rem] border border-white/5 hover:border-cyan-brand/20 transition-all">
+            <div key={metric.key} className="space-y-6">
               <div className="flex justify-between items-center">
-                <label className="text-xl font-bold text-white">{metric.label}</label>
-                <div className="flex items-center gap-2">
-                   <span className="text-sm text-slate-500 font-bold uppercase">דירוג:</span>
-                   <span className="text-3xl font-black text-cyan-brand">{pulse[metric.key]}</span>
-                </div>
+                <label className="text-2xl font-black text-brand-dark italic">{metric.label}</label>
+                <span className="text-4xl font-black text-brand-accent">{pulse[metric.key]}</span>
               </div>
               <input 
                 type="range" 
@@ -208,9 +215,9 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
                 step="1" 
                 value={pulse[metric.key]} 
                 onChange={e => setPulse({...pulse, [metric.key]: parseInt(e.target.value)})} 
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-brand" 
+                className="w-full h-3 bg-brand-beige border-2 border-brand-dark appearance-none cursor-pointer accent-brand-dark" 
               />
-              <div className="flex justify-between text-[9px] font-black text-slate-700 uppercase tracking-widest">
+              <div className="flex justify-between text-[10px] font-black text-brand-muted uppercase tracking-widest">
                 <span>חלש מאוד</span>
                 <span>מצוין</span>
               </div>
@@ -219,9 +226,9 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
         </div>
 
         <div className="space-y-4">
-           <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4">מה התחושה הכללית בצוות כרגע? (אופציונלי)</label>
+           <label className="text-[11px] font-black text-brand-muted uppercase tracking-widest">איך התחושה הכללית בצוות כרגע? (אופציונלי)</label>
            <textarea 
-             className="w-full bg-slate-950 rounded-3xl p-8 border border-white/5 text-slate-200 text-xl min-h-[160px] text-right focus:border-cyan-brand transition-all outline-none placeholder-slate-800 font-medium" 
+             className="w-full bg-brand-beige/20 border-4 border-brand-dark p-8 text-2xl font-bold text-brand-dark outline-none focus:border-brand-accent transition-all placeholder-brand-dark/10 min-h-[160px]" 
              placeholder="שתף כאן מחשבות, תסכולים או הצלחות..." 
              value={pulse.vibe} 
              onChange={e => setPulse({...pulse, vibe: e.target.value})} 
@@ -231,21 +238,21 @@ const TeamSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => 
         <button 
           onClick={handleSubmit} 
           disabled={loading} 
-          className="w-full bg-cyan-brand text-slate-950 py-8 rounded-[3rem] font-black text-3xl hover:bg-white transition-all shadow-2xl active:scale-95 disabled:opacity-20"
+          className="w-full bg-brand-dark text-white py-8 font-black text-3xl hover:bg-brand-accent transition-all shadow-[12px_12px_0px_rgba(0,0,0,0.1)] active:scale-95 disabled:opacity-20"
         >
-          {loading ? "שולח נתונים..." : "שלח דירוג ועדכן דופק"}
+          {loading ? "שולח נתונים..." : "עדכן דופק צוותי ←"}
         </button>
       </div>
 
       {session?.isManager && cloudHistory.length > 0 && (
-        <div className="space-y-6 pt-10">
-           <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.4em] pr-4">היסטוריית תגובות מילוליות (Raw Vibe)</h3>
-           <div className="grid gap-4">
+        <div className="space-y-8 pt-10">
+           <h3 className="text-[11px] font-black text-brand-muted uppercase tracking-[0.4em] border-b-2 border-brand-dark inline-block italic">קולות מהשטח (Raw Vibe)</h3>
+           <div className="grid gap-6">
               {cloudHistory.filter(h => h.vibe).slice(0, 5).map((h, i) => (
-                <div key={i} className="glass-card p-6 rounded-3xl border-white/5 text-slate-300 italic font-medium">
+                <div key={i} className="studio-card p-8 border-brand-dark bg-white shadow-sm italic text-xl font-bold">
                    "{h.vibe}"
-                   <div className="text-[9px] text-slate-600 mt-2 font-black uppercase">
-                     {new Date(h.timestamp).toLocaleDateString('he-IL')}
+                   <div className="text-[9px] text-brand-muted mt-4 font-black uppercase tracking-widest">
+                     {new Date(h.timestamp).toLocaleDateString('he-IL')} • TEAM RESPONSE
                    </div>
                 </div>
               ))}

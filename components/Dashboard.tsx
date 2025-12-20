@@ -7,11 +7,25 @@ interface DashboardProps {
   onNew: () => void;
   onDelete: (id: string) => void;
   onToggleTask: (projectId: string, taskId: string) => void;
+  onBack?: () => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onToggleTask }) => {
+const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onToggleTask, onBack }) => {
   return (
-    <div className="space-y-16 animate-fadeIn pt-12 text-right max-w-7xl mx-auto px-6">
+    <div className="space-y-12 animate-fadeIn pt-28 text-right max-w-7xl mx-auto px-6">
+      
+      {onBack && (
+        <div className="mb-8">
+          <button 
+            onClick={onBack} 
+            className="flex items-center gap-2 text-brand-accent font-black text-sm uppercase tracking-widest hover:text-brand-dark transition-all group"
+          >
+            <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
+            <span>חזרה לתפריט המעבדה</span>
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b-4 border-brand-dark pb-12">
         <div className="space-y-4">
           <div className="flex items-center gap-3 justify-end">
@@ -31,7 +45,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onTogg
       </div>
 
       {projects.length === 0 ? (
-        <div className="grid lg:grid-cols-12 gap-12 items-stretch">
+        <div className="grid lg:grid-cols-12 gap-12 items-stretch pt-12">
           <div className="lg:col-span-7 studio-card p-16 border-brand-dark/20 bg-white/50 border-dashed flex flex-col items-center justify-center text-center space-y-10">
             <div className="bg-brand-beige w-32 h-32 border-4 border-brand-dark flex items-center justify-center shadow-[10px_10px_0px_#1a1a1a]">
               <span className="text-6xl">🏠</span>
@@ -71,7 +85,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onTogg
           </div>
         </div>
       ) : (
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3 pt-12">
           {projects.map((project) => (
             <div key={project.id} className="studio-card border-brand-dark group hover:border-brand-accent transition-all duration-500 flex flex-col h-full shadow-[12px_12px_0px_rgba(26,26,26,0.05)] bg-white">
               <div className="p-10 flex-1">

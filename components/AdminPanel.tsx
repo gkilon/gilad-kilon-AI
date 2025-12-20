@@ -28,8 +28,15 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       const newItem: ClientLogo = { id: Math.random().toString(36).substr(2, 9), name: '', url: '' };
       setConfig({ ...config, clients: [...config.clients, newItem] });
     } else {
-      const newItem: Article = { id: Math.random().toString(36).substr(2, 9), title: '', category: '', date: '', link: '' };
-      setConfig({ ...config, articles: [...config.articles, newItem] });
+      const newItem: Article = { 
+        id: Math.random().toString(36).substr(2, 9), 
+        title: '', 
+        category: '', 
+        date: new Date().getFullYear().toString(), 
+        link: '',
+        content: '' // Initializing content field
+      };
+      setConfig({ ...config, articles: [newItem, ...config.articles] });
     }
   };
 
@@ -103,26 +110,51 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         {activeTab === 'articles' && (
           <div className="space-y-10 animate-fadeIn">
             <div className="bg-brand-beige p-6 border-r-4 border-brand-accent">
-               <h4 className="font-bold text-brand-dark mb-2">ניהול מאמרים</h4>
-               <p className="text-sm text-brand-muted">כאשר אין מאמרים ברשימה, האתר יציג דף "בבנייה". ברגע שתקיים מאמר אחד, הוא יופיע במקום דף הבנייה.</p>
+               <h4 className="font-bold text-brand-dark mb-2">ניהול מאמרים ותוכן</h4>
+               <p className="text-sm text-brand-muted">תוכל להזין קישור חיצוני (Link) או להכניס את תוכן המאמר ישירות (Content). אם תזין תוכן, הוא יוצג בדף המאמר המעוצב באתר.</p>
             </div>
             <div className="flex justify-between items-center">
               <h3 className="text-2xl font-black italic">רשימת מאמרים</h3>
               <button onClick={() => addItem('articles')} className="bg-brand-dark text-white px-6 py-2 text-[10px] font-black uppercase tracking-widest hover:bg-brand-accent transition-all">+ הוסף מאמר</button>
             </div>
-            <div className="grid gap-6">
+            <div className="grid gap-8">
               {config.articles.map((a: Article) => (
-                <div key={a.id} className="p-6 bg-brand-beige/20 border border-brand-dark/10 space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <input placeholder="כותרת המאמר" value={a.title} onChange={e => updateItem('articles', a.id, 'title', e.target.value)} className="p-3 border-b border-brand-dark/20 bg-transparent outline-none focus:border-brand-accent font-bold text-lg" />
-                    <input placeholder="קטגוריה" value={a.category} onChange={e => updateItem('articles', a.id, 'category', e.target.value)} className="p-3 border-b border-brand-dark/20 bg-transparent outline-none focus:border-brand-accent" />
+                <div key={a.id} className="p-8 bg-brand-beige/20 border-2 border-brand-dark space-y-6 shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="md:col-span-2 space-y-2">
+                      <label className="text-[10px] font-black uppercase text-brand-muted">כותרת המאמר</label>
+                      <input placeholder="כותרת המאמר" value={a.title} onChange={e => updateItem('articles', a.id, 'title', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-black text-xl" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-brand-muted">קטגוריה</label>
+                      <input placeholder="קטגוריה" value={a.category} onChange={e => updateItem('articles', a.id, 'category', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-bold" />
+                    </div>
                   </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <input placeholder="תאריך" value={a.date} onChange={e => updateItem('articles', a.id, 'date', e.target.value)} className="p-3 border-b border-brand-dark/20 bg-transparent outline-none focus:border-brand-accent" />
-                    <input placeholder="קישור (URL)" value={a.link} onChange={e => updateItem('articles', a.id, 'link', e.target.value)} className="p-3 border-b border-brand-dark/20 bg-transparent outline-none focus:border-brand-accent text-left" dir="ltr" />
+                  
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-brand-muted">תאריך / שנה</label>
+                      <input placeholder="תאריך" value={a.date} onChange={e => updateItem('articles', a.id, 'date', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-bold" />
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <label className="text-[10px] font-black uppercase text-brand-muted">קישור חיצוני (אופציונלי)</label>
+                      <input placeholder="קישור (URL)" value={a.link || ''} onChange={e => updateItem('articles', a.id, 'link', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent text-left text-sm" dir="ltr" />
+                    </div>
                   </div>
-                  <div className="flex justify-end">
-                    <button onClick={() => removeItem('articles', a.id)} className="text-red-500 font-black text-xs uppercase tracking-widest hover:underline">מחק מאמר</button>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-brand-muted">תוכן המאמר (טקסט מלא)</label>
+                    <textarea 
+                      placeholder="הכנס את תוכן המאמר כאן..." 
+                      value={a.content || ''} 
+                      onChange={e => updateItem('articles', a.id, 'content', e.target.value)} 
+                      className="w-full h-64 p-6 border-2 border-brand-dark bg-white outline-none focus:border-brand-accent font-medium leading-relaxed resize-none"
+                    />
+                  </div>
+
+                  <div className="flex justify-between items-center pt-4">
+                    <span className="text-[10px] font-black text-brand-muted italic uppercase">ID: {a.id}</span>
+                    <button onClick={() => removeItem('articles', a.id)} className="text-red-500 font-black text-xs uppercase tracking-widest hover:bg-red-50 px-4 py-2 border border-red-200 transition-all">מחק מאמר</button>
                   </div>
                 </div>
               ))}

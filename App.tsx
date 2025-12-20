@@ -38,7 +38,6 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewType>('home');
   const dbReady = isFirebaseReady();
 
-  // Provided Articles
   const defaultArticles: Article[] = [
     {
       id: 'market-vs-strategy-2024',
@@ -101,24 +100,26 @@ const App: React.FC = () => {
   const renderView = () => {
     if (loading) return <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען נתונים...</div>;
 
-    const protectedViews: ViewType[] = ['dashboard', 'wizard', 'ideas', 'executive', 'tasks', 'synergy'];
+    const protectedViews: ViewType[] = ['dashboard', 'wizard', 'ideas', 'executive', 'tasks', 'synergy', 'communication', 'feedback360'];
     if (!session && protectedViews.includes(view)) {
       return <ToolTeaser toolId={view} onLogin={() => setView('login')} />;
     }
+
+    const backToLab = () => navigateToView('lab');
 
     switch(view) {
       case 'login': return <Login onLogin={handleLogin} message={loginMessage} />;
       case 'home': return <Landing onEnterTool={(v) => navigateToView(v as ViewType)} />;
       case 'lab': return <TheLab onEnterTool={(v) => navigateToView(v as ViewType)} isLoggedIn={!!session} />;
       case 'admin': return <AdminPanel onBack={() => setView('home')} />;
-      case 'dashboard': return <Dashboard projects={projects} onNew={() => setView('wizard')} onDelete={() => {}} onToggleTask={() => {}} />;
+      case 'dashboard': return <Dashboard projects={projects} onNew={() => setView('wizard')} onDelete={() => {}} onToggleTask={() => {}} onBack={backToLab} />;
       case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={() => setView('dashboard')} />;
-      case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={() => {}} />;
-      case 'synergy': return <TeamSynergy session={session} />;
-      case 'executive': return <ExecutiveSynergy session={session} />;
-      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={() => {}} />;
-      case 'feedback360': return <Feedback360 />;
-      case 'communication': return <CommunicationDNA />;
+      case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={() => {}} onBack={backToLab} />;
+      case 'synergy': return <TeamSynergy session={session} onBack={backToLab} />;
+      case 'executive': return <ExecutiveSynergy session={session} onBack={backToLab} />;
+      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={() => {}} onBack={backToLab} />;
+      case 'feedback360': return <Feedback360 onBack={backToLab} />;
+      case 'communication': return <CommunicationDNA onBack={backToLab} />;
       case 'about': return <About />;
       case 'clients': return <ClientsPage />;
       case 'article_detail': 

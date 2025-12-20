@@ -1,9 +1,16 @@
 
 import React from 'react';
 
-const Feedback360: React.FC = () => {
+const Feedback360: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   return (
     <div className="max-w-4xl mx-auto py-32 animate-fadeIn text-center space-y-12 px-6">
+      
+      {onBack && (
+        <div className="text-right">
+          <button onClick={onBack} className="text-brand-muted font-black text-xs uppercase tracking-widest border-b-2 border-brand-dark mb-8 hover:text-brand-dark transition-all">← חזרה למעבדה</button>
+        </div>
+      )}
+
       <div className="space-y-6">
         <div className="inline-block border-2 border-brand-dark px-6 py-2 mb-4">
            <span className="text-[12px] font-black uppercase tracking-[0.4em]">External Tool</span>

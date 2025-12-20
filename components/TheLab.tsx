@@ -12,22 +12,25 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, isLoggedIn }) => {
     <div className="min-h-screen pt-20 pb-40 px-6 max-w-7xl mx-auto">
       {/* Marketing Banner */}
       {!isLoggedIn && (
-        <div className="mb-16 bg-brand-accent/5 border-2 border-brand-accent/20 p-8 flex flex-col md:flex-row items-center justify-between gap-8 animate-fadeIn">
-          <div className="space-y-2">
-            <h3 className="text-2xl font-black text-brand-dark">רוצה להשתמש בכלים האלה בארגון שלך?</h3>
-            <p className="text-brand-muted font-medium">הכלים פתוחים כרגע במצב "טעימה". לגישה מלאה, שמירת נתונים וניתוח AI אישי - יש להזין קוד גישה.</p>
+        <div className="mb-16 border-4 border-brand-accent bg-white p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 animate-fadeIn shadow-[20px_20px_0px_rgba(37,99,235,0.1)]">
+          <div className="space-y-6 text-right">
+            <div className="inline-block bg-brand-accent text-white px-4 py-1 text-[10px] font-black uppercase tracking-widest">LAB PREVIEW</div>
+            <h3 className="text-3xl md:text-5xl font-black text-brand-dark italic tracking-tighter">זו רק טעימה מהמעבדה האסטרטגית.</h3>
+            <p className="text-brand-muted text-xl font-bold italic max-w-2xl leading-relaxed">
+              הכלים פתוחים כרגע לצפייה במצב גנרי. למשתמשים רשומים יש גישה לכלים המלאים, שמירת נתונים לאורך זמן, וניתוח AI אישי המחובר לאסטרטגיה שלכם.
+            </p>
           </div>
           <button 
             onClick={() => onEnterTool('login')}
-            className="whitespace-nowrap bg-brand-dark text-white px-8 py-4 font-black text-sm uppercase tracking-widest hover:bg-brand-accent transition-all"
+            className="whitespace-nowrap bg-brand-dark text-white px-12 py-6 font-black text-xl uppercase tracking-widest hover:bg-brand-accent transition-all shadow-2xl active:scale-95"
           >
-            התחברות / הרשמה ←
+            פתח מרחב עבודה מלא ←
           </button>
         </div>
       )}
 
       <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20 border-b-2 border-brand-dark pb-16">
-        <div className="space-y-6">
+        <div className="space-y-6 text-right">
           <span className="text-[13px] font-black text-brand-accent uppercase tracking-[0.6em]">THE LABORATORY</span>
           <h1 className="text-6xl md:text-9xl font-black italic tracking-tighter leading-none">המעבדה.</h1>
           <p className="text-xl text-brand-muted font-medium max-w-xl leading-relaxed">

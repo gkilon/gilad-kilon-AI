@@ -4,7 +4,7 @@ import { TowsAnalysis, UserSession } from '../types';
 import { analyzeTowsStrategy } from '../geminiService';
 import { syncToCloud, fetchFromCloud } from '../firebase';
 
-const ExecutiveSynergy: React.FC<{ session: UserSession | null }> = ({ session }) => {
+const ExecutiveSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }> = ({ session, onBack }) => {
   const [history, setHistory] = useState<TowsAnalysis[]>([]);
   const [activeAnalysis, setActiveAnalysis] = useState<Partial<TowsAnalysis>>({
     title: '',
@@ -59,92 +59,98 @@ const ExecutiveSynergy: React.FC<{ session: UserSession | null }> = ({ session }
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-12 animate-fadeIn pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-end gap-6 text-right">
+    <div className="max-w-7xl mx-auto space-y-12 animate-fadeIn pt-28 pb-24 text-right px-6">
+      
+      {onBack && (
+        <div className="mb-8">
+          <button 
+            onClick={onBack} 
+            className="flex items-center gap-2 text-brand-accent font-black text-sm uppercase tracking-widest hover:text-brand-dark transition-all group"
+          >
+            <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
+            <span>חזרה לתפריט המעבדה</span>
+          </button>
+        </div>
+      )}
+
+      {/* Header with Tool Style */}
+      <div className="flex flex-col md:flex-row justify-between items-end gap-10 border-b-4 border-brand-dark pb-12">
         <div className="space-y-4">
           <div className="flex items-center gap-3 justify-end">
-             <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest">Strategic Foresight Lab</span>
-             <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+             <span className="text-[11px] font-black text-brand-accent uppercase tracking-[0.4em]">Strategic Foresight</span>
+             <div className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></div>
           </div>
-          <h2 className="text-6xl font-black text-white tracking-tighter italic uppercase">פורום הנהלה: <span className="text-purple-400">TOWS MATRIX</span></h2>
-          <div className="bg-purple-500/10 border border-purple-500/20 p-8 rounded-[3rem] max-w-3xl ml-auto shadow-2xl">
-            <p className="text-slate-300 text-lg leading-relaxed font-medium">
-              <span className="text-purple-400 font-black">המתודולוגיה:</span> TOWS הוא הצעד הבא אחרי ה-SWOT. הוא לא רק ממפה את המצב, אלא **מצליב** אותו. המטרה היא לגזור מהלכי מנע וצמיחה: 
-              <br/>
-              <span className="text-white">איזו חוזקה פנימית תעזור לנו לממש הזדמנות חיצונית? ואיזו חולשה שלנו מסכנת אותנו אל מול איום חיצוני?</span>
-            </p>
-          </div>
+          <h2 className="text-6xl md:text-8xl font-black text-brand-dark tracking-tighter italic uppercase leading-none">פורום הנהלה</h2>
+          <p className="text-brand-muted text-2xl font-bold italic">ניתוח TOWS: הצלבה אסטרטגית לקבלת החלטות עומק.</p>
         </div>
-        <div className="flex bg-slate-900/50 p-2 rounded-2xl border border-white/5">
-           <button onClick={() => setView('editor')} className={`px-8 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${view === 'editor' ? 'bg-purple-500 text-white shadow-lg' : 'text-slate-500 hover:text-white'}`}>ניתוח חדש</button>
-           <button onClick={() => setView('history')} className={`px-8 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${view === 'history' ? 'bg-purple-500 text-white shadow-lg' : 'text-slate-500 hover:text-white'}`}>ארכיון החלטות</button>
+        <div className="flex bg-brand-beige p-2 border-2 border-brand-dark">
+           <button onClick={() => setView('editor')} className={`px-8 py-3 font-black text-xs uppercase tracking-widest transition-all ${view === 'editor' ? 'bg-brand-dark text-white' : 'text-brand-muted hover:text-brand-dark'}`}>ניתוח חדש</button>
+           <button onClick={() => setView('history')} className={`px-8 py-3 font-black text-xs uppercase tracking-widest transition-all ${view === 'history' ? 'bg-brand-dark text-white' : 'text-brand-muted hover:text-brand-dark'}`}>ארכיון החלטות</button>
         </div>
       </div>
 
       {view === 'editor' ? (
-        <div className="space-y-8 animate-fadeIn text-right">
-          <div className="glass-card rounded-[4rem] p-12 border-white/5 shadow-2xl space-y-10">
+        <div className="space-y-12 animate-fadeIn">
+          <div className="studio-card p-12 md:p-16 border-brand-dark bg-white shadow-[16px_16px_0px_rgba(26,26,26,0.05)] space-y-12">
             <div className="space-y-4">
-              <label className="text-[10px] font-black text-purple-400 uppercase tracking-[0.4em] pr-6">נושא הדיון האסטרטגי</label>
+              <label className="text-[11px] font-black text-brand-accent uppercase tracking-[0.4em]">נושא הדיון האסטרטגי</label>
               <input 
                 type="text"
-                className="w-full bg-slate-950/50 border border-white/10 rounded-[2.5rem] p-8 text-3xl font-bold text-white focus:border-purple-500 transition-all outline-none text-right placeholder-slate-800"
-                placeholder="למשל: בחינת מודל רווחיות / מיצוב מחדש מול מתחרים"
+                className="w-full bg-brand-beige/20 border-4 border-brand-dark p-8 text-3xl font-black text-brand-dark focus:border-brand-accent transition-all outline-none placeholder-brand-dark/10"
+                placeholder="בחינת מודל רווחיות / מיצוב מחדש מול מתחרים..."
                 value={activeAnalysis.title}
                 onChange={e => setActiveAnalysis({...activeAnalysis, title: e.target.value})}
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-10">
-              {/* Internal Factors Group */}
+            <div className="grid md:grid-cols-2 gap-12">
               <div className="space-y-8">
-                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4">INTERNAL FACTORS / פנים הארגון</h4>
-                <div className="grid gap-6">
-                   <div className="p-8 rounded-[3rem] bg-emerald-500/5 border border-emerald-500/10 space-y-4">
-                      <h5 className="font-black text-emerald-400 uppercase text-xs tracking-widest">STRENGTHS (S)</h5>
-                      <div className="flex gap-2">
-                        <button onClick={() => addItem('strengths', 'S')} className="w-10 h-10 bg-emerald-500 text-slate-950 rounded-xl font-black text-xl">+</button>
-                        <input className="flex-1 bg-slate-950 border border-white/5 rounded-xl px-4 py-2 text-white text-sm text-right" value={tempInputs.S} onChange={e => setTempInputs({...tempInputs, S: e.target.value})} onKeyPress={e => e.key === 'Enter' && addItem('strengths', 'S')} placeholder="הוסף חוזקה..." />
+                <h4 className="text-[12px] font-black text-brand-muted uppercase tracking-[0.3em] border-b-2 border-brand-dark inline-block italic">INTERNAL / פנים</h4>
+                <div className="grid gap-8">
+                   <div className="studio-card p-8 bg-white border-brand-dark shadow-[8px_8px_0px_rgba(16,185,129,0.1)] space-y-6">
+                      <h5 className="font-black text-emerald-600 text-sm tracking-widest uppercase">Strengths (S) חוזקות</h5>
+                      <div className="flex gap-4">
+                        <input className="flex-1 border-b-2 border-brand-dark bg-transparent py-2 text-brand-dark font-bold focus:border-emerald-500 outline-none" value={tempInputs.S} onChange={e => setTempInputs({...tempInputs, S: e.target.value})} onKeyPress={e => e.key === 'Enter' && addItem('strengths', 'S')} placeholder="הוסף חוזקה..." />
+                        <button onClick={() => addItem('strengths', 'S')} className="w-10 h-10 bg-brand-dark text-white font-black hover:bg-emerald-500 transition-all">+</button>
                       </div>
-                      <div className="space-y-2">
-                        {activeAnalysis.strengths?.map((s, i) => <div key={i} className="text-sm text-slate-300 bg-white/5 p-3 rounded-xl text-right font-medium"><span>{s} •</span></div>)}
+                      <div className="space-y-3">
+                        {activeAnalysis.strengths?.map((s, i) => <div key={i} className="text-lg font-bold text-brand-dark bg-emerald-50 p-4 border-r-4 border-emerald-500 italic">"{s}"</div>)}
                       </div>
                    </div>
-                   <div className="p-8 rounded-[3rem] bg-amber-500/5 border border-amber-500/10 space-y-4">
-                      <h5 className="font-black text-amber-400 uppercase text-xs tracking-widest">WEAKNESSES (W)</h5>
-                      <div className="flex gap-2">
-                        <button onClick={() => addItem('weaknesses', 'W')} className="w-10 h-10 bg-amber-500 text-slate-950 rounded-xl font-black text-xl">+</button>
-                        <input className="flex-1 bg-slate-950 border border-white/5 rounded-xl px-4 py-2 text-white text-sm text-right" value={tempInputs.W} onChange={e => setTempInputs({...tempInputs, W: e.target.value})} onKeyPress={e => e.key === 'Enter' && addItem('weaknesses', 'W')} placeholder="הוסף חולשה..." />
+                   <div className="studio-card p-8 bg-white border-brand-dark shadow-[8px_8px_0px_rgba(245,158,11,0.1)] space-y-6">
+                      <h5 className="font-black text-amber-600 text-sm tracking-widest uppercase">Weaknesses (W) חולשות</h5>
+                      <div className="flex gap-4">
+                        <input className="flex-1 border-b-2 border-brand-dark bg-transparent py-2 text-brand-dark font-bold focus:border-amber-500 outline-none" value={tempInputs.W} onChange={e => setTempInputs({...tempInputs, W: e.target.value})} onKeyPress={e => e.key === 'Enter' && addItem('weaknesses', 'W')} placeholder="הוסף חולשה..." />
+                        <button onClick={() => addItem('weaknesses', 'W')} className="w-10 h-10 bg-brand-dark text-white font-black hover:bg-amber-500 transition-all">+</button>
                       </div>
-                      <div className="space-y-2">
-                        {activeAnalysis.weaknesses?.map((w, i) => <div key={i} className="text-sm text-slate-300 bg-white/5 p-3 rounded-xl text-right font-medium"><span>{w} •</span></div>)}
+                      <div className="space-y-3">
+                        {activeAnalysis.weaknesses?.map((w, i) => <div key={i} className="text-lg font-bold text-brand-dark bg-amber-50 p-4 border-r-4 border-amber-500 italic">"{w}"</div>)}
                       </div>
                    </div>
                 </div>
               </div>
 
-              {/* External Factors Group */}
               <div className="space-y-8">
-                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-4">EXTERNAL FACTORS / חוץ הארגון</h4>
-                <div className="grid gap-6">
-                   <div className="p-8 rounded-[3rem] bg-cyan-brand/5 border-cyan-brand/10 space-y-4">
-                      <h5 className="font-black text-cyan-brand uppercase text-xs tracking-widest">OPPORTUNITIES (O)</h5>
-                      <div className="flex gap-2">
-                        <button onClick={() => addItem('opportunities', 'O')} className="w-10 h-10 bg-cyan-brand text-slate-950 rounded-xl font-black text-xl">+</button>
-                        <input className="flex-1 bg-slate-950 border border-white/5 rounded-xl px-4 py-2 text-white text-sm text-right" value={tempInputs.O} onChange={e => setTempInputs({...tempInputs, O: e.target.value})} onKeyPress={e => e.key === 'Enter' && addItem('opportunities', 'O')} placeholder="הוסף הזדמנות..." />
+                <h4 className="text-[12px] font-black text-brand-muted uppercase tracking-[0.3em] border-b-2 border-brand-dark inline-block italic">EXTERNAL / חוץ</h4>
+                <div className="grid gap-8">
+                   <div className="studio-card p-8 bg-white border-brand-dark shadow-[8px_8px_0px_rgba(37,99,235,0.1)] space-y-6">
+                      <h5 className="font-black text-brand-accent text-sm tracking-widest uppercase">Opportunities (O) הזדמנויות</h5>
+                      <div className="flex gap-4">
+                        <input className="flex-1 border-b-2 border-brand-dark bg-transparent py-2 text-brand-dark font-bold focus:border-brand-accent outline-none" value={tempInputs.O} onChange={e => setTempInputs({...tempInputs, O: e.target.value})} onKeyPress={e => e.key === 'Enter' && addItem('opportunities', 'O')} placeholder="הוסף הזדמנות..." />
+                        <button onClick={() => addItem('opportunities', 'O')} className="w-10 h-10 bg-brand-dark text-white font-black hover:bg-brand-accent transition-all">+</button>
                       </div>
-                      <div className="space-y-2">
-                        {activeAnalysis.opportunities?.map((o, i) => <div key={i} className="text-sm text-slate-300 bg-white/5 p-3 rounded-xl text-right font-medium"><span>{o} •</span></div>)}
+                      <div className="space-y-3">
+                        {activeAnalysis.opportunities?.map((o, i) => <div key={i} className="text-lg font-bold text-brand-dark bg-blue-50 p-4 border-r-4 border-brand-accent italic">"{o}"</div>)}
                       </div>
                    </div>
-                   <div className="p-8 rounded-[3rem] bg-rose-500/5 border border-rose-500/10 space-y-4">
-                      <h5 className="font-black text-rose-400 uppercase text-xs tracking-widest">THREATS (T)</h5>
-                      <div className="flex gap-2">
-                        <button onClick={() => addItem('threats', 'T')} className="w-10 h-10 bg-rose-500 text-slate-950 rounded-xl font-black text-xl">+</button>
-                        <input className="flex-1 bg-slate-950 border border-white/5 rounded-xl px-4 py-2 text-white text-sm text-right" value={tempInputs.T} onChange={e => setTempInputs({...tempInputs, T: e.target.value})} onKeyPress={e => e.key === 'Enter' && addItem('threats', 'T')} placeholder="הוסף איום..." />
+                   <div className="studio-card p-8 bg-white border-brand-dark shadow-[8px_8px_0px_rgba(239,68,68,0.1)] space-y-6">
+                      <h5 className="font-black text-red-600 text-sm tracking-widest uppercase">Threats (T) איומים</h5>
+                      <div className="flex gap-4">
+                        <input className="flex-1 border-b-2 border-brand-dark bg-transparent py-2 text-brand-dark font-bold focus:border-red-500 outline-none" value={tempInputs.T} onChange={e => setTempInputs({...tempInputs, T: e.target.value})} onKeyPress={e => e.key === 'Enter' && addItem('threats', 'T')} placeholder="הוסף איום..." />
+                        <button onClick={() => addItem('threats', 'T')} className="w-10 h-10 bg-brand-dark text-white font-black hover:bg-red-500 transition-all">+</button>
                       </div>
-                      <div className="space-y-2">
-                        {activeAnalysis.threats?.map((t, i) => <div key={i} className="text-sm text-slate-300 bg-white/5 p-3 rounded-xl text-right font-medium"><span>{t} •</span></div>)}
+                      <div className="space-y-3">
+                        {activeAnalysis.threats?.map((t, i) => <div key={i} className="text-lg font-bold text-brand-dark bg-red-50 p-4 border-r-4 border-red-500 italic">"{t}"</div>)}
                       </div>
                    </div>
                 </div>
@@ -154,73 +160,63 @@ const ExecutiveSynergy: React.FC<{ session: UserSession | null }> = ({ session }
             <button 
               onClick={handleAnalyze}
               disabled={isAnalyzing || !activeAnalysis.title || activeAnalysis.strengths!.length < 1}
-              className="w-full py-10 bg-white text-slate-950 rounded-[3rem] font-black text-3xl hover:bg-purple-500 hover:text-white transition-all shadow-2xl flex items-center justify-center gap-6 disabled:opacity-20"
+              className="w-full py-10 bg-brand-dark text-white font-black text-3xl hover:bg-brand-accent transition-all shadow-[12px_12px_0px_rgba(37,99,235,0.2)] flex items-center justify-center gap-6 disabled:opacity-10 active:scale-95"
             >
-              {isAnalyzing ? (
-                <>
-                  <div className="w-10 h-10 border-4 border-slate-950 border-t-transparent rounded-full animate-spin"></div>
-                  <span>מנתח הצלבות אסטרטגיות...</span>
-                </>
-              ) : (
-                <>
-                  <span>💎</span>
-                  חלץ מטריצת החלטות TOWS
-                </>
-              )}
+              {isAnalyzing ? "מנתח הצלבות אסטרטגיות..." : "גזור מטריצת החלטות TOWS ←"}
             </button>
           </div>
         </div>
       ) : (
-        <div className="space-y-8 animate-fadeIn text-right">
+        <div className="space-y-12 animate-fadeIn">
           {history.length === 0 ? (
-            <div className="text-center py-40 glass-card rounded-[4rem] border-dashed border-white/10 opacity-30 italic">אין עדיין ניתוחים בארכיון הנהלה</div>
+            <div className="text-center py-40 studio-card border-brand-dark/10 opacity-30 italic bg-white/50">אין עדיין ניתוחים בארכיון הנהלה</div>
           ) : (
             history.map(item => (
-              <div key={item.id} className="glass-card rounded-[4rem] p-12 space-y-12 border-white/5 hover:border-purple-500/20 transition-all group shadow-2xl">
-                 <div className="flex justify-between items-start border-b border-white/10 pb-10">
-                    <div className="bg-slate-950 px-6 py-3 rounded-2xl text-purple-400 text-[11px] font-black border border-purple-500/20 uppercase tracking-widest shadow-inner">STRATEGIC FORESIGHT</div>
-                    <div className="text-right">
-                      <h3 className="text-5xl font-black text-white italic group-hover:text-purple-400 transition-colors tracking-tight">{item.title}</h3>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] mt-3">
-                        {new Date(item.timestamp).toLocaleDateString('he-IL')} | TOWS Matrix Result
+              <div key={item.id} className="studio-card p-12 md:p-16 border-brand-dark bg-white shadow-[12px_12px_0px_rgba(26,26,26,0.05)] space-y-12">
+                 <div className="flex justify-between items-start border-b-2 border-brand-dark pb-8">
+                    <div>
+                      <h3 className="text-4xl md:text-6xl font-black text-brand-dark italic tracking-tight leading-none">{item.title}</h3>
+                      <p className="text-[10px] font-black text-brand-muted uppercase tracking-[0.5em] mt-4">
+                        {new Date(item.timestamp).toLocaleDateString('he-IL')} | TOWS STRATEGIC RESULT
                       </p>
                     </div>
+                    <span className="text-brand-accent font-black text-xs uppercase tracking-widest border-2 border-brand-accent px-4 py-1 italic">ARCHIVED</span>
                  </div>
 
                  <div className="grid lg:grid-cols-2 gap-12">
                     <div className="space-y-8">
-                       <div className="bg-emerald-500/5 p-10 rounded-[3.5rem] border border-emerald-500/10 space-y-6">
-                          <h5 className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] text-right">MAX-MAX (SO): GROWTH STRATEGIES</h5>
-                          <ul className="space-y-4">
-                             {item.analysis?.strategiesSO.map((s, i) => <li key={i} className="text-slate-200 text-xl font-bold leading-tight flex items-start justify-end gap-3"><span className="text-right">{s}</span> <span className="text-emerald-500 mt-1">✓</span></li>)}
+                       <div className="p-10 border-r-8 border-emerald-500 bg-emerald-50 space-y-4">
+                          <h5 className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">צמיחה (SO): חוזקות + הזדמנויות</h5>
+                          <ul className="space-y-3">
+                             {item.analysis?.strategiesSO.map((s, i) => <li key={i} className="text-xl font-bold text-brand-dark leading-tight">← {s}</li>)}
                           </ul>
                        </div>
-                       <div className="bg-cyan-brand/5 p-10 rounded-[3.5rem] border border-cyan-brand/10 space-y-6">
-                          <h5 className="text-[10px] font-black text-cyan-brand uppercase tracking-[0.3em] text-right">MIN-MAX (WO): DEVELOPMENT STRATEGIES</h5>
-                          <ul className="space-y-4">
-                             {item.analysis?.strategiesWO.map((s, i) => <li key={i} className="text-slate-200 text-xl font-bold leading-tight flex items-start justify-end gap-3"><span className="text-right">{s}</span> <span className="text-cyan-brand mt-1">○</span></li>)}
+                       <div className="p-10 border-r-8 border-brand-accent bg-blue-50 space-y-4">
+                          <h5 className="text-[10px] font-black text-brand-accent uppercase tracking-widest">שיפור (WO): חולשות + הזדמנויות</h5>
+                          <ul className="space-y-3">
+                             {item.analysis?.strategiesWO.map((s, i) => <li key={i} className="text-xl font-bold text-brand-dark leading-tight">← {s}</li>)}
                           </ul>
                        </div>
                     </div>
                     <div className="space-y-8">
-                       <div className="bg-amber-500/5 p-10 rounded-[3.5rem] border border-amber-500/10 space-y-6">
-                          <h5 className="text-[10px] font-black text-amber-400 uppercase tracking-[0.3em] text-right">MAX-MIN (ST): DEFENSIVE STRATEGIES</h5>
-                          <ul className="space-y-4">
-                             {item.analysis?.strategiesST.map((s, i) => <li key={i} className="text-slate-200 text-xl font-bold leading-tight flex items-start justify-end gap-3"><span className="text-right">{s}</span> <span className="text-amber-500 mt-1">🛡️</span></li>)}
+                       <div className="p-10 border-r-8 border-amber-500 bg-amber-50 space-y-4">
+                          <h5 className="text-[10px] font-black text-amber-700 uppercase tracking-widest">הגנה (ST): חוזקות + איומים</h5>
+                          <ul className="space-y-3">
+                             {item.analysis?.strategiesST.map((s, i) => <li key={i} className="text-xl font-bold text-brand-dark leading-tight">← {s}</li>)}
                           </ul>
                        </div>
-                       <div className="bg-rose-500/5 p-10 rounded-[3.5rem] border border-rose-500/10 space-y-6">
-                          <h5 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] text-right">MIN-MIN (WT): SURVIVAL STRATEGIES</h5>
-                          <ul className="space-y-4">
-                             {item.analysis?.strategiesWT.map((s, i) => <li key={i} className="text-slate-200 text-xl font-bold leading-tight flex items-start justify-end gap-3"><span className="text-right">{s}</span> <span className="text-rose-400 mt-1">⚠️</span></li>)}
+                       <div className="p-10 border-r-8 border-red-500 bg-red-50 space-y-4">
+                          <h5 className="text-[10px] font-black text-red-700 uppercase tracking-widest">הישרדות (WT): חולשות + איומים</h5>
+                          <ul className="space-y-3">
+                             {item.analysis?.strategiesWT.map((s, i) => <li key={i} className="text-xl font-bold text-brand-dark leading-tight">← {s}</li>)}
                           </ul>
                        </div>
                     </div>
                  </div>
 
-                 <div className="bg-purple-600/10 p-12 rounded-[4rem] border border-purple-500/20 text-right shadow-inner">
-                    <h5 className="text-[10px] font-black text-purple-400 uppercase tracking-[0.5em] mb-6 italic">EXECUTIVE SYNTHESIS / שורה תחתונה</h5>
-                    <p className="text-3xl font-black text-white italic leading-[1.2] tracking-tight">"{item.analysis?.executiveSummary}"</p>
+                 <div className="p-12 bg-brand-dark text-white space-y-6">
+                    <h5 className="text-[11px] font-black text-brand-accent uppercase tracking-[0.5em] italic">EXECUTIVE SYNTHESIS / שורה תחתונה</h5>
+                    <p className="text-3xl md:text-5xl font-black italic tracking-tighter leading-tight">"{item.analysis?.executiveSummary}"</p>
                  </div>
               </div>
             ))
