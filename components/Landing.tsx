@@ -136,12 +136,12 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       {/* 1. Hero Section - עם רקע תמונה סופר-עדין וחופשי */}
       <section className="w-full max-w-6xl text-center space-y-12 md:space-y-24 mb-48 relative z-10 py-12">
         
-        {/* תמונת רקע - חופשית, ללא מסגרת, כמעט שקופה */}
+        {/* תמונת רקע - הניראות הועלתה מעט (מ-0.08 ל-0.15) */}
         <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
           <img 
             src="/hero-bg.jpg" 
             alt="" 
-            className="w-full h-full object-cover grayscale opacity-[0.08] scale-110"
+            className="w-full h-full object-cover grayscale opacity-[0.15] scale-110"
             onError={(e) => { 
               if (e.currentTarget.src.includes('/hero-bg.jpg')) {
                   e.currentTarget.src = 'hero-bg.jpg';
