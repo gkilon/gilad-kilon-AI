@@ -63,13 +63,13 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
   const sizes = { 
     sm: 'text-xl md:text-3xl', 
     md: 'text-3xl md:text-5xl', 
-    lg: 'text-5xl md:text-[9rem]' 
+    lg: 'text-5xl md:text-[6rem]' 
   };
   
   const subSizes = {
     sm: 'text-[9px] md:text-[14px]',
     md: 'text-[12px] md:text-[20px]',
-    lg: 'text-[13px] md:text-[34px]'
+    lg: 'text-[13px] md:text-[24px]' 
   };
 
   const color = dark ? 'text-brand-dark' : 'text-white';
@@ -148,20 +148,25 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       <section className="w-full max-w-6xl text-center space-y-12 md:space-y-16 mb-48 relative z-10">
         <div className="relative inline-block px-4 md:px-10 max-w-full group">
           
-          {/* Hero Background Image - תיקון נתיב וניראות */}
+          {/* Hero Background Image - ללא Grayscale ועם Opacity מלא */}
           <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden rounded-3xl border-4 border-brand-dark/5 shadow-2xl">
             <img 
-              src="hero-bg.jpg" 
+              src="/hero-bg.jpg" 
               alt="Gilad at Work" 
-              className="w-full h-full object-cover grayscale opacity-25 group-hover:scale-105 transition-transform duration-[2000ms] ease-out"
+              className="w-full h-full object-cover opacity-100 group-hover:scale-105 transition-transform duration-[2000ms] ease-out"
               onError={(e) => { 
-                console.warn("Hero image failed to load, path attempted: hero-bg.jpg");
-                e.currentTarget.style.display = 'none'; 
+                console.warn("Hero image failed to load, path attempted: /hero-bg.jpg");
+                if (e.currentTarget.src.includes('/hero-bg.jpg')) {
+                    e.currentTarget.src = 'hero-bg.jpg';
+                } else {
+                    e.currentTarget.style.display = 'none'; 
+                }
               }}
             />
           </div>
 
-          <div className="relative z-10 py-16 md:py-24 bg-white/40 backdrop-blur-md rounded-3xl border-2 border-white/50">
+          {/* ללא רקע לבן חוסם וללא טשטוש כדי לראות את התמונה בבירור */}
+          <div className="relative z-10 py-16 md:py-20 bg-transparent rounded-3xl">
             <BrandLogo size="lg" />
             <div className="absolute top-0 bottom-0 left-0 w-px bg-brand-dark/10"></div>
             <div className="absolute top-0 bottom-0 right-0 w-px bg-brand-dark/10"></div>
@@ -195,7 +200,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         </div>
       </section>
 
-      {/* Other sections omitted for brevity but remain the same... */}
+      {/* Expertise Section */}
       <section className="w-full max-w-6xl mb-48 relative z-10">
         <div className="flex items-center justify-between mb-16 px-6">
           <h2 className="text-[12px] font-black uppercase tracking-[0.5em] text-brand-dark">תחומי התמחות</h2>
