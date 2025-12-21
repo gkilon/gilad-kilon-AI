@@ -185,11 +185,14 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   return (
     <div className="min-h-screen flex flex-col items-center pt-24 md:pt-40 pb-40 px-6 relative overflow-hidden">
       
-      {/* Background Layering - Using ONLY local hero.jpg with clarity */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* Background Layering - Subtle Watermark Style */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center">
          <div 
-           className="absolute top-0 left-0 w-full h-full opacity-[0.5] bg-cover bg-center"
-           style={{ backgroundImage: 'url("hero.jpg")' }}
+           className="w-full h-full opacity-[0.1] bg-no-repeat bg-center transform scale-75"
+           style={{ 
+             backgroundImage: 'url("hero.jpg")',
+             backgroundSize: 'contain'
+           }}
          ></div>
          
          <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px]"></div>
