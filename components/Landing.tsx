@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getSystemConfig } from '../firebase';
 import { ClientLogo } from '../types';
 
-// Sophisticated Architectural Stroke Icons
+// Sophisticated Architectural Stroke Icons for Expertise
 const ExpertiseIcons = {
   Leadership: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
@@ -140,24 +140,19 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
 
 export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNode }> = ({ title, desc, icon }) => (
   <div className="studio-card p-10 border-brand-dark flex flex-col items-start gap-10 hover:bg-white transition-all h-full group relative overflow-hidden bg-gradient-to-br from-white to-brand-accent/[0.03] shadow-[8px_8px_0px_rgba(26,26,26,0.03)]">
-    {/* Permanent subtle accent light */}
     <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/[0.04] rounded-bl-full translate-x-12 -translate-y-12 transition-transform duration-700 ease-out group-hover:translate-x-0 group-hover:translate-y-0"></div>
-    
     <div className="w-14 h-14 text-brand-dark group-hover:text-brand-accent group-hover:scale-110 transition-all z-10 duration-500 border-r-2 border-brand-accent/20 pr-4 group-hover:border-brand-accent">
       {icon}
     </div>
-    
     <div className="space-y-4 z-10 text-right w-full">
       <div className="flex items-center gap-3 justify-end mb-2">
         <h4 className="text-2xl font-black italic leading-none group-hover:text-brand-accent transition-colors">{title}</h4>
-        {/* Permanent accent focus dot */}
-        <div className="w-2 h-2 rounded-full bg-brand-accent opacity-40 group-hover:opacity-100 group-hover:scale-125 transition-all shadow-[0_0_8px_rgba(90,125,154,0.3)]"></div>
+        <div className="w-2 h-2 rounded-full bg-brand-accent opacity-40 group-hover:opacity-100 group-hover:scale-125 transition-all"></div>
       </div>
       <p className="text-brand-muted font-medium leading-relaxed text-sm md:text-[17px] border-r border-brand-accent/10 pr-6 group-hover:border-brand-accent transition-all">
         {desc}
       </p>
     </div>
-    
     <div className="absolute bottom-0 left-0 w-full h-[3px] bg-brand-accent/10 group-hover:bg-brand-accent transition-all duration-700"></div>
   </div>
 );
@@ -190,10 +185,16 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   return (
     <div className="min-h-screen flex flex-col items-center pt-24 md:pt-40 pb-40 px-6 relative overflow-hidden">
       
-      {/* Background Subtle Color Glows for "Alive" feel */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[1000px] pointer-events-none z-0">
-        <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px] animate-pulse"></div>
-        <div className="absolute bottom-[100px] left-[-200px] w-[600px] h-[600px] bg-brand-accent/[0.04] rounded-full blur-[120px] animate-pulse" style={{animationDelay: '2s'}}></div>
+      {/* Background Subtle Color Glows for "Alive" feel - Restored with precise layering */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+         {/* The Big Background Image (Restored) */}
+         <div 
+           className="absolute top-0 left-0 w-full h-full opacity-[0.03] grayscale bg-cover bg-center"
+           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80")' }}
+         ></div>
+         
+         <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px] animate-pulse"></div>
+         <div className="absolute bottom-[100px] left-[-200px] w-[600px] h-[600px] bg-brand-accent/[0.04] rounded-full blur-[120px] animate-pulse" style={{animationDelay: '2s'}}></div>
       </div>
 
       {/* Hero Section */}
