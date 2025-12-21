@@ -18,8 +18,8 @@ import CommunicationDNA from './components/CommunicationDNA';
 import TheLab from './components/TheLab';
 import ClientsPage from './components/ClientsPage';
 import BrandAssets from './components/BrandAssets';
-import ArticlesPage from './components/ArticlesPage.tsx';
-import ArticleDetail from './components/ArticleDetail.tsx';
+import ArticlesPage from './components/ArticlesPage';
+import ArticleDetail from './components/ArticleDetail';
 
 const FloatingWhatsApp: React.FC = () => (
   <a 
