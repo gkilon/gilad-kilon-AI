@@ -4,12 +4,56 @@ import { getToolRecommendation } from '../geminiService';
 import { getSystemConfig } from '../firebase';
 import { ClientLogo, ViewType } from '../types';
 
+// Sophisticated Graphics for Expertise
+const ExpertiseIcons = {
+  Leadership: () => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M12 3L4 19h16L12 3z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M12 3v16" stroke="currentColor" strokeWidth="0.5" strokeOpacity="0.3" />
+      <circle cx="12" cy="8" r="1.5" fill="var(--brand-accent)" />
+    </svg>
+  ),
+  Board: () => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <rect x="4" y="4" width="16" height="16" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M4 12h16M12 4v16" stroke="currentColor" strokeWidth="1" strokeOpacity="0.2" />
+      <circle cx="12" cy="12" r="3" stroke="var(--brand-accent)" strokeWidth="2" />
+    </svg>
+  ),
+  Organization: () => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M3 21h18M5 21V7l7-4 7 4v14" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M9 12h1M9 15h1M14 12h1M14 15h1" stroke="var(--brand-accent)" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  ),
+  Partnership: () => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <circle cx="8" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="16" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" fill="var(--brand-accent)" />
+    </svg>
+  ),
+  Tech: () => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="1" strokeOpacity="0.3" />
+      <rect x="9" y="9" width="6" height="6" rx="1" stroke="var(--brand-accent)" strokeWidth="2" />
+    </svg>
+  ),
+  Coaching: () => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" strokeOpacity="0.2" />
+      <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="1.5" fill="var(--brand-accent)" />
+    </svg>
+  )
+};
+
 // Icons for the Lab Tools
 export const Icons = {
   WOOP: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
       <circle cx="12" cy="12" r="10" strokeOpacity="0.2"/>
-      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3"/>
+      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" className="text-brand-accent"/>
       <path d="M12 12l5 5" strokeWidth="3"/>
       <circle cx="12" cy="12" r="2" fill="currentColor"/>
     </svg>
@@ -19,41 +63,41 @@ export const Icons = {
       <rect x="3" y="3" width="18" height="18" rx="2" strokeOpacity="0.2"/>
       <path d="M3 12h18" strokeOpacity="0.2"/>
       <path d="M12 3v18" strokeOpacity="0.2"/>
-      <path d="M7 7l10 10" stroke="currentColor" strokeWidth="2.5"/>
+      <path d="M7 7l10 10" stroke="currentColor" strokeWidth="2.5" className="text-brand-accent"/>
       <path d="M17 7l-10 10" stroke="currentColor" strokeWidth="2.5"/>
     </svg>
   ),
   Pulse: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
-      <path d="M3 12h3l3-9 4 18 3-9h5" stroke="currentColor" strokeWidth="2.5"/>
+      <path d="M3 12h3l3-9 4 18 3-9h5" stroke="currentColor" strokeWidth="2.5" className="text-brand-accent"/>
       <circle cx="13" cy="12" r="2" fill="var(--brand-accent)" stroke="none" className="animate-pulse"/>
     </svg>
   ),
   Tasks: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
       <rect x="3" y="5" width="18" height="14" rx="2" strokeOpacity="0.2"/>
-      <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="3"/>
+      <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="3" className="text-brand-accent"/>
       <path d="M3 5h18" strokeOpacity="0.2"/>
     </svg>
   ),
   Ideas: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeOpacity="0.3"/>
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="3"/>
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="3" className="text-brand-accent"/>
     </svg>
   ),
   DNA: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
       <path d="M8 3c0 4.418 3.582 8 8 8s8-3.582 8-8" strokeOpacity="0.2"/>
       <path d="M0 21c0-4.418 3.582-8 8-8s8 3.582 8 8" strokeOpacity="0.2"/>
-      <circle cx="8" cy="13" r="3" stroke="currentColor" strokeWidth="2.5"/>
+      <circle cx="8" cy="13" r="3" stroke="currentColor" strokeWidth="2.5" className="text-brand-accent"/>
       <circle cx="16" cy="11" r="3" stroke="currentColor" strokeWidth="2.5"/>
     </svg>
   ),
   Feedback: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
       <circle cx="12" cy="12" r="9" strokeOpacity="0.2"/>
-      <path d="M12 3a9 9 0 0 1 0 18" stroke="currentColor" strokeWidth="3"/>
+      <path d="M12 3a9 9 0 0 1 0 18" stroke="currentColor" strokeWidth="3" className="text-brand-accent"/>
       <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
     </svg>
   )
@@ -61,15 +105,21 @@ export const Icons = {
 
 export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> = ({ size = 'lg', dark = true }) => {
   const sizes = { 
-    sm: 'text-xl md:text-3xl', 
+    sm: 'text-xl md:text-2xl', 
     md: 'text-3xl md:text-5xl', 
     lg: 'text-5xl md:text-[6rem]' 
   };
   
   const subSizes = {
-    sm: 'text-[7px] md:text-[10px]', 
-    md: 'text-[9px] md:text-[14px]', 
+    sm: 'text-[4px] md:text-[5px]', 
+    md: 'text-[8px] md:text-[12px]', 
     lg: 'text-[11px] md:text-[18px]' 
+  };
+
+  const spacing = {
+    sm: 'mt-0 md:mt-0.5',
+    md: 'mt-1.5 md:mt-2.5',
+    lg: 'mt-2 md:mt-4'
   };
 
   const color = dark ? 'text-brand-dark' : 'text-white';
@@ -81,26 +131,34 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
         KILON
         <span className="text-brand-accent absolute top-0 left-[100%]">.</span>
       </div>
-      <div className={`relative ${subSizes[size]} tracking-[0.05em] mt-2 md:mt-4 font-bold opacity-70 whitespace-nowrap text-center`}>
+      <div className={`relative ${subSizes[size]} tracking-[0.1em] ${spacing[size]} font-bold opacity-60 whitespace-nowrap text-center`}>
         <span>Deeply Rooted Leadership</span>
       </div>
     </div>
   );
 };
 
-export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: string }> = ({ title, desc, icon }) => (
-  <div className="studio-card p-8 border-brand-dark flex flex-col items-start gap-6 hover:bg-white hover:shadow-[10px_10px_0px_rgba(90,125,154,0.1)] transition-all h-full group relative overflow-hidden">
-    <div className="absolute top-0 right-0 w-24 h-24 bg-brand-accent/5 rounded-bl-full translate-x-12 -translate-y-12 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-500"></div>
-    <div className="text-4xl grayscale group-hover:grayscale-0 transition-all z-10">{icon}</div>
-    <div className="space-y-4 z-10 text-right w-full">
-      <h4 className="text-2xl font-black italic leading-none group-hover:text-brand-accent transition-colors">{title}</h4>
-      <p className="text-brand-muted font-medium leading-relaxed text-sm md:text-base">{desc}</p>
+export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNode }> = ({ title, desc, icon }) => (
+  <div className="studio-card p-8 border-brand-dark flex flex-col items-start gap-8 hover:bg-white transition-all h-full group relative overflow-hidden bg-gradient-to-br from-white to-brand-accent/[0.03]">
+    <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-bl-full translate-x-16 -translate-y-16 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700 ease-out"></div>
+    <div className="w-14 h-14 text-brand-dark group-hover:text-brand-accent group-hover:scale-110 transition-all z-10 duration-500">
+      {icon}
     </div>
+    <div className="space-y-4 z-10 text-right w-full">
+      <div className="flex items-center gap-2 justify-end">
+        <h4 className="text-2xl font-black italic leading-none group-hover:text-brand-accent transition-colors">{title}</h4>
+        <div className="w-1.5 h-1.5 rounded-full bg-brand-accent/40 group-hover:bg-brand-accent transition-colors"></div>
+      </div>
+      <p className="text-brand-muted font-medium leading-relaxed text-sm md:text-base border-r-2 border-brand-accent/10 pr-4 group-hover:border-brand-accent transition-all">
+        {desc}
+      </p>
+    </div>
+    <div className="absolute bottom-0 left-0 w-full h-1 bg-brand-accent scale-x-0 group-hover:scale-x-100 transition-transform origin-right duration-700"></div>
   </div>
 );
 
 export const ToolEntry: React.FC<{ title: string, desc: string, onClick: () => void, icon: React.ReactNode }> = ({ title, desc, onClick, icon }) => (
-  <div onClick={onClick} className="studio-card p-8 md:p-10 rounded-none cursor-pointer group flex flex-col justify-between border-brand-dark min-h-[340px] h-full shadow-[8px_8px_0px_rgba(26,26,26,0.05)] hover:bg-white transition-all">
+  <div onClick={onClick} className="studio-card p-8 md:p-10 rounded-none cursor-pointer group flex flex-col justify-between border-brand-dark min-h-[340px] h-full shadow-[8px_8px_0px_rgba(26,26,26,0.05)] hover:bg-white hover:shadow-[10px_10px_0px_var(--brand-accent)] transition-all">
     <div className="w-16 h-16 group-hover:scale-110 transition-transform duration-500 text-brand-dark group-hover:text-brand-accent mb-6">
       {icon}
     </div>
@@ -129,19 +187,17 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       
       {/* Background Subtle Color Accents */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[800px] pointer-events-none z-0">
-        <div className="absolute top-[-200px] right-[-100px] w-[600px] h-[600px] bg-brand-accent/5 rounded-full blur-[120px]"></div>
-        <div className="absolute top-[400px] left-[-200px] w-[500px] h-[500px] bg-brand-accent/[0.03] rounded-full blur-[100px]"></div>
+        <div className="absolute top-[-200px] right-[-100px] w-[600px] h-[600px] bg-brand-accent/10 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[400px] left-[-200px] w-[500px] h-[500px] bg-brand-accent/[0.05] rounded-full blur-[100px]"></div>
       </div>
 
-      {/* 1. Hero Section - עם רקע תמונה סופר-עדין וחופשי */}
+      {/* 1. Hero Section */}
       <section className="w-full max-w-6xl text-center space-y-12 md:space-y-24 mb-48 relative z-10 py-12">
-        
-        {/* תמונת רקע - הניראות הועלתה מעט (מ-0.08 ל-0.15) */}
         <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
           <img 
             src="/hero-bg.jpg" 
             alt="" 
-            className="w-full h-full object-cover grayscale opacity-[0.15] scale-110"
+            className="w-full h-full object-cover grayscale opacity-[0.12] scale-110"
             onError={(e) => { 
               if (e.currentTarget.src.includes('/hero-bg.jpg')) {
                   e.currentTarget.src = 'hero-bg.jpg';
@@ -167,7 +223,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             <div className="flex justify-center pt-8">
               <button 
                 onClick={() => onEnterTool('lab')}
-                className="group bg-brand-dark text-white px-12 py-8 font-black text-xl uppercase tracking-widest shadow-[12px_12px_0px_#5a7d9a] active:scale-95 transition-all flex items-center justify-center gap-4 border-2 border-brand-dark"
+                className="group bg-brand-dark text-white px-12 py-8 font-black text-xl uppercase tracking-widest shadow-[12px_12px_0px_var(--brand-accent)] active:scale-95 transition-all flex items-center justify-center gap-4 border-2 border-brand-dark hover:bg-brand-accent hover:border-brand-accent"
               >
                 <span>כניסה למעבדה (The Lab)</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 animate-pulse">
@@ -192,12 +248,12 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: 'פיתוח מנהיגות ומנהלים', desc: 'חיזוק יכולות המנהל ביום-יום הארגוני. עבודה משותפת על תוצאות עסקיות ואנושיות.', icon: '🏔️' },
-            { title: 'ליווי הנהלות וארגונים', desc: 'גיבוש צוות ההנהלה ליחידה מסונכרנת אחת. קביעת כללי משחק שעובדים בשטח.', icon: '🤝' },
-            { title: 'ייעוץ ארגוני מערכתי', desc: 'ליווי שינויים עמוקים והתאמת הארגון למציאות משתנה ולנסיבות השטח.', icon: '🏗️' },
-            { title: 'בניית שותפויות וממשקים', desc: 'בניית ממשקי עבודה חזקים על בסיס מודל חמשת התנאים ואמון הדדי.', icon: '💎' },
-            { title: 'ניהול בעידן הטכנולוגי', desc: 'הטמעת כלי עבודה מתקדמים כחלק אינטגרלי מהניהול - לפנות זמן לאנשים.', icon: '🤖' },
-            { title: 'ייעוץ אישי (Coaching)', desc: 'ליווי אישי ודיסקרטי בצמתים קריטיים וחיזוק התפקוד הניהולי.', icon: '🎯' }
+            { title: 'פיתוח מנהיגות ומנהלים', desc: 'חיזוק יכולות המנהל ביום-יום הארגוני. עבודה משותפת על תוצאות עסקיות ואנושיות.', icon: <ExpertiseIcons.Leadership /> },
+            { title: 'ליווי הנהלות וארגונים', desc: 'גיבוש צוות ההנהלה ליחידה מסונכרנת אחת. קביעת כללי משחק שעובדים בשטח.', icon: <ExpertiseIcons.Board /> },
+            { title: 'ייעוץ ארגוני מערכתי', desc: 'ליווי שינויים עמוקים והתאמת הארגון למציאות משתנה ולנסיבות השטח.', icon: <ExpertiseIcons.Organization /> },
+            { title: 'בניית שותפויות וממשקים', desc: 'בניית ממשקי עבודה חזקים על בסיס מודל חמשת התנאים ואמון הדדי.', icon: <ExpertiseIcons.Partnership /> },
+            { title: 'ניהול בעידן הטכנולוגי', desc: 'הטמעת כלי עבודה מתקדמים כחלק אינטגרלי מהניהול - לפנות זמן לאנשים.', icon: <ExpertiseIcons.Tech /> },
+            { title: 'ייעוץ אישי (Coaching)', desc: 'ליווי אישי ודיסקרטי בצמתים קריטיים וחיזוק התפקוד הניהולי.', icon: <ExpertiseIcons.Coaching /> }
           ].map((exp, idx) => (
             <ExpertiseCard key={idx} {...exp} />
           ))}

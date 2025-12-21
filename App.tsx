@@ -5,7 +5,6 @@ import { fetchFromCloud, isFirebaseReady, getSystemConfig, syncToCloud, deleteFr
 import Dashboard from './components/Dashboard';
 import WoopWizard from './components/WoopWizard';
 import Header from './components/Header';
-// Fix: removed ArticleCard import which does not exist in Landing.tsx
 import Landing from './components/Landing';
 import IdeaManager from './components/IdeaManager';
 import TeamSynergy from './components/TeamSynergy';
@@ -20,6 +19,8 @@ import TheLab from './components/TheLab';
 import ToolTeaser from './components/ToolTeaser';
 import ClientsPage from './components/ClientsPage';
 import BrandAssets from './components/BrandAssets';
+import ArticlesPage from './components/ArticlesPage';
+import ArticleDetail from './components/ArticleDetail';
 
 const FloatingWhatsApp: React.FC = () => (
   <a 
@@ -44,6 +45,7 @@ const App: React.FC = () => {
   const [ideas, setIdeas] = useState<IdeaEntry[]>([]);
   const [generalTasks, setGeneralTasks] = useState<Task[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(false);
   
   const [session, setSession] = useState<UserSession | null>(() => {
@@ -52,7 +54,6 @@ const App: React.FC = () => {
   });
 
   const [view, setView] = useState<ViewType>(() => {
-    // בדיקה האם הגענו מקישור דופק צוותי
     const params = new URLSearchParams(window.location.search);
     if (params.get('view') === 'synergy' && params.get('teamId')) return 'synergy';
     return 'home';
@@ -61,7 +62,9 @@ const App: React.FC = () => {
   const dbReady = isFirebaseReady();
 
   useEffect(() => {
-    getSystemConfig().then(config => setArticles(config.articles || []));
+    getSystemConfig().then(config => {
+      setArticles(config.articles || []);
+    });
     
     if (session) {
       localStorage.setItem('gk_session', JSON.stringify(session));
@@ -145,13 +148,17 @@ const App: React.FC = () => {
       case 'communication': return <CommunicationDNA onBack={backToLab} />;
       case 'about': return <About />;
       case 'clients': return <ClientsPage />;
+      case 'admin': return <AdminPanel onBack={() => setView('home')} onGoToAssets={() => setView('brand_assets')} />;
+      case 'brand_assets': return <BrandAssets onBack={() => setView('admin')} />;
+      case 'articles': return <ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); setView('article_detail'); }} />;
+      case 'article_detail': return selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => setView('articles')} /> : <ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); setView('article_detail'); }} />;
       default: return <Landing onEnterTool={(v) => setView(v as ViewType)} />;
     }
   };
 
   return (
     <div className="min-h-screen" dir="rtl">
-      <Header onNavigate={(v) => setView(v as ViewType)} currentView={view} session={session} onLogout={() => setSession(null)} />
+      <Header onNavigate={(v) => { setSelectedArticle(null); setView(v as ViewType); }} currentView={view} session={session} onLogout={() => setSession(null)} />
       <main className="w-full mx-auto">{renderView()}</main>
       <FloatingWhatsApp />
     </div>

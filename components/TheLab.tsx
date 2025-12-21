@@ -28,9 +28,9 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
       <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-12 border-b-2 border-brand-dark pb-12">
         <div className="space-y-6 text-right">
           <span className="text-[13px] font-black text-brand-accent uppercase tracking-[0.6em]">PRACTICAL WORKSPACE</span>
-          <h1 className="text-7xl md:text-9xl font-black italic tracking-tighter leading-none">המעבדה.</h1>
+          <h1 className="text-7xl md:text-9xl font-black italic tracking-tighter leading-none">המעבדה<span className="text-brand-accent">.</span></h1>
         </div>
-        <div className="bg-brand-dark text-white px-10 py-5 text-[12px] font-black uppercase tracking-[0.3em] shadow-[8px_8px_0px_#2563eb] mb-2">
+        <div className="bg-brand-dark text-white px-10 py-5 text-[12px] font-black uppercase tracking-[0.3em] shadow-[8px_8px_0px_var(--brand-accent)] mb-2">
           {isLoggedIn ? 'PREMIUM ACCESS' : 'GUEST MODE'}
         </div>
       </div>
@@ -51,7 +51,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
 
       {/* 3. באנר אורחים */}
       {!isLoggedIn && (
-        <div className="mb-24 border-4 border-brand-dark bg-brand-beige p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 animate-fadeIn shadow-[15px_15px_0px_#2563eb]">
+        <div className="mb-24 border-4 border-brand-dark bg-brand-beige p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 animate-fadeIn shadow-[15px_15px_0px_var(--brand-accent)]">
           <div className="space-y-6 text-right">
             <div className="inline-block bg-brand-dark text-white px-4 py-1 text-[10px] font-black uppercase tracking-widest">REGISTRATION REQUIRED</div>
             <h3 className="text-3xl md:text-5xl font-black text-brand-dark italic tracking-tighter leading-none">הכלים מחכים למרחב שלך.</h3>
@@ -114,7 +114,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
         />
       </div>
 
-      <div className="mt-32 p-16 border-4 border-brand-dark text-center space-y-8 italic bg-white shadow-[10px_10px_0px_rgba(0,0,0,0.05)]">
+      <div className="mt-32 p-16 border-4 border-brand-dark text-center space-y-8 italic bg-white shadow-[10px_10px_0px_var(--brand-accent)]">
         <p className="text-2xl md:text-3xl text-brand-dark font-black tracking-tight leading-relaxed max-w-3xl mx-auto">
           "הכלים האלה לא מחליפים את החשיבה שלך, הם עוזרים לה לקרות מהר יותר וטוב יותר."
         </p>
