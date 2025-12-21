@@ -55,6 +55,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewType>('home');
   const dbReady = isFirebaseReady();
 
+  // מאמרי ברירת מחדל קבועים - אלו תמיד יופיעו אלא אם יימחקו במפורש
   const defaultArticles: Article[] = [
     {
       id: 'market-vs-strategy-2024',
@@ -69,7 +70,13 @@ const App: React.FC = () => {
   useEffect(() => {
     getSystemConfig().then(config => {
       const dbArticles = config.articles || [];
-      setArticles(dbArticles.length > 0 ? dbArticles : defaultArticles);
+      // מיזוג מאמרים: לוקחים את הדיפולטים ומוסיפים את אלו מה-DB (מוודאים שאין כפילויות לפי ID)
+      const mergedArticles = [...defaultArticles];
+      dbArticles.forEach(dbArt => {
+        const exists = mergedArticles.find(a => a.id === dbArt.id);
+        if (!exists) mergedArticles.push(dbArt);
+      });
+      setArticles(mergedArticles);
     });
     
     if (session) {
@@ -91,8 +98,6 @@ const App: React.FC = () => {
       ]);
       setProjects(p as ProjectChange[]);
       setIdeas(i as IdeaEntry[]);
-      // Handle the fact that general_tasks is fetched as an array of items with a tasks array or single tasks
-      // For simplicity, let's assume we store the main tasks list in one doc per team
       const teamTasksDoc = t.find(doc => doc.id === 'main_list');
       if (teamTasksDoc && (teamTasksDoc as any).tasks) {
         setGeneralTasks((teamTasksDoc as any).tasks);
@@ -106,7 +111,6 @@ const App: React.FC = () => {
   const handleUpdateTasks = async (newTasks: Task[]) => {
     setGeneralTasks(newTasks);
     if (session && dbReady) {
-      // Store tasks list under a stable ID for the team
       await syncToCloud('general_tasks', {
         id: 'main_list',
         managerId: session.teamId,
