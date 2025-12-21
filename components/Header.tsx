@@ -1,73 +1,165 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { BrandLogo } from './Landing';
-import { UserSession } from '../types';
+import { UserSession, ViewType } from '../types';
 
 interface HeaderProps {
-  onNavigate: (view: string) => void;
+  onNavigate: (view: ViewType) => void;
   currentView: string;
   session: UserSession | null;
   onLogout: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLogout }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isAdmin = session?.teamId === 'admin';
 
-  return (
-    <header className="px-6 md:px-12 py-6 sticky top-0 z-50 bg-brand-beige/90 backdrop-blur-xl border-b border-brand-dark/5">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        
-        <div className="cursor-pointer" onClick={() => onNavigate('home')}>
-          <BrandLogo size="sm" />
-        </div>
+  const navItems: { id: ViewType; label: string }[] = [
+    { id: 'home', label: 'דף הבית' },
+    { id: 'about', label: 'אודות' },
+    { id: 'clients', label: 'לקוחות' },
+    { id: 'articles', label: 'חומרים מקצועיים' },
+  ];
 
-        <nav className="hidden lg:flex items-center">
-          <div className="flex items-center gap-10 border-l border-brand-dark/10 pl-10 ml-10">
-            {[
-              { id: 'about', label: 'אודות' },
-              { id: 'clients', label: 'לקוחות' },
-              { id: 'articles', label: 'חומרים מקצועיים' },
-            ].map(item => (
-              <button 
-                key={item.id}
-                onClick={() => onNavigate(item.id)} 
-                className={`text-[13px] font-bold uppercase tracking-[0.2em] nav-underline transition-all ${currentView === item.id ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
+  const handleNav = (id: ViewType) => {
+    onNavigate(id);
+    setIsMenuOpen(false);
+    // Force scroll to top on mobile nav
+    window.scrollTo(0, 0);
+  };
+
+  return (
+    <>
+      <header className="px-6 md:px-12 py-6 sticky top-0 z-[1000] bg-brand-beige/95 backdrop-blur-xl border-b border-brand-dark/10 w-full">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           
-          <button 
-            onClick={() => onNavigate('lab')} 
-            className={`px-6 py-2 border border-brand-dark/20 rounded-full text-[13px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${currentView === 'lab' || ['dashboard', 'executive', 'synergy', 'ideas', 'communication', 'feedback360'].includes(currentView) ? 'bg-brand-dark text-white' : 'text-brand-dark hover:bg-brand-dark/5'}`}
-          >
-            <span>המעבדה</span>
-            <span className="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></span>
-          </button>
-        </nav>
-        
-        <div className="flex items-center gap-4">
-          {session ? (
-            <div className="flex items-center gap-6">
-              {isAdmin && (
+          <div className="cursor-pointer" onClick={() => handleNav('home')}>
+            <BrandLogo size="sm" />
+          </div>
+
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center">
+            <div className="flex items-center gap-10 border-l border-brand-dark/10 pl-10 ml-10">
+              {navItems.filter(i => i.id !== 'home').map(item => (
                 <button 
-                  onClick={() => onNavigate('admin')}
-                  className={`flex items-center gap-2 px-4 py-2 border-2 border-brand-accent text-brand-accent font-black text-[10px] uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-all ${currentView === 'admin' ? 'bg-brand-accent text-white' : ''}`}
+                  key={item.id}
+                  onClick={() => handleNav(item.id)} 
+                  className={`text-[13px] font-bold uppercase tracking-[0.2em] nav-underline transition-all ${currentView === item.id ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}
                 >
-                  <span>אזור עריכה</span>
-                  <span className="text-sm">⚙️</span>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            
+            <button 
+              onClick={() => handleNav('lab')} 
+              className={`px-6 py-2 border border-brand-dark/20 rounded-full text-[13px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${currentView === 'lab' || ['dashboard', 'executive', 'synergy', 'ideas', 'communication', 'feedback360'].includes(currentView) ? 'bg-brand-dark text-white' : 'text-brand-dark hover:bg-brand-dark/5'}`}
+            >
+              <span>המעבדה (Workspace)</span>
+              <span className="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></span>
+            </button>
+          </nav>
+          
+          {/* Mobile Menu Toggle Button */}
+          <button 
+            onClick={() => setIsMenuOpen(true)}
+            className="lg:hidden p-3 text-brand-dark bg-white border-2 border-brand-dark/10 shadow-sm rounded-none"
+            aria-label="Open Menu"
+          >
+            <div className="w-8 h-5 flex flex-col justify-between items-end">
+              <span className="h-1 bg-brand-dark w-8"></span>
+              <span className="h-1 bg-brand-dark w-5"></span>
+              <span className="h-1 bg-brand-dark w-8"></span>
+            </div>
+          </button>
+
+          <div className="hidden lg:flex items-center gap-4">
+            {session ? (
+              <div className="flex items-center gap-6">
+                {isAdmin && (
+                  <button 
+                    onClick={() => handleNav('admin')}
+                    className="flex items-center gap-2 px-4 py-2 border-2 border-brand-accent text-brand-accent font-black text-[10px] uppercase tracking-widest hover:bg-brand-accent hover:text-white transition-all"
+                  >
+                    <span>אזור עריכה</span>
+                  </button>
+                )}
+                <button onClick={onLogout} className="text-[11px] font-black text-brand-muted hover:text-brand-dark uppercase tracking-widest transition-colors">Logout</button>
+              </div>
+            ) : (
+              <button onClick={() => handleNav('login')} className="px-8 py-2.5 bg-brand-dark text-white rounded-none text-[11px] font-black uppercase tracking-[0.2em] hover:bg-brand-accent transition-all">Login</button>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Full Screen Mobile Menu Overlay - Robust Height and Z-Index */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 bg-white z-[99999] lg:hidden flex flex-col h-[100dvh] w-full overflow-hidden">
+          {/* Mobile Menu Top Bar */}
+          <div className="flex items-center justify-between px-6 py-6 border-b border-brand-dark/10 bg-brand-beige shadow-sm">
+            <div onClick={() => handleNav('home')}>
+              <BrandLogo size="sm" />
+            </div>
+            <button 
+              onClick={() => setIsMenuOpen(false)}
+              className="p-4 text-brand-dark bg-white border-2 border-brand-dark rounded-full shadow-lg active:scale-90 transition-all"
+              aria-label="Close Menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile Menu Content - Scrollable area */}
+          <div className="flex-1 overflow-y-auto bg-white px-8 py-12">
+            <nav className="flex flex-col gap-10 text-right">
+              {navItems.map(item => (
+                <button 
+                  key={item.id}
+                  onClick={() => handleNav(item.id)}
+                  className={`block w-full text-5xl font-black italic tracking-tighter text-right py-2 ${currentView === item.id ? 'text-brand-accent' : 'text-brand-dark'}`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              
+              <div className="h-1.5 w-16 bg-brand-accent/30 mr-0"></div>
+              
+              <button 
+                onClick={() => handleNav('lab')}
+                className="block w-full text-5xl font-black italic tracking-tighter text-brand-accent flex items-center justify-end gap-4 py-2"
+              >
+                <span>המעבדה (Workspace)</span>
+                <span className="w-5 h-5 bg-brand-accent rounded-full animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]"></span>
+              </button>
+            </nav>
+
+            <div className="mt-20 pt-10 border-t-2 border-brand-dark/10 space-y-10 pb-32">
+              {session ? (
+                <div className="space-y-8">
+                  <div className="bg-brand-beige p-8 border-r-8 border-brand-dark shadow-md text-right">
+                    <p className="text-brand-muted font-bold text-xs mb-1 uppercase tracking-widest">מחובר כצוות</p>
+                    <p className="text-brand-dark font-black text-2xl">{isAdmin ? 'מנהל מערכת' : session.teamId}</p>
+                  </div>
+                  {isAdmin && (
+                    <button onClick={() => handleNav('admin')} className="w-full py-5 bg-brand-accent/5 text-brand-accent border-4 border-brand-accent font-black text-2xl italic shadow-lg">
+                      אזור עריכה ⚙️
+                    </button>
+                  )}
+                  <button onClick={onLogout} className="block w-full text-2xl font-black text-brand-muted underline decoration-2 decoration-brand-accent text-right">התנתק מהמערכת</button>
+                </div>
+              ) : (
+                <button onClick={() => handleNav('login')} className="w-full py-8 bg-brand-dark text-white font-black text-2xl shadow-[10px_10px_0px_#2563eb] active:translate-x-1 active:translate-y-1 transition-all">
+                  כניסה למרחב העבודה
                 </button>
               )}
-              <span className="text-[10px] font-black text-brand-dark/40 uppercase hidden md:inline">{isAdmin ? 'ADMIN MODE' : `Team: ${session.teamId}`}</span>
-              <button onClick={onLogout} className="text-[11px] font-black text-brand-muted hover:text-brand-dark uppercase tracking-widest transition-colors">Logout</button>
             </div>
-          ) : (
-            <button onClick={() => onNavigate('login')} className="px-8 py-2.5 bg-brand-dark text-white rounded-none text-[11px] font-black uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-lg">Login</button>
-          )}
+          </div>
         </div>
-      </div>
-    </header>
+      )}
+    </>
   );
 };
 

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getToolRecommendation } from '../geminiService';
 import { getSystemConfig } from '../firebase';
-import { ClientLogo } from '../types';
+import { ClientLogo, ViewType } from '../types';
 
 export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> = ({ size = 'lg', dark = true }) => {
   const sizes = { 
@@ -118,7 +118,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             פשטות. <span className="text-brand-muted/30 italic font-light">עומק.</span> אנושיות.
           </h1>
           <div className="h-2 w-24 bg-brand-dark mx-auto"></div>
-          <p className="text-xl md:text-3xl text-brand-muted max-w-3xl mx-auto font-medium leading-relaxed italic">
+          <p className="text-xl md:text-3xl text-brand-muted max-w-3xl mx-auto font-medium leading-relaxed italic px-4">
             "אני עוזר למנהלים למצוא את העיקר בתוך הרעש. בלי מילים גבוהות, עם עומק מקצועי וכלים שבאמת עובדים."
           </p>
         </div>
@@ -152,8 +152,8 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <div className="h-px flex-1 mx-10 bg-brand-dark/20"></div>
         </div>
         
-        <div className="studio-card p-16 md:p-24 border-brand-dark bg-white shadow-inner">
-          <div className="flex flex-wrap items-center justify-center gap-16 md:gap-32">
+        <div className="studio-card p-16 md:p-24 border-brand-dark bg-white shadow-inner text-center">
+          <div className="flex flex-wrap items-center justify-center gap-12 md:gap-32">
             {clients.length > 0 ? (
               clients.map(client => (
                 <div key={client.id} className="grayscale hover:grayscale-0 transition-all duration-700 opacity-40 hover:opacity-100 flex items-center justify-center h-20 w-40 md:w-56">
@@ -168,7 +168,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             ) : (
               [1, 2, 3, 4, 5].map(i => (
                 <div key={i} className="grayscale opacity-20 flex items-center justify-center h-16 w-32 border border-brand-dark/10 font-black text-[10px] tracking-widest italic">
-                  CLIENT_LOGOS_PENDING_{i}
+                  CLIENT_LOGOS_PENDING
                 </div>
               ))
             )}
@@ -177,44 +177,62 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </section>
 
       {/* 4. The Lab Preview Teaser */}
-      <section className="w-full max-w-6xl mb-48 p-12 md:p-24 border-4 border-brand-dark bg-white shadow-[20px_20px_0px_#1a1a1a]">
-        <div className="flex flex-col md:flex-row gap-20 items-center">
-          <div className="w-full md:w-1/3 space-y-10 text-right">
-            <span className="text-[13px] font-black text-brand-accent uppercase tracking-[0.7em]">THE LAB</span>
-            <h2 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">המעבדה<br/>לניהול.</h2>
-            <p className="text-xl text-brand-muted font-bold leading-relaxed italic">
-              ארגז כלים דיגיטלי מבוסס AI שבניתי כדי לעזור לך לקחת החלטות טובות יותר ולנהל שינוי בצורה שקופה.
-            </p>
-            <button onClick={() => onEnterTool('lab')} className="w-full md:w-auto px-12 py-6 bg-brand-dark text-white font-black uppercase text-sm tracking-[0.3em] hover:bg-brand-accent transition-all shadow-2xl">
-              כניסה למעבדה ←
-            </button>
+      <section className="w-full max-w-6xl mb-48 relative">
+        <div className="relative z-[30] -mb-12 px-4 flex justify-center md:justify-end md:pr-12">
+           <div className="bg-brand-accent text-white p-6 md:p-8 shadow-2xl border-4 border-brand-dark max-w-xs text-right animate-bounce-subtle">
+              <p className="text-lg md:text-xl font-black italic leading-tight">"זה לא אתר רגיל - זה מרחב עבודה עם כלי AI שפיתחתי עבורך."</p>
+              <div className="hidden md:block absolute -bottom-4 right-8 w-8 h-8 bg-brand-accent border-r-4 border-b-4 border-brand-dark rotate-45"></div>
+           </div>
+        </div>
+
+        <div className="p-10 md:p-24 border-4 border-brand-dark bg-white shadow-[15px_15px_0px_#1a1a1a] relative z-[10]">
+          <div className="absolute top-4 left-4 md:top-6 md:left-12 bg-brand-dark text-white px-4 py-1.5 font-black text-[10px] uppercase tracking-[0.3em] shadow-md">
+            Active Workspace
           </div>
-          <div className="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
-             <div onClick={() => onEnterTool('dashboard')} className="p-10 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[10px_10px_0px_rgba(0,0,0,0.05)]">
-                <div className="text-5xl mb-6">🏠</div>
-                <h4 className="text-3xl font-black mb-4 italic">ניהול שינוי (WOOP)</h4>
-                <p className="text-lg opacity-60 font-medium">הופכים רצון לתוכנית עבודה מיוצבת (Home) ומלאת תשוקה (Passion).</p>
-             </div>
-             <div onClick={() => onEnterTool('executive')} className="p-10 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[10px_10px_0px_rgba(0,0,0,0.05)]">
-                <div className="text-5xl mb-6">💎</div>
-                <h4 className="text-3xl font-black mb-4 italic">פורום הנהלה (TOWS)</h4>
-                <p className="text-lg opacity-60 font-medium">הצלבות אסטרטגיות לקבלת החלטות עומק ומיקוד ארגוני.</p>
-             </div>
+          
+          <div className="flex flex-col md:flex-row gap-16 items-center pt-8 md:pt-0">
+            <div className="w-full md:w-1/3 space-y-10 text-right">
+              <span className="text-[13px] font-black text-brand-accent uppercase tracking-[0.7em]">STRATEGIC TOOLS</span>
+              <h2 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">המעבדה<br/>לניהול.</h2>
+              
+              <div className="bg-brand-beige p-6 border-r-8 border-brand-dark shadow-sm">
+                <p className="text-brand-dark font-black text-xl mb-2">מרחב עבודה פרקטי.</p>
+                <p className="text-brand-muted text-sm font-bold leading-relaxed">
+                  כאן אפשר לנתח מצבים, למדוד דופק צוותי ולנהל שינויים בעזרת כלי AI פשוטים שמבוססים על ניסיון מהשטח.
+                </p>
+              </div>
+
+              <button onClick={() => onEnterTool('lab')} className="w-full md:w-auto px-12 py-6 bg-brand-dark text-white font-black uppercase text-sm tracking-[0.3em] hover:bg-brand-accent transition-all shadow-2xl">
+                כניסה למרחב העבודה ←
+              </button>
+            </div>
+            <div className="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div onClick={() => onEnterTool('dashboard')} className="p-10 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[10px_10px_0px_rgba(0,0,0,0.05)]">
+                  <div className="text-5xl mb-6">🎯</div>
+                  <h4 className="text-3xl font-black mb-4 italic">ניהול שינוי (WOOP)</h4>
+                  <p className="text-lg opacity-60 font-medium">הופכים רצון לתוכנית עבודה אמיתית ומשימות לביצוע.</p>
+               </div>
+               <div onClick={() => onEnterTool('executive')} className="p-10 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[10px_10px_0px_rgba(0,0,0,0.05)]">
+                  <div className="text-5xl mb-6">💎</div>
+                  <h4 className="text-3xl font-black mb-4 italic">פורום הנהלה (TOWS)</h4>
+                  <p className="text-lg opacity-60 font-medium">חיבור בין המצב בשוק ליכולות שלכם כדי לקבל החלטות נכונות.</p>
+               </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* 5. AI Consultant Input */}
       <section className="w-full max-w-5xl">
-        <div className="bg-brand-dark rounded-none p-16 md:p-24 text-white relative border-8 border-brand-accent shadow-[30px_30px_0px_rgba(37,99,235,0.2)]">
+        <div className="bg-brand-dark rounded-none p-12 md:p-24 text-white relative border-8 border-brand-accent shadow-[20px_20px_0px_rgba(37,99,235,0.2)] z-[5]">
           <div className="relative z-10 space-y-16 text-right">
             <div className="space-y-6">
               <span className="text-[13px] font-black text-brand-accent uppercase tracking-[0.6em]">DIRECT ACCESS</span>
               <h3 className="text-5xl md:text-8xl font-black italic tracking-tighter">בוא נחשוב יחד.</h3>
-              <p className="text-white/40 text-2xl font-bold max-w-2xl mr-auto leading-relaxed">תאר את האתגר הניהולי שלך כאן, ואמליץ לך על הכלי המתאים ביותר מהמעבדה.</p>
+              <p className="text-white/40 text-xl md:text-2xl font-bold max-w-2xl mr-auto leading-relaxed">תאר את האתגר הניהולי שלך כאן, וה-AI שלי יכווין אותך לכלי המתאים ביותר במעבדה.</p>
             </div>
             <textarea 
-              className="w-full bg-white/5 border-4 border-white/20 rounded-none p-10 md:p-14 text-2xl md:text-4xl outline-none focus:border-brand-accent focus:bg-white/10 transition-all min-h-[250px] resize-none font-bold text-right"
+              className="w-full bg-white/5 border-4 border-white/20 rounded-none p-8 md:p-14 text-2xl md:text-4xl outline-none focus:border-brand-accent focus:bg-white/10 transition-all min-h-[200px] md:min-h-[250px] resize-none font-bold text-right"
               placeholder="מה מעסיק אותך עכשיו?"
               value={consultationText}
               onChange={e => setConsultationText(e.target.value)}
@@ -223,7 +241,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               <button 
                 onClick={handleConsult}
                 disabled={isAiLoading || !consultationText.trim()}
-                className="bg-brand-accent text-white px-20 py-8 rounded-none font-black text-3xl hover:bg-white hover:text-brand-dark transition-all disabled:opacity-20 shadow-2xl active:scale-95"
+                className="bg-brand-accent text-white px-12 md:px-20 py-6 md:py-8 rounded-none font-black text-2xl md:text-3xl hover:bg-white hover:text-brand-dark transition-all disabled:opacity-20 shadow-2xl active:scale-95"
               >
                 {isAiLoading ? "מנתח..." : "שלח להתייעצות ←"}
               </button>
