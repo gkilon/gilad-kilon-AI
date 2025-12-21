@@ -25,11 +25,11 @@ const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               <div className="h-24 w-px bg-brand-dark/10 hidden md:block"></div>
               <div className="text-left font-medium text-brand-dark">
                 <p className="text-2xl font-black tracking-tighter">GILAD KILON</p>
-                <p className="text-[10px] font-bold tracking-[0.3em] text-brand-muted mb-4">MANAGEMENT CONSULTING</p>
+                <p className="text-[10px] font-bold tracking-[0.3em] text-brand-muted mb-4">DEEPLY ROOTED LEADERSHIP</p>
                 <div className="space-y-1 text-sm font-bold opacity-70">
                   <p>052-6417512 | gilad@kilon.co.il</p>
                   <p>www.kilon.co.il</p>
-                  <p className="text-brand-accent">Strategic Depth. Business Simplicity.</p>
+                  <p className="text-brand-accent">Simple. Deep. Real.</p>
                 </div>
               </div>
             </div>
@@ -85,7 +85,7 @@ const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
       <div className="mt-32 p-16 border-4 border-brand-dark text-center space-y-4 bg-white">
          <p className="text-xl font-black italic">"הלוגו הוא לא רק סימן, הוא הבטחה לדיוק."</p>
-         <p className="text-sm text-brand-muted font-bold">כל הגרסאות בודקו וסונכרנו לפי פרופורציית ה-Blue Dot החדשה.</p>
+         <p className="text-sm text-brand-muted font-bold">כל הגרסאות בודקו וסונכרנו לפי המיתוג החדש.</p>
       </div>
     </div>
   );
