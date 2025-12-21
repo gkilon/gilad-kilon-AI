@@ -16,7 +16,6 @@ import AdminPanel from './components/AdminPanel';
 import Feedback360 from './components/Feedback360';
 import CommunicationDNA from './components/CommunicationDNA';
 import TheLab from './components/TheLab';
-import ToolTeaser from './components/ToolTeaser';
 import ClientsPage from './components/ClientsPage';
 import BrandAssets from './components/BrandAssets';
 import ArticlesPage from './components/ArticlesPage';

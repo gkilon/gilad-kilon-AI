@@ -1,48 +1,55 @@
 
 import React, { useState, useEffect } from 'react';
-import { getToolRecommendation } from '../geminiService';
 import { getSystemConfig } from '../firebase';
-import { ClientLogo, ViewType } from '../types';
+import { ClientLogo } from '../types';
 
-// Sophisticated Graphics for Expertise
+// Abstract, Architectural Sophisticated Graphics for Expertise
 const ExpertiseIcons = {
   Leadership: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <path d="M12 3L4 19h16L12 3z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M12 3v16" stroke="currentColor" strokeWidth="0.5" strokeOpacity="0.3" />
+      <path d="M12 21L12 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M7 16L12 21L17 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 3C10 3 8 5 8 8C8 11 12 15 12 15C12 15 16 11 16 8C16 5 14 3 12 3Z" stroke="var(--brand-accent)" strokeWidth="1.5" />
       <circle cx="12" cy="8" r="1.5" fill="var(--brand-accent)" />
     </svg>
   ),
   Board: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <rect x="4" y="4" width="16" height="16" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M4 12h16M12 4v16" stroke="currentColor" strokeWidth="1" strokeOpacity="0.2" />
-      <circle cx="12" cy="12" r="3" stroke="var(--brand-accent)" strokeWidth="2" />
+      <rect x="4" y="4" width="16" height="16" rx="0.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M4 12H20M12 4V20" stroke="currentColor" strokeWidth="0.8" strokeOpacity="0.2" />
+      <rect x="9" y="9" width="6" height="6" fill="var(--brand-accent)" fillOpacity="0.1" stroke="var(--brand-accent)" strokeWidth="1.5" />
+      <path d="M9 12L15 12M12 9L12 15" stroke="var(--brand-accent)" strokeWidth="1" />
     </svg>
   ),
   Organization: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <path d="M3 21h18M5 21V7l7-4 7 4v14" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M9 12h1M9 15h1M14 12h1M14 15h1" stroke="var(--brand-accent)" strokeWidth="2" strokeLinecap="round" />
+      <path d="M2 20H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M6 20V8L12 4L18 8V20" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M10 12H14M10 16H14" stroke="var(--brand-accent)" strokeWidth="2" strokeLinecap="round" />
+      <rect x="11.5" y="7" width="1" height="1" fill="var(--brand-accent)" />
     </svg>
   ),
   Partnership: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <circle cx="8" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="16" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" fill="var(--brand-accent)" />
+      <path d="M4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20C7.58 20 4 16.42 4 12Z" stroke="currentColor" strokeWidth="1" strokeOpacity="0.2" />
+      <path d="M8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16" stroke="var(--brand-accent)" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="8" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="16" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   ),
   Tech: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="1" strokeOpacity="0.3" />
-      <rect x="9" y="9" width="6" height="6" rx="1" stroke="var(--brand-accent)" strokeWidth="2" />
+      <path d="M4 7V5C4 4.45 4.45 4 5 4H19C19.55 4 20 4.45 20 5V7M4 17V19C4 19.55 4.45 20 5 20H19C19.55 20 20 19.55 20 19V17" stroke="currentColor" strokeWidth="1" strokeOpacity="0.3" />
+      <rect x="8" y="8" width="8" height="8" rx="1" stroke="var(--brand-accent)" strokeWidth="1.5" />
+      <path d="M12 8V6M12 18V16M8 12H6M18 12H16" stroke="var(--brand-accent)" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="1" fill="var(--brand-accent)" />
     </svg>
   ),
   Coaching: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" strokeOpacity="0.2" />
-      <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1" strokeOpacity="0.1" />
+      <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M12 6V12L16 16" stroke="var(--brand-accent)" strokeWidth="1.5" strokeLinecap="round" />
       <circle cx="12" cy="12" r="1.5" fill="var(--brand-accent)" />
     </svg>
   )
@@ -139,9 +146,9 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
 };
 
 export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNode }> = ({ title, desc, icon }) => (
-  <div className="studio-card p-8 border-brand-dark flex flex-col items-start gap-8 hover:bg-white transition-all h-full group relative overflow-hidden bg-gradient-to-br from-white to-brand-accent/[0.03]">
+  <div className="studio-card p-8 border-brand-dark flex flex-col items-start gap-8 hover:bg-white transition-all h-full group relative overflow-hidden bg-gradient-to-br from-white to-brand-accent/[0.03] shadow-[8px_8px_0px_rgba(26,26,26,0.03)]">
     <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-bl-full translate-x-16 -translate-y-16 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700 ease-out"></div>
-    <div className="w-14 h-14 text-brand-dark group-hover:text-brand-accent group-hover:scale-110 transition-all z-10 duration-500">
+    <div className="w-14 h-14 text-brand-dark group-hover:text-brand-accent group-hover:scale-110 transition-all z-10 duration-500 border-r-2 border-brand-accent/20 pr-4 group-hover:border-brand-accent">
       {icon}
     </div>
     <div className="space-y-4 z-10 text-right w-full">
