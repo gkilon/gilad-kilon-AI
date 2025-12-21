@@ -21,10 +21,9 @@ const About: React.FC = () => {
         <div className="relative shrink-0 w-full md:w-1/3">
           <div className="relative aspect-square md:aspect-[3/4] overflow-hidden border-2 border-brand-dark shadow-[12px_12px_0px_#1a1a1a] bg-brand-beige">
             <img 
-              src="/gilad.jpg" 
+              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1000&auto=format&fit=crop" 
               alt="גלעד קילון" 
               className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 z-0"
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           </div>
         </div>
