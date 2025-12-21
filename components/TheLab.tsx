@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ToolEntry } from './Landing';
+import { ToolEntry, Icons } from './Landing';
 
 interface TheLabProps {
   onEnterTool: (view: string) => void;
@@ -73,43 +73,43 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
         <ToolEntry 
           title="ניהול שינוי (WOOP)" 
           desc="להפוך רצונות לתוכנית עבודה אמיתית. ה-AI עוזר לך לדייק את המכשולים ואת הצעדים הבאים." 
-          icon="🎯" 
+          icon={<Icons.WOOP />} 
           onClick={() => onEnterTool('dashboard')} 
         />
         <ToolEntry 
           title="פורום הנהלה (TOWS)" 
           desc="כלי שעוזר לקבל החלטות על בסיס חיבור בין המצב בחוץ ליכולות שלכם בפנים." 
-          icon="💎" 
+          icon={<Icons.TOWS />} 
           onClick={() => onEnterTool('executive')} 
         />
         <ToolEntry 
           title="דופק צוותי (Pulse)" 
           desc="מדידה פשוטה של המצב בצוות - מחויבות, תקשורת ואמון. ה-AI נותן לך שורה תחתונה ניהולית." 
-          icon="📊" 
+          icon={<Icons.Pulse />} 
           onClick={() => onEnterTool('synergy')} 
         />
         <ToolEntry 
           title="ניהול משימות" 
           desc="מרכז הבקרה לביצוע השוטף. ניהול משימות פשוט, מהיר ואפקטיבי לצוות ולארגון." 
-          icon="📋" 
+          icon={<Icons.Tasks />} 
           onClick={() => onEnterTool('tasks')} 
         />
         <ToolEntry 
           title="מעבדת רעיונות" 
           desc="מקום לרשום או להקליט רעיונות. ה-AI יסכם אותם ויחבר אותם למה שאתה עושה עכשיו." 
-          icon="💡" 
+          icon={<Icons.Ideas />} 
           onClick={() => onEnterTool('ideas')} 
         />
         <ToolEntry 
           title="DNA תקשורת" 
           desc="אבחון פשוט שעוזר להבין איך לדבר עם אחרים ולהניע אותם בצורה טובה יותר." 
-          icon="🧬" 
+          icon={<Icons.DNA />} 
           onClick={() => onEnterTool('communication')} 
         />
         <ToolEntry 
           title="משוב 360" 
           desc="סיכום חכם של משוב מכמה כיוונים. עוזר לראות איפה אפשר להשתפר ומהן החוזקות שלך." 
-          icon="👁️‍🗨️" 
+          icon={<Icons.Feedback />} 
           onClick={() => onEnterTool('feedback360')} 
         />
       </div>

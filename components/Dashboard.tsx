@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ProjectChange } from '../types';
+import { Icons } from './Landing';
 
 interface DashboardProps {
   projects: ProjectChange[];
@@ -33,7 +34,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onTogg
              <div className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></div>
           </div>
           <h2 className="text-6xl md:text-8xl font-black text-brand-dark tracking-tighter italic uppercase leading-none">ניהול השינוי</h2>
-          <p className="text-brand-muted text-2xl font-bold italic">הפיכת רצון לתוכנית עבודה מיוצבת (🏠) ומלאת תשוקה (❤️).</p>
+          <p className="text-brand-muted text-2xl font-bold italic">הפיכת רצון לתוכנית עבודה מיוצבת ומלאת תשוקה.</p>
         </div>
         <button 
           onClick={onNew}
@@ -47,8 +48,8 @@ const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onTogg
       {projects.length === 0 ? (
         <div className="grid lg:grid-cols-12 gap-12 items-stretch pt-12">
           <div className="lg:col-span-7 studio-card p-16 border-brand-dark/20 bg-white/50 border-dashed flex flex-col items-center justify-center text-center space-y-10">
-            <div className="bg-brand-beige w-32 h-32 border-4 border-brand-dark flex items-center justify-center shadow-[10px_10px_0px_#1a1a1a]">
-              <span className="text-6xl">🏠</span>
+            <div className="bg-brand-beige w-32 h-32 border-4 border-brand-dark flex items-center justify-center shadow-[10px_10px_0px_#1a1a1a] p-8 text-brand-dark">
+              <Icons.WOOP />
             </div>
             <div className="space-y-6">
               <h3 className="text-4xl font-black text-brand-dark italic">סביבת העבודה מוכנה</h3>
@@ -68,13 +69,13 @@ const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onTogg
             <h4 className="text-[12px] font-black text-brand-dark uppercase tracking-[0.5em] italic">Why WOOP?</h4>
             <div className="space-y-8">
               {[
-                { l: '🏠', t: 'Stability (Context)', d: 'מגדירים את בסיס הבית והצורך האסטרטגי.' },
-                { l: '❤️', t: 'Passion (Wish)', d: 'מה באמת בוער בך להשיג?' },
-                { l: '🧱', t: 'Barrier (Obstacle)', d: 'זיהוי החסם הפנימי שמפריע ליציבות.' },
-                { l: '🚀', t: 'Action (Plan)', d: 'בונים תגובה אוטומטית למכשול.' }
+                { i: <Icons.WOOP />, t: 'Stability (Context)', d: 'מגדירים את בסיס הבית והצורך האסטרטגי.' },
+                { i: <Icons.DNA />, t: 'Passion (Wish)', d: 'מה באמת בוער בך להשיג?' },
+                { i: <Icons.TOWS />, t: 'Barrier (Obstacle)', d: 'זיהוי החסם הפנימי שמפריע ליציבות.' },
+                { i: <Icons.Pulse />, t: 'Action (Plan)', d: 'בונים תגובה אוטומטית למכשול.' }
               ].map((step, i) => (
                 <div key={i} className="flex gap-6 items-start">
-                  <span className="w-12 h-12 bg-brand-dark text-white flex items-center justify-center text-2xl shadow-lg shrink-0">{step.l}</span>
+                  <span className="w-12 h-12 bg-brand-dark text-white p-3 flex items-center justify-center shadow-lg shrink-0">{step.i}</span>
                   <div>
                     <p className="text-brand-dark font-black text-xl italic">{step.t}</p>
                     <p className="text-brand-muted text-sm font-bold">{step.d}</p>
@@ -104,7 +105,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onTogg
                 <div className="space-y-6 mb-10">
                    <div className="bg-brand-beige/50 p-6 border-r-8 border-brand-accent">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="text-lg">❤️</span>
+                        <span className="w-5 h-5 text-brand-accent"><Icons.DNA /></span>
                         <p className="text-[10px] font-black text-brand-muted uppercase">המשאלה (Passion)</p>
                       </div>
                       <p className="text-lg text-brand-dark leading-relaxed font-bold italic">"{project.woop.wish}"</p>
@@ -114,7 +115,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projects, onNew, onDelete, onTogg
                 <div className="space-y-3">
                   <div className="flex justify-between items-center px-2 mb-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm">🏠</span>
+                      <span className="w-4 h-4 text-brand-dark"><Icons.Tasks /></span>
                       <p className="text-[11px] font-black text-brand-dark uppercase tracking-widest">משימות לייצוב הבית</p>
                     </div>
                   </div>

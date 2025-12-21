@@ -4,6 +4,61 @@ import { getToolRecommendation } from '../geminiService';
 import { getSystemConfig } from '../firebase';
 import { ClientLogo, ViewType } from '../types';
 
+// Icons for the Lab Tools
+export const Icons = {
+  WOOP: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+      <circle cx="12" cy="12" r="10" strokeOpacity="0.2"/>
+      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3"/>
+      <path d="M12 12l5 5" strokeWidth="3"/>
+      <circle cx="12" cy="12" r="2" fill="currentColor"/>
+    </svg>
+  ),
+  TOWS: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+      <rect x="3" y="3" width="18" height="18" rx="2" strokeOpacity="0.2"/>
+      <path d="M3 12h18" strokeOpacity="0.2"/>
+      <path d="M12 3v18" strokeOpacity="0.2"/>
+      <path d="M7 7l10 10" stroke="currentColor" strokeWidth="2.5"/>
+      <path d="M17 7l-10 10" stroke="currentColor" strokeWidth="2.5"/>
+    </svg>
+  ),
+  Pulse: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+      <path d="M3 12h3l3-9 4 18 3-9h5" stroke="currentColor" strokeWidth="2.5"/>
+      <circle cx="13" cy="12" r="2" fill="var(--brand-accent)" stroke="none" className="animate-pulse"/>
+    </svg>
+  ),
+  Tasks: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+      <rect x="3" y="5" width="18" height="14" rx="2" strokeOpacity="0.2"/>
+      <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="3"/>
+      <path d="M3 5h18" strokeOpacity="0.2"/>
+    </svg>
+  ),
+  Ideas: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeOpacity="0.3"/>
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="3"/>
+    </svg>
+  ),
+  DNA: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+      <path d="M8 3c0 4.418 3.582 8 8 8s8-3.582 8-8" strokeOpacity="0.2"/>
+      <path d="M0 21c0-4.418 3.582-8 8-8s8 3.582 8 8" strokeOpacity="0.2"/>
+      <circle cx="8" cy="13" r="3" stroke="currentColor" strokeWidth="2.5"/>
+      <circle cx="16" cy="11" r="3" stroke="currentColor" strokeWidth="2.5"/>
+    </svg>
+  ),
+  Feedback: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+      <circle cx="12" cy="12" r="9" strokeOpacity="0.2"/>
+      <path d="M12 3a9 9 0 0 1 0 18" stroke="currentColor" strokeWidth="3"/>
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+    </svg>
+  )
+};
+
 export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> = ({ size = 'lg', dark = true }) => {
   const sizes = { 
     sm: 'text-2xl md:text-3xl', 
@@ -68,9 +123,11 @@ export const ArticleCard: React.FC<{ title: string, subtitle?: string, category:
   </div>
 );
 
-export const ToolEntry: React.FC<{ title: string, desc: string, onClick: () => void, icon: string }> = ({ title, desc, onClick, icon }) => (
+export const ToolEntry: React.FC<{ title: string, desc: string, onClick: () => void, icon: React.ReactNode }> = ({ title, desc, onClick, icon }) => (
   <div onClick={onClick} className="studio-card p-8 md:p-10 rounded-none cursor-pointer group flex flex-col justify-between border-brand-dark min-h-[340px] h-full shadow-[8px_8px_0px_rgba(26,26,26,0.05)]">
-    <div className="text-5xl group-hover:scale-110 transition-transform duration-500 grayscale group-hover:grayscale-0 mb-6">{icon}</div>
+    <div className="w-16 h-16 group-hover:scale-110 transition-transform duration-500 text-brand-dark group-hover:text-brand-accent mb-6">
+      {icon}
+    </div>
     <div className="space-y-4 flex-1 text-right">
       <h4 className="text-2xl font-black italic leading-tight">{title}</h4>
       <p className="text-sm text-brand-muted font-medium leading-relaxed">{desc}</p>
@@ -226,17 +283,17 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </div>
             <div className="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-6">
                <div onClick={() => onEnterTool('dashboard')} className="p-8 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
-                  <div className="text-4xl mb-4">🎯</div>
+                  <div className="w-12 h-12 mb-4 group-hover:text-white transition-colors"><Icons.WOOP /></div>
                   <h4 className="text-2xl font-black mb-2 italic leading-tight">ניהול שינוי</h4>
                   <p className="text-sm opacity-60 font-medium">הופכים רצון לתוכנית עבודה אמיתית.</p>
                </div>
                <div onClick={() => onEnterTool('executive')} className="p-8 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
-                  <div className="text-4xl mb-4">💎</div>
+                  <div className="w-12 h-12 mb-4 group-hover:text-white transition-colors"><Icons.TOWS /></div>
                   <h4 className="text-2xl font-black mb-2 italic leading-tight">פורום הנהלה</h4>
                   <p className="text-sm opacity-60 font-medium">החלטות נכונות לפי השטח והיכולות.</p>
                </div>
                <div onClick={() => onEnterTool('feedback360')} className="p-8 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
-                  <div className="text-4xl mb-4">👁️‍🗨️</div>
+                  <div className="w-12 h-12 mb-4 group-hover:text-white transition-colors"><Icons.Feedback /></div>
                   <h4 className="text-2xl font-black mb-2 italic leading-tight">משוב 360</h4>
                   <p className="text-sm opacity-60 font-medium">מה הסביבה באמת חושבת עליך?</p>
                </div>

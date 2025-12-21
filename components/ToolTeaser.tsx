@@ -1,16 +1,17 @@
 
 import React from 'react';
+import { Icons } from './Landing';
 
 interface ToolTeaserProps {
   toolId: string;
   onLogin: () => void;
 }
 
-const toolInfo: Record<string, { title: string, subtitle: string, benefits: string[], icon: string }> = {
+const toolInfo: Record<string, { title: string, subtitle: string, benefits: string[], icon: React.ReactNode }> = {
   dashboard: {
     title: "ניהול שינוי (WOOP)",
     subtitle: "למה רוב השינויים נכשלים? כי הם נשארים בגדר 'רצון'.",
-    icon: "🎯",
+    icon: <Icons.WOOP />,
     benefits: [
       "הפיכת חזון למשימות אופרטיביות תוך דקות",
       "זיהוי חסמים פסיכולוגיים וארגוניים לפני שהם הופכים לבעיה",
@@ -21,7 +22,7 @@ const toolInfo: Record<string, { title: string, subtitle: string, benefits: stri
   executive: {
     title: "פורום הנהלה (TOWS)",
     subtitle: "מעבר ממיפוי מצב (SWOT) לקבלת החלטות אסטרטגיות.",
-    icon: "💎",
+    icon: <Icons.TOWS />,
     benefits: [
       "הצלבה חכמה בין חוזקות להזדמנויות חיצוניות",
       "גיבוש אסטרטגיות הגנה מפני איומים בשטח",
@@ -32,7 +33,7 @@ const toolInfo: Record<string, { title: string, subtitle: string, benefits: stri
   synergy: {
     title: "דופק צוותי (Pulse)",
     subtitle: "איך הצוות שלך באמת מרגיש מתחת לפני השטח?",
-    icon: "📊",
+    icon: <Icons.Pulse />,
     benefits: [
       "מדידת סנכרון ובהירות תפקידים בזמן אמת",
       "זיהוי מגמות שחיקה או חוסר מחויבות לפני פיצוץ",
@@ -43,7 +44,7 @@ const toolInfo: Record<string, { title: string, subtitle: string, benefits: stri
   tasks: {
     title: "ניהול משימות",
     subtitle: "הופכים החלטות לביצוע בשטח.",
-    icon: "📋",
+    icon: <Icons.Tasks />,
     benefits: [
       "ניהול משימות צוותי ואישי בממשק אחד נקי",
       "תיעוד מהיר של משימות שעולות בפורום הנהלה",
@@ -54,7 +55,7 @@ const toolInfo: Record<string, { title: string, subtitle: string, benefits: stri
   ideas: {
     title: "מעבדת רעיונות",
     subtitle: "אל תיתן לרעיונות הטובים ביותר שלך ללכת לאיבוד.",
-    icon: "💡",
+    icon: <Icons.Ideas />,
     benefits: [
       "הקלטה קולית ועיבוד טקסט חכם",
       "שיוך אוטומטי של רעיונות לפרויקטים קיימים",
@@ -65,7 +66,7 @@ const toolInfo: Record<string, { title: string, subtitle: string, benefits: stri
   communication: {
     title: "DNA תקשורת",
     subtitle: "אבחון מקצועי להבנת סגנון התקשורת וההנעה.",
-    icon: "🧬",
+    icon: <Icons.DNA />,
     benefits: [
       "זיהוי סגנון התקשורת הדומיננטי שלך",
       "טיפים פרקטיים לשיח עם סגנונות אחרים",
@@ -76,7 +77,7 @@ const toolInfo: Record<string, { title: string, subtitle: string, benefits: stri
   feedback360: {
     title: "משוב 360",
     subtitle: "לראות את עצמך דרך העיניים של הסביבה.",
-    icon: "👁️‍🗨️",
+    icon: <Icons.Feedback />,
     benefits: [
       "ניתוח פערים בין תפיסה עצמית למשוב חיצוני",
       "זיהוי נקודות עיוורון (Blind Spots) קריטיות",
@@ -129,9 +130,9 @@ const ToolTeaser: React.FC<ToolTeaserProps> = ({ toolId, onLogin }) => {
 
         <div className="relative">
           <div className="aspect-[4/5] bg-brand-beige border-2 border-brand-dark shadow-[20px_20px_0px_#1a1a1a] flex flex-col items-center justify-center p-12 text-center relative overflow-hidden">
-             <div className="text-[150px] opacity-20 absolute -top-10 -left-10 select-none">{info.icon}</div>
+             <div className="w-40 h-40 opacity-10 absolute -top-10 -left-10 select-none text-brand-dark">{info.icon}</div>
              <div className="relative z-10 space-y-6">
-                <div className="text-8xl mb-4">{info.icon}</div>
+                <div className="w-24 h-24 mx-auto mb-4 text-brand-dark">{info.icon}</div>
                 <div className="space-y-2">
                    <p className="text-sm font-black uppercase tracking-widest text-brand-muted">The Professional Experience</p>
                    <p className="text-xl font-medium text-brand-dark">כדי לראות את הכלי בפעולה ולהתחיל לעבוד על המטרות שלך, יש להיכנס למערכת.</p>
