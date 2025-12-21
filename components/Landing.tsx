@@ -3,54 +3,53 @@ import React, { useState, useEffect } from 'react';
 import { getSystemConfig } from '../firebase';
 import { ClientLogo } from '../types';
 
-// Abstract, Architectural Sophisticated Graphics for Expertise
+// Sophisticated, Abstract & Architectural Graphics for Expertise
 const ExpertiseIcons = {
   Leadership: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <path d="M12 21L12 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M7 16L12 21L17 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M12 3C10 3 8 5 8 8C8 11 12 15 12 15C12 15 16 11 16 8C16 5 14 3 12 3Z" stroke="var(--brand-accent)" strokeWidth="1.5" />
-      <circle cx="12" cy="8" r="1.5" fill="var(--brand-accent)" />
+      <path d="M12 21V3M12 3L7 8M12 3L17 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="3" stroke="var(--brand-accent)" strokeWidth="1.5" fill="var(--brand-accent)" fillOpacity="0.1" />
+      <path d="M4 21H20" stroke="currentColor" strokeWidth="1" strokeOpacity="0.3" />
     </svg>
   ),
   Board: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
       <rect x="4" y="4" width="16" height="16" rx="0.5" stroke="currentColor" strokeWidth="1.2" />
       <path d="M4 12H20M12 4V20" stroke="currentColor" strokeWidth="0.8" strokeOpacity="0.2" />
-      <rect x="9" y="9" width="6" height="6" fill="var(--brand-accent)" fillOpacity="0.1" stroke="var(--brand-accent)" strokeWidth="1.5" />
-      <path d="M9 12L15 12M12 9L12 15" stroke="var(--brand-accent)" strokeWidth="1" />
+      <rect x="10" y="10" width="4" height="4" fill="var(--brand-accent)" stroke="var(--brand-accent)" strokeWidth="1" />
+      <circle cx="12" cy="12" r="7" stroke="var(--brand-accent)" strokeWidth="0.5" strokeDasharray="2 2" />
     </svg>
   ),
   Organization: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
       <path d="M2 20H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M6 20V8L12 4L18 8V20" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10 12H14M10 16H14" stroke="var(--brand-accent)" strokeWidth="2" strokeLinecap="round" />
-      <rect x="11.5" y="7" width="1" height="1" fill="var(--brand-accent)" />
+      <path d="M5 20V7L12 3L19 7V20" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M9 12H15M9 16H15" stroke="var(--brand-accent)" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="12" cy="7" r="1" fill="var(--brand-accent)" />
     </svg>
   ),
   Partnership: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <path d="M4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20C7.58 20 4 16.42 4 12Z" stroke="currentColor" strokeWidth="1" strokeOpacity="0.2" />
-      <path d="M8 12C8 9.79 9.79 8 12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16" stroke="var(--brand-accent)" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="8" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="16" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="8" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="16" cy="12" r="4.5" stroke="currentColor" strokeWidth="1.5" strokeOpacity="0.3" />
+      <path d="M12 12C12 10 13 8 15 8" stroke="var(--brand-accent)" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="1.5" fill="var(--brand-accent)" />
     </svg>
   ),
   Tech: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <path d="M4 7V5C4 4.45 4.45 4 5 4H19C19.55 4 20 4.45 20 5V7M4 17V19C4 19.55 4.45 20 5 20H19C19.55 20 20 19.55 20 19V17" stroke="currentColor" strokeWidth="1" strokeOpacity="0.3" />
+      <path d="M3 7V5C3 4.45 3.45 4 4 4H20C20.55 4 21 4.45 21 5V7M3 17V19C3 19.55 3.45 20 4 20H20C20.55 20 21 19.55 21 19V17" stroke="currentColor" strokeWidth="1" strokeOpacity="0.2" />
       <rect x="8" y="8" width="8" height="8" rx="1" stroke="var(--brand-accent)" strokeWidth="1.5" />
-      <path d="M12 8V6M12 18V16M8 12H6M18 12H16" stroke="var(--brand-accent)" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="12" cy="12" r="1" fill="var(--brand-accent)" />
+      <path d="M12 8V5M12 19V16M8 12H5M19 12H16" stroke="var(--brand-accent)" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="1.5" fill="var(--brand-accent)" />
     </svg>
   ),
   Coaching: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1" strokeOpacity="0.1" />
       <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 6V12L16 16" stroke="var(--brand-accent)" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="12" cy="12" r="1.5" fill="var(--brand-accent)" />
+      <path d="M12 12L16 8" stroke="var(--brand-accent)" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="2" fill="var(--brand-accent)" />
     </svg>
   )
 };
@@ -114,31 +113,25 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
   const sizes = { 
     sm: 'text-xl md:text-2xl', 
     md: 'text-3xl md:text-5xl', 
-    lg: 'text-5xl md:text-[6rem]' 
+    lg: 'text-5xl md:text-[6.5rem]' 
   };
   
   const subSizes = {
     sm: 'text-[4px] md:text-[5px]', 
     md: 'text-[8px] md:text-[12px]', 
-    lg: 'text-[11px] md:text-[18px]' 
-  };
-
-  const spacing = {
-    sm: 'mt-0 md:mt-0.5',
-    md: 'mt-1.5 md:mt-2.5',
-    lg: 'mt-2 md:mt-4'
+    lg: 'text-[12px] md:text-[19px]' 
   };
 
   const color = dark ? 'text-brand-dark' : 'text-white';
   
   return (
-    <div className={`flex flex-col items-center justify-center select-none font-black uppercase tracking-tighter leading-[0.85] ${color} w-full`} dir="ltr">
+    <div className={`flex flex-col items-center justify-center select-none font-black uppercase tracking-tighter leading-[0.8] ${color} w-full`} dir="ltr">
       <div className={`${sizes[size]} drop-shadow-sm text-center`}>GILAD</div>
       <div className={`${sizes[size]} drop-shadow-sm text-center relative flex justify-center items-center`}>
         KILON
-        <span className="text-brand-accent absolute top-0 left-[100%]">.</span>
+        <span className="text-brand-accent absolute top-0 left-[100%] ml-1">.</span>
       </div>
-      <div className={`relative ${subSizes[size]} tracking-[0.1em] ${spacing[size]} font-bold opacity-60 whitespace-nowrap text-center`}>
+      <div className={`relative ${subSizes[size]} tracking-[0.15em] mt-3 font-bold opacity-70 whitespace-nowrap text-center`}>
         <span>Deeply Rooted Leadership</span>
       </div>
     </div>
@@ -146,17 +139,17 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
 };
 
 export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNode }> = ({ title, desc, icon }) => (
-  <div className="studio-card p-8 border-brand-dark flex flex-col items-start gap-8 hover:bg-white transition-all h-full group relative overflow-hidden bg-gradient-to-br from-white to-brand-accent/[0.03] shadow-[8px_8px_0px_rgba(26,26,26,0.03)]">
+  <div className="studio-card p-10 border-brand-dark flex flex-col items-start gap-10 hover:bg-white transition-all h-full group relative overflow-hidden bg-gradient-to-br from-white/80 to-brand-accent/[0.04] shadow-[8px_8px_0px_rgba(26,26,26,0.04)]">
     <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-bl-full translate-x-16 -translate-y-16 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700 ease-out"></div>
-    <div className="w-14 h-14 text-brand-dark group-hover:text-brand-accent group-hover:scale-110 transition-all z-10 duration-500 border-r-2 border-brand-accent/20 pr-4 group-hover:border-brand-accent">
+    <div className="w-16 h-16 text-brand-dark group-hover:text-brand-accent group-hover:scale-110 transition-all z-10 duration-500">
       {icon}
     </div>
     <div className="space-y-4 z-10 text-right w-full">
-      <div className="flex items-center gap-2 justify-end">
+      <div className="flex items-center gap-3 justify-end mb-2">
         <h4 className="text-2xl font-black italic leading-none group-hover:text-brand-accent transition-colors">{title}</h4>
-        <div className="w-1.5 h-1.5 rounded-full bg-brand-accent/40 group-hover:bg-brand-accent transition-colors"></div>
+        <div className="w-2 h-2 rounded-full bg-brand-accent shadow-[0_0_10px_var(--brand-accent)] opacity-40 group-hover:opacity-100 transition-all"></div>
       </div>
-      <p className="text-brand-muted font-medium leading-relaxed text-sm md:text-base border-r-2 border-brand-accent/10 pr-4 group-hover:border-brand-accent transition-all">
+      <p className="text-brand-muted font-medium leading-relaxed text-sm md:text-lg border-r-4 border-brand-accent/10 pr-6 group-hover:border-brand-accent transition-all">
         {desc}
       </p>
     </div>
@@ -165,17 +158,17 @@ export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.
 );
 
 export const ToolEntry: React.FC<{ title: string, desc: string, onClick: () => void, icon: React.ReactNode }> = ({ title, desc, onClick, icon }) => (
-  <div onClick={onClick} className="studio-card p-8 md:p-10 rounded-none cursor-pointer group flex flex-col justify-between border-brand-dark min-h-[340px] h-full shadow-[8px_8px_0px_rgba(26,26,26,0.05)] hover:bg-white hover:shadow-[10px_10px_0px_var(--brand-accent)] transition-all">
-    <div className="w-16 h-16 group-hover:scale-110 transition-transform duration-500 text-brand-dark group-hover:text-brand-accent mb-6">
+  <div onClick={onClick} className="studio-card p-10 md:p-12 rounded-none cursor-pointer group flex flex-col justify-between border-brand-dark min-h-[380px] h-full shadow-[10px_10px_0px_rgba(26,26,26,0.06)] hover:bg-white hover:shadow-[12px_12px_0px_var(--brand-accent)] transition-all">
+    <div className="w-20 h-20 group-hover:scale-110 transition-transform duration-500 text-brand-dark group-hover:text-brand-accent mb-8">
       {icon}
     </div>
-    <div className="space-y-4 flex-1 text-right">
-      <h4 className="text-2xl font-black italic leading-tight group-hover:text-brand-accent transition-colors">{title}</h4>
-      <p className="text-sm text-brand-muted font-medium leading-relaxed">{desc}</p>
+    <div className="space-y-5 flex-1 text-right">
+      <h4 className="text-3xl font-black italic leading-tight group-hover:text-brand-accent transition-colors">{title}</h4>
+      <p className="text-base text-brand-muted font-medium leading-relaxed">{desc}</p>
     </div>
-    <div className="pt-6 mt-6 border-t border-brand-dark/5 overflow-hidden h-6">
-      <span className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-dark group-hover:translate-y-[-20px] transition-transform block">Open Tool</span>
-      <span className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-accent translate-y-[20px] group-hover:translate-y-[-20px] transition-transform block">Let's Work ←</span>
+    <div className="pt-8 mt-8 border-t border-brand-dark/10 overflow-hidden h-8">
+      <span className="text-[12px] font-black uppercase tracking-[0.4em] text-brand-dark group-hover:translate-y-[-30px] transition-transform block">Open Tool</span>
+      <span className="text-[12px] font-black uppercase tracking-[0.4em] text-brand-accent translate-y-[30px] group-hover:translate-y-[-30px] transition-transform block">Enter Workspace ←</span>
     </div>
   </div>
 );
@@ -190,50 +183,37 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-16 md:pt-32 pb-32 px-6 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center pt-24 md:pt-40 pb-40 px-6 relative overflow-hidden">
       
-      {/* Background Subtle Color Accents */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[800px] pointer-events-none z-0">
-        <div className="absolute top-[-200px] right-[-100px] w-[600px] h-[600px] bg-brand-accent/10 rounded-full blur-[120px]"></div>
-        <div className="absolute top-[400px] left-[-200px] w-[500px] h-[500px] bg-brand-accent/[0.05] rounded-full blur-[100px]"></div>
+      {/* Dynamic Background Glows for "Alive" feel */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[1000px] pointer-events-none z-0">
+        <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/5 rounded-full blur-[150px] animate-pulse"></div>
+        <div className="absolute bottom-[100px] left-[-200px] w-[600px] h-[600px] bg-brand-accent/5 rounded-full blur-[120px] animate-pulse" style={{animationDelay: '2s'}}></div>
       </div>
 
-      {/* 1. Hero Section */}
-      <section className="w-full max-w-6xl text-center space-y-12 md:space-y-24 mb-48 relative z-10 py-12">
-        <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
-          <img 
-            src="/hero-bg.jpg" 
-            alt="" 
-            className="w-full h-full object-cover grayscale opacity-[0.12] scale-110"
-            onError={(e) => { 
-              if (e.currentTarget.src.includes('/hero-bg.jpg')) {
-                  e.currentTarget.src = 'hero-bg.jpg';
-              } else {
-                  e.currentTarget.style.display = 'none'; 
-              }
-            }}
-          />
-        </div>
-
-        <div className="space-y-16">
-          <BrandLogo size="lg" />
+      {/* Hero Section */}
+      <section className="w-full max-w-6xl text-center space-y-24 md:space-y-32 mb-64 relative z-10">
+        <div className="space-y-20">
+          <div className="animate-fadeIn">
+            <BrandLogo size="lg" />
+          </div>
           
-          <div className="space-y-10 max-w-4xl mx-auto">
-            <h1 className="text-3xl md:text-6xl font-black text-kern leading-[0.95] tracking-tighter uppercase italic">
+          <div className="space-y-16 max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-7xl font-black text-kern leading-none tracking-tighter uppercase italic">
               Simple <span className="text-brand-accent font-semibold italic">Deep</span> Real
             </h1>
-            <div className="h-2 w-24 bg-brand-accent mx-auto"></div>
-            <p className="text-xl md:text-4xl text-brand-dark max-w-3xl mx-auto font-medium leading-relaxed italic px-4">
+            <div className="h-2 w-32 bg-brand-accent mx-auto shadow-[0_0_15px_var(--brand-accent)]"></div>
+            <p className="text-2xl md:text-5xl text-brand-dark max-w-3xl mx-auto font-medium leading-tight italic px-4">
               "אני עוזר למנהלים למצוא את העיקר בתוך הרעש. בלי מילים גבוהות, עם עומק מקצועי וכלים שבאמת עובדים."
             </p>
             
-            <div className="flex justify-center pt-8">
+            <div className="flex justify-center pt-12">
               <button 
                 onClick={() => onEnterTool('lab')}
-                className="group bg-brand-dark text-white px-12 py-8 font-black text-xl uppercase tracking-widest shadow-[12px_12px_0px_var(--brand-accent)] active:scale-95 transition-all flex items-center justify-center gap-4 border-2 border-brand-dark hover:bg-brand-accent hover:border-brand-accent"
+                className="group bg-brand-dark text-white px-16 py-10 font-black text-2xl uppercase tracking-widest shadow-[15px_15px_0px_var(--brand-accent)] active:scale-95 transition-all flex items-center justify-center gap-6 border-4 border-brand-dark hover:bg-brand-accent hover:border-brand-accent"
               >
                 <span>כניסה למעבדה (The Lab)</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 animate-pulse">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 group-hover:rotate-12 transition-transform">
                   <path d="M10 2v7.5" />
                   <path d="M14 2v7.5" />
                   <path d="M8.5 2h7" />
@@ -247,13 +227,15 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </section>
 
       {/* Expertise Section */}
-      <section className="w-full max-w-6xl mb-48 relative z-10">
-        <div className="flex items-center justify-between mb-16 px-6">
-          <h2 className="text-[12px] font-black uppercase tracking-[0.5em] text-brand-dark">תחומי התמחות</h2>
-          <div className="h-px flex-1 mx-10 bg-brand-accent/20"></div>
-          <span className="text-[11px] font-bold text-brand-accent uppercase tracking-widest">GK FOCUS</span>
+      <section className="w-full max-w-6xl mb-64 relative z-10">
+        <div className="flex items-center justify-between mb-24 px-6">
+          <div className="flex flex-col items-start text-right">
+            <h2 className="text-[14px] font-black uppercase tracking-[0.6em] text-brand-dark mb-2">תחומי התמחות</h2>
+            <div className="h-1 w-20 bg-brand-accent"></div>
+          </div>
+          <span className="text-[12px] font-bold text-brand-accent uppercase tracking-[0.4em] italic">STRATEGIC FOCUS</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {[
             { title: 'פיתוח מנהיגות ומנהלים', desc: 'חיזוק יכולות המנהל ביום-יום הארגוני. עבודה משותפת על תוצאות עסקיות ואנושיות.', icon: <ExpertiseIcons.Leadership /> },
             { title: 'ליווי הנהלות וארגונים', desc: 'גיבוש צוות ההנהלה ליחידה מסונכרנת אחת. קביעת כללי משחק שעובדים בשטח.', icon: <ExpertiseIcons.Board /> },
