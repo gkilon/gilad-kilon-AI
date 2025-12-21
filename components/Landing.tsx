@@ -185,10 +185,10 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   return (
     <div className="min-h-screen flex flex-col items-center pt-24 md:pt-40 pb-40 px-6 relative overflow-hidden">
       
-      {/* Background Layering - Subtle Watermark Style */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center">
+      {/* Background Layering - Subtle Watermark anchored behind Logo */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden flex flex-col items-center justify-start pt-10 md:pt-20">
          <div 
-           className="w-full h-full opacity-[0.1] bg-no-repeat bg-center transform scale-75"
+           className="w-full h-[400px] md:h-[600px] opacity-[0.06] bg-no-repeat bg-top transform scale-[0.4] md:scale-[0.35]"
            style={{ 
              backgroundImage: 'url("hero.jpg")',
              backgroundSize: 'contain'
