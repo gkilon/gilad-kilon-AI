@@ -173,7 +173,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         
         <div className="space-y-10 max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-6xl font-black text-kern leading-[0.95] tracking-tighter uppercase italic">
-            Simple Deep <span className="text-brand-accent not-italic font-semibold">Real</span>
+            Simple <span className="text-brand-accent font-semibold italic">Deep</span> Real
           </h1>
           <div className="h-2 w-24 bg-brand-accent mx-auto"></div>
           <p className="text-xl md:text-3xl text-brand-muted max-w-3xl mx-auto font-medium leading-relaxed italic px-4">
