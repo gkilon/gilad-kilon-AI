@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ProjectChange, IdeaEntry, Task, UserSession, Article } from './types';
+import { ProjectChange, IdeaEntry, Task, UserSession, Article, ViewType } from './types';
 import { fetchFromCloud, isFirebaseReady, getSystemConfig } from './firebase';
 import Dashboard from './components/Dashboard';
 import WoopWizard from './components/WoopWizard';
@@ -18,8 +18,7 @@ import CommunicationDNA from './components/CommunicationDNA';
 import TheLab from './components/TheLab';
 import ToolTeaser from './components/ToolTeaser';
 import ClientsPage from './components/ClientsPage';
-
-type ViewType = 'home' | 'lab' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'clients' | 'login' | 'communication' | 'feedback360' | 'admin' | 'articles' | 'article_detail';
+import BrandAssets from './components/BrandAssets';
 
 const FloatingWhatsApp: React.FC = () => (
   <a 
@@ -129,7 +128,8 @@ const App: React.FC = () => {
       case 'login': return <Login onLogin={handleLogin} message={loginMessage} />;
       case 'home': return <Landing onEnterTool={(v) => navigateToView(v as ViewType)} />;
       case 'lab': return <TheLab onEnterTool={(v) => navigateToView(v as ViewType)} isLoggedIn={!!session} />;
-      case 'admin': return <AdminPanel onBack={() => setView('home')} />;
+      case 'admin': return <AdminPanel onBack={() => setView('home')} onGoToAssets={() => setView('brand_assets')} />;
+      case 'brand_assets': return <BrandAssets onBack={() => setView('admin')} />;
       case 'dashboard': return <Dashboard projects={projects} onNew={() => setView('wizard')} onDelete={() => {}} onToggleTask={() => {}} onBack={backToLab} />;
       case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={() => setView('dashboard')} />;
       case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={() => {}} onBack={backToLab} />;

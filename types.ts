@@ -121,3 +121,5 @@ export interface SystemConfig {
   articles: Article[];
   clients: ClientLogo[];
 }
+
+export type ViewType = 'home' | 'lab' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'clients' | 'login' | 'communication' | 'feedback360' | 'admin' | 'articles' | 'article_detail' | 'brand_assets';

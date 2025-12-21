@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getSystemConfig, updateSystemConfig } from '../firebase';
 import { Article, ClientLogo } from '../types';
 
-const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = ({ onBack, onGoToAssets }) => {
   const [config, setConfig] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState('');
@@ -34,7 +34,7 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         category: '', 
         date: new Date().getFullYear().toString(), 
         link: '',
-        content: '' // Initializing content field
+        content: '' 
       };
       setConfig({ ...config, articles: [newItem, ...config.articles] });
     }
@@ -55,7 +55,12 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     <div className="max-w-5xl mx-auto py-20 animate-fadeIn pb-40 text-right px-6">
       <div className="flex justify-between items-center mb-12">
         <h2 className="text-5xl font-black text-brand-dark italic">ניהול תוכן המערכת</h2>
-        <button onClick={onBack} className="text-brand-muted hover:text-brand-dark font-bold text-sm uppercase tracking-widest border-b border-brand-dark">חזרה ←</button>
+        <div className="flex gap-4">
+          {onGoToAssets && (
+            <button onClick={onGoToAssets} className="bg-brand-accent text-white px-6 py-2 font-black text-xs uppercase tracking-widest shadow-[4px_4px_0px_#1a1a1a] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all">נכסי מותג (Assets) ✨</button>
+          )}
+          <button onClick={onBack} className="text-brand-muted hover:text-brand-dark font-bold text-sm uppercase tracking-widest border-b border-brand-dark">חזרה ←</button>
+        </div>
       </div>
 
       <div className="flex bg-white/50 p-1 mb-10 border border-brand-dark/10 shadow-sm">
@@ -153,7 +158,6 @@ const AdminPanel: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   </div>
 
                   <div className="flex justify-between items-center pt-4">
-                    <span className="text-[10px] font-black text-brand-muted italic uppercase">ID: {a.id}</span>
                     <button onClick={() => removeItem('articles', a.id)} className="text-red-500 font-black text-xs uppercase tracking-widest hover:bg-red-50 px-4 py-2 border border-red-200 transition-all">מחק מאמר</button>
                   </div>
                 </div>
