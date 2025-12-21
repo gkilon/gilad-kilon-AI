@@ -17,13 +17,14 @@ const About: React.FC = () => {
       {/* 2. Personal Story Section */}
       <section className="flex flex-col md:flex-row-reverse items-start gap-16">
         
-        {/* Profile Image Area */}
+        {/* Profile Image Area - Using ONLY local profile.jpg with NO filters */}
         <div className="relative shrink-0 w-full md:w-1/3">
-          <div className="relative aspect-square md:aspect-[3/4] overflow-hidden border-2 border-brand-dark shadow-[12px_12px_0px_#1a1a1a] bg-brand-beige">
+          <div className="relative aspect-square md:aspect-[3/4] overflow-hidden border-2 border-brand-dark shadow-[12px_12px_0px_#1a1a1a] bg-white">
             <img 
-              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1000&auto=format&fit=crop" 
+              src="profile.jpg" 
               alt="גלעד קילון" 
-              className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 z-0"
+              className="absolute inset-0 w-full h-full object-cover z-0"
+              style={{ filter: 'none' }}
             />
           </div>
         </div>

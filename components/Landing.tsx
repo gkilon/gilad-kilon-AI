@@ -185,16 +185,14 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   return (
     <div className="min-h-screen flex flex-col items-center pt-24 md:pt-40 pb-40 px-6 relative overflow-hidden">
       
-      {/* Background Layering */}
+      {/* Background Layering - Using ONLY local hero.jpg with clarity */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-         {/* The Big Background Image - Increased visibility to ensure it shows */}
          <div 
-           className="absolute top-0 left-0 w-full h-full opacity-[0.08] grayscale bg-cover bg-center"
-           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80")' }}
+           className="absolute top-0 left-0 w-full h-full opacity-[0.5] bg-cover bg-center"
+           style={{ backgroundImage: 'url("hero.jpg")' }}
          ></div>
          
-         <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px] animate-pulse"></div>
-         <div className="absolute bottom-[100px] left-[-200px] w-[600px] h-[600px] bg-brand-accent/[0.04] rounded-full blur-[120px] animate-pulse" style={{animationDelay: '2s'}}></div>
+         <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px]"></div>
       </div>
 
       {/* Hero Section */}
