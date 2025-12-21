@@ -185,15 +185,18 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   return (
     <div className="min-h-screen flex flex-col items-center pt-24 md:pt-40 pb-40 px-6 relative overflow-hidden">
       
-      {/* Background Layering - Subtle Watermark anchored behind Logo */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden flex flex-col items-center justify-start pt-10 md:pt-20">
+      {/* Background Layering - Expanded Hero anchored top-aligned */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
          <div 
-           className="w-full h-[400px] md:h-[600px] opacity-[0.06] bg-no-repeat bg-top transform scale-[0.4] md:scale-[0.35]"
+           className="absolute top-0 left-0 w-full h-[700px] opacity-[0.18] bg-no-repeat bg-top"
            style={{ 
              backgroundImage: 'url("hero.jpg")',
-             backgroundSize: 'contain'
+             backgroundSize: 'cover'
            }}
          ></div>
+         
+         {/* Gradient overlay to fade the image into the page background */}
+         <div className="absolute top-0 left-0 w-full h-[700px] bg-gradient-to-b from-transparent to-brand-beige"></div>
          
          <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px]"></div>
       </div>
