@@ -67,21 +67,21 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
   };
   
   const subSizes = {
-    sm: 'text-[9px] md:text-[14px]',
-    md: 'text-[12px] md:text-[20px]',
-    lg: 'text-[13px] md:text-[24px]' 
+    sm: 'text-[7px] md:text-[10px]', 
+    md: 'text-[9px] md:text-[14px]', 
+    lg: 'text-[11px] md:text-[18px]' 
   };
 
   const color = dark ? 'text-brand-dark' : 'text-white';
   
   return (
-    <div className={`flex flex-col items-center justify-center select-none font-black uppercase tracking-[-0.04em] leading-[0.8] ${color} w-full`} dir="ltr">
+    <div className={`flex flex-col items-center justify-center select-none font-black uppercase tracking-tighter leading-[0.85] ${color} w-full`} dir="ltr">
       <div className={`${sizes[size]} drop-shadow-sm text-center`}>GILAD</div>
       <div className={`${sizes[size]} drop-shadow-sm text-center relative flex justify-center items-center`}>
         KILON
         <span className="text-brand-accent absolute top-0 left-[100%]">.</span>
       </div>
-      <div className={`relative ${subSizes[size]} tracking-[0.2em] md:tracking-[0.4em] mt-3 md:mt-8 font-bold opacity-70 whitespace-nowrap text-center`}>
+      <div className={`relative ${subSizes[size]} tracking-[0.05em] mt-2 md:mt-4 font-bold opacity-70 whitespace-nowrap text-center`}>
         <span>Deeply Rooted Leadership</span>
       </div>
     </div>
@@ -160,7 +160,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               Simple <span className="text-brand-accent font-semibold italic">Deep</span> Real
             </h1>
             <div className="h-2 w-24 bg-brand-accent mx-auto"></div>
-            <p className="text-xl md:text-4xl text-brand-dark max-w-3xl mx-auto font-black leading-relaxed italic px-4">
+            <p className="text-xl md:text-4xl text-brand-dark max-w-3xl mx-auto font-medium leading-relaxed italic px-4">
               "אני עוזר למנהלים למצוא את העיקר בתוך הרעש. בלי מילים גבוהות, עם עומק מקצועי וכלים שבאמת עובדים."
             </p>
             
