@@ -55,7 +55,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewType>('home');
   const dbReady = isFirebaseReady();
 
-  // מאמרי ברירת מחדל קבועים - אלו תמיד יופיעו אלא אם יימחקו במפורש
+  // מאמרי ברירת מחדל קבועים - ישמשו רק אם אין שום דבר ב-DB
   const defaultArticles: Article[] = [
     {
       id: 'market-vs-strategy-2024',
@@ -70,13 +70,12 @@ const App: React.FC = () => {
   useEffect(() => {
     getSystemConfig().then(config => {
       const dbArticles = config.articles || [];
-      // מיזוג מאמרים: לוקחים את הדיפולטים ומוסיפים את אלו מה-DB (מוודאים שאין כפילויות לפי ID)
-      const mergedArticles = [...defaultArticles];
-      dbArticles.forEach(dbArt => {
-        const exists = mergedArticles.find(a => a.id === dbArt.id);
-        if (!exists) mergedArticles.push(dbArt);
-      });
-      setArticles(mergedArticles);
+      // אם יש מאמרים ב-DB, הם מקור הסמכות. אם אין כלום (ריק), נשתמש בדיפולטים.
+      if (dbArticles.length > 0) {
+        setArticles(dbArticles);
+      } else {
+        setArticles(defaultArticles);
+      }
     });
     
     if (session) {

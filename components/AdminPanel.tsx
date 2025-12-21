@@ -40,8 +40,25 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
     }
   };
 
+  const importDefaults = () => {
+    const defaultArticles: Article[] = [
+      {
+        id: 'market-vs-strategy-2024',
+        title: 'קניות בשוק או אסטרטגיה?',
+        subtitle: 'כמה מחשבות על עובדים תפקידים וסדר כאוטי',
+        category: 'אסטרטגיה וניהול',
+        date: '2024',
+        content: `"איטלקי אמיתי לא בא לשוק עם רשימת קניות" סיפר לי פעם מכר איטלקי.\n\nלמה?\nכי הוא לא יודע איזה סחורה הוא יפגוש ביום נתון. הוא בא לשוק מסתכל על הסחורה ולפי חומרי הגלם האיכותיים שיש באותו יום הוא בונה את התפריט. \n\nמקסים, אה? \nקצת בלאגן קצת שכונה אבל יש פה משהו יפה ורומנטי בזה. \nואולי גם פרקטי לארגונים דווקא היום...\n\nהעולם המתוכנן והתכליתי שלנו עובד הפוך. יש כבר מסורת שלמה של רעיונות וסיפורים שמבססים את עקרון התכנון מהסוף להתחלה-תגיד לאן אתה רוצה להגיע, ולפי זה תחליט באיזו דרך ללכת. סה"כ הגיוני ונכון.\n\nבאחת החברות שליוויתי בשנים האחרונות היתה תופעה מרתקת - כפוגשים מועמד טוב קודם כל מביאים אותו אח"כ מוצאים מה לעשות איתו. \nזה הגיע לרמת כאוס אבל היה לי ברור שאי אפשר ולא נכון להפסיק את זה לחלוטין אלא קצת לתחום את זה. \nמה ההיגיון המארגן? היגיון השוק באיטליה. יש סחורה טובה אני לוקח. אח"כ נראה מה בדיוק לעשות עם זה ויש מצב שנצטרך ללמוד תוך כדי תנועה. \n\nאולי עכשיו זה זמן טוב לקחת משהו מההיגיון הזה גם לארגונים אחרים. \nלייצר טיפה יותר תנועה וטיפה וגמישות מבנית ותפקודית שתאפשר לנו לזוז קצת אחרת. \n\nהיום בהרבה מאוד מקרים עולם הגיוס שבוי בתוך הקונספט הזה (שלא הוא בנה) וצריך להתאים אנשים לתפקידים ספציפיים עם כישורים ספציפיים עם ניסיון ספציפי בתעשייה ספציפית (ולפעמים עם עוד רזולוציות). תשאלו את הג'וניורים... \nאז מחפשים בפינצטה מועמדים שיתאימו בדיוק לתפקיד ומשקיעים המון משאבים פיזיים ומנטליים עד שמוצאים\nופתאום אין...אז עובדים יותר קשה? אז מה עושים? \nאולי אולי לפעמים במקומות מסוימים אפשר קצת להתחיל לפתוח את היום בשוק ולא בספר מתכונים.\nזה לא עניין טכני וזו לא סוגיה של גיוס. זה מתחיל מאסטרטגיה.\nועכשיו זה זמן מצוין להסתכל עליה מחדש`
+      }
+    ];
+    setConfig({ ...config, articles: defaultArticles });
+  };
+
   const removeItem = (type: 'clients' | 'articles', id: string) => {
-    setConfig({ ...config, [type]: config[type].filter((item: any) => item.id !== id) });
+    const confirmMsg = type === 'articles' ? "האם אתה בטוח שברצונך למחוק את המאמר?" : "האם למחוק את הלקוח?";
+    if (window.confirm(confirmMsg)) {
+      setConfig({ ...config, [type]: config[type].filter((item: any) => item.id !== id) });
+    }
   };
 
   const updateItem = (type: 'clients' | 'articles', id: string, field: string, value: string) => {
@@ -116,53 +133,64 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
           <div className="space-y-10 animate-fadeIn">
             <div className="bg-brand-beige p-6 border-r-4 border-brand-accent">
                <h4 className="font-bold text-brand-dark mb-2">ניהול מאמרים ותוכן</h4>
-               <p className="text-sm text-brand-muted">תוכל להזין קישור חיצוני (Link) או להכניס את תוכן המאמר ישירות (Content). אם תזין תוכן, הוא יוצג בדף המאמר המעוצב באתר.</p>
+               <p className="text-sm text-brand-muted">תוכל לערוך מאמרים קיימים, למחוק אותם או להוסיף חדשים. ברגע שתשמור, המידע יעודכן באתר באופן מיידי.</p>
             </div>
             <div className="flex justify-between items-center">
               <h3 className="text-2xl font-black italic">רשימת מאמרים</h3>
-              <button onClick={() => addItem('articles')} className="bg-brand-dark text-white px-6 py-2 text-[10px] font-black uppercase tracking-widest hover:bg-brand-accent transition-all">+ הוסף מאמר</button>
+              <div className="flex gap-4">
+                {config.articles.length === 0 && (
+                  <button onClick={importDefaults} className="border-2 border-brand-dark px-4 py-2 text-[10px] font-black uppercase tracking-widest hover:bg-brand-beige transition-all">ייבא מאמרי בסיס</button>
+                )}
+                <button onClick={() => addItem('articles')} className="bg-brand-dark text-white px-6 py-2 text-[10px] font-black uppercase tracking-widest hover:bg-brand-accent transition-all">+ הוסף מאמר חדש</button>
+              </div>
             </div>
-            <div className="grid gap-8">
-              {config.articles.map((a: Article) => (
-                <div key={a.id} className="p-8 bg-brand-beige/20 border-2 border-brand-dark space-y-6 shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <div className="md:col-span-2 space-y-2">
-                      <label className="text-[10px] font-black uppercase text-brand-muted">כותרת המאמר</label>
-                      <input placeholder="כותרת המאמר" value={a.title} onChange={e => updateItem('articles', a.id, 'title', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-black text-xl" />
+            
+            {config.articles.length === 0 ? (
+              <div className="text-center py-20 border-2 border-dashed border-brand-dark/20 text-brand-muted italic">
+                אין מאמרים רשומים. לחץ על "ייבא מאמרי בסיס" או על "הוסף מאמר חדש".
+              </div>
+            ) : (
+              <div className="grid gap-8">
+                {config.articles.map((a: Article) => (
+                  <div key={a.id} className="p-8 bg-brand-beige/20 border-2 border-brand-dark space-y-6 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:bg-white transition-all group">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1 grid md:grid-cols-3 gap-6">
+                        <div className="md:col-span-2 space-y-2">
+                          <label className="text-[10px] font-black uppercase text-brand-muted">כותרת המאמר</label>
+                          <input placeholder="כותרת המאמר" value={a.title} onChange={e => updateItem('articles', a.id, 'title', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-black text-xl" />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase text-brand-muted">קטגוריה</label>
+                          <input placeholder="קטגוריה" value={a.category} onChange={e => updateItem('articles', a.id, 'category', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-bold" />
+                        </div>
+                      </div>
+                      <button onClick={() => removeItem('articles', a.id)} className="mr-6 text-red-500 font-black text-[10px] uppercase tracking-widest hover:bg-red-500 hover:text-white px-3 py-1 border border-red-500 transition-all">מחק מאמר</button>
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-brand-muted">קטגוריה</label>
-                      <input placeholder="קטגוריה" value={a.category} onChange={e => updateItem('articles', a.id, 'category', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-bold" />
+                    
+                    <div className="grid md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-brand-muted">תאריך / שנה</label>
+                        <input placeholder="תאריך" value={a.date} onChange={e => updateItem('articles', a.id, 'date', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-bold" />
+                      </div>
+                      <div className="md:col-span-2 space-y-2">
+                        <label className="text-[10px] font-black uppercase text-brand-muted">קישור חיצוני (אופציונלי - אם קיים הוא יבטל את התצוגה הפנימית)</label>
+                        <input placeholder="קישור (URL)" value={a.link || ''} onChange={e => updateItem('articles', a.id, 'link', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent text-left text-sm" dir="ltr" />
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-brand-muted">תאריך / שנה</label>
-                      <input placeholder="תאריך" value={a.date} onChange={e => updateItem('articles', a.id, 'date', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent font-bold" />
-                    </div>
-                    <div className="md:col-span-2 space-y-2">
-                      <label className="text-[10px] font-black uppercase text-brand-muted">קישור חיצוני (אופציונלי)</label>
-                      <input placeholder="קישור (URL)" value={a.link || ''} onChange={e => updateItem('articles', a.id, 'link', e.target.value)} className="w-full p-3 border-b-2 border-brand-dark bg-transparent outline-none focus:border-brand-accent text-left text-sm" dir="ltr" />
-                    </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-brand-muted">תוכן המאמר (טקסט מלא)</label>
-                    <textarea 
-                      placeholder="הכנס את תוכן המאמר כאן..." 
-                      value={a.content || ''} 
-                      onChange={e => updateItem('articles', a.id, 'content', e.target.value)} 
-                      className="w-full h-64 p-6 border-2 border-brand-dark bg-white outline-none focus:border-brand-accent font-medium leading-relaxed resize-none"
-                    />
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-brand-muted">תוכן המאמר (טקסט מלא שיוצג באתר)</label>
+                      <textarea 
+                        placeholder="הכנס את תוכן המאמר כאן..." 
+                        value={a.content || ''} 
+                        onChange={e => updateItem('articles', a.id, 'content', e.target.value)} 
+                        className="w-full h-64 p-6 border-2 border-brand-dark bg-white outline-none focus:border-brand-accent font-medium leading-relaxed resize-none text-right"
+                      />
+                    </div>
                   </div>
-
-                  <div className="flex justify-between items-center pt-4">
-                    <button onClick={() => removeItem('articles', a.id)} className="text-red-500 font-black text-xs uppercase tracking-widest hover:bg-red-50 px-4 py-2 border border-red-200 transition-all">מחק מאמר</button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
