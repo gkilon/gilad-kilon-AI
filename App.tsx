@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ProjectChange, IdeaEntry, Task, UserSession, Article, ViewType } from './types';
-import { fetchFromCloud, isFirebaseReady, getSystemConfig } from './firebase';
+import { fetchFromCloud, isFirebaseReady, getSystemConfig, syncToCloud } from './firebase';
 import Dashboard from './components/Dashboard';
 import WoopWizard from './components/WoopWizard';
 import Header from './components/Header';
@@ -63,13 +63,6 @@ const App: React.FC = () => {
       category: 'אסטרטגיה וניהול',
       date: '2024',
       content: `"איטלקי אמיתי לא בא לשוק עם רשימת קניות" סיפר לי פעם מכר איטלקי.\n\nלמה?\nכי הוא לא יודע איזה סחורה הוא יפגוש ביום נתון. הוא בא לשוק מסתכל על הסחורה ולפי חומרי הגלם האיכותיים שיש באותו יום הוא בונה את התפריט. \n\nמקסים, אה? \nקצת בלאגן קצת שכונה אבל יש פה משהו יפה ורומנטי בזה. \nואולי גם פרקטי לארגונים דווקא היום...\n\nהעולם המתוכנן והתכליתי שלנו עובד הפוך. יש כבר מסורת שלמה של רעיונות וסיפורים שמבססים את עקרון התכנון מהסוף להתחלה-תגיד לאן אתה רוצה להגיע, ולפי זה תחליט באיזו דרך ללכת. סה"כ הגיוני ונכון.\n\nבאחת החברות שליוויתי בשנים האחרונות היתה תופעה מרתקת - כפוגשים מועמד טוב קודם כל מביאים אותו אח"כ מוצאים מה לעשות איתו. \nזה הגיע לרמת כאוס אבל היה לי ברור שאי אפשר ולא נכון להפסיק את זה לחלוטין אלא קצת לתחום את זה. \nמה ההיגיון המארגן? היגיון השוק באיטליה. יש סחורה טובה אני לוקח. אח"כ נראה מה בדיוק לעשות עם זה ויש מצב שנצטרך ללמוד תוך כדי תנועה. \n\nאולי עכשיו זה זמן טוב לקחת משהו מההיגיון הזה גם לארגונים אחרים. \nלייצר טיפה יותר תנועה וטיפה וגמישות מבנית ותפקודית שתאפשר לנו לזוז קצת אחרת. \n\nהיום בהרבה מאוד מקרים עולם הגיוס שבוי בתוך הקונספט הזה (שלא הוא בנה) וצריך להתאים אנשים לתפקידים ספציפיים עם כישורים ספציפיים עם ניסיון ספציפי בתעשייה ספציפית (ולפעמים עם עוד רזולוציות). תשאלו את הג'וניורים... \nאז מחפשים בפינצטה מועמדים שיתאימו בדיוק לתפקיד ומשקיעים המון משאבים פיזיים ומנטליים עד שמוצאים\nופתאום אין...אז עובדים יותר קשה? אז מה עושים? \nאולי אולי לפעמים במקומות מסוימים אפשר קצת להתחיל לפתוח את היום בשוק ולא בספר מתכונים.\nזה לא עניין טכני וזו לא סוגיה של גיוס. זה מתחיל מאסטרטגיה.\nועכשיו זה זמן מצוין להסתכל עליה מחדש`
-    },
-    {
-      id: 'senior-leadership-2025',
-      title: 'מחשבות על פיתוח ניהולי לבכירים',
-      category: 'פיתוח מנהיגות',
-      date: '2025',
-      content: `באחת הסדנאות שהיו לי החודש עם קבוצת מנהלים בכירים, מישהו העלה שאלה פשוטה לכאורה:\n“איך אני יודע מתי אני חלק מהקבוצה, ומתי אני פשוט הולך לאיבוד בתוכה?”\n\nהשאלה הזו נראתה בהתחלה מובנת מאליה. כאילו שאלה בסיסית– הרי לכולנו חשוב להשתייך, וגם להיות חלק ממשהו גדול יותר.\nאבל אז התחיל לעלות משהו נוסף:\nמתי הרצון להשתלב ולשמור על הרמוניה גורם לנו לוותר קצת על עצמנו והופך מעקרון מאזן לעקרון מעכב?\nומתי הרצון להתבלט ולהוביל גורם לנו להתרחק מהאחרים והאם בכלל אפשר לשלב שניהול בכיר ובדידות באים יחד באותה חבילה?\n\nהשאלות האלו לוקחות אותנו ללב העשייה הניהולית. ככל שעולים בהיררכיה, המתח הזה – בין השייכות לבידול – הופך למרכיב מרכזי בתפקוד.\nולא , אין פה פתרון פשוט.\nאי אפשר “לפתור” את המתח הזה.\nאבל אפשר להכיר בו, להבין אותו, וללמוד לעבוד איתו.\nאפשר להכיר את עצמנו טוב יותר ולהבין אילו ״כפתורים״ נלחצים לנו ובאילו סיטואציות זה קורה ואיך כל אדם מנהל אחרת את המתח הזה.\n\nמבחינתי, זו הדגמה מצויינת ללב של תהליך פיתוח מנהלים בכירים. זה לא עניין של כלים, שיטות או טכניקות. מה שמביא לקפיצת מדרגה זה עיסוק בשאלות מהותיות שמחברות בין עומק לפרקטיקה.\n\nכי בסוף, מנהיגות בכירה היא לא על “להשתייך” או “להתבלט”.\nהיא על לדעת מתי כל אחד מהכוחות האלה משרת אותך – ומתי הם תוקעים אותך.`
     }
   ];
 
@@ -88,7 +81,7 @@ const App: React.FC = () => {
   }, [session, dbReady]);
 
   const loadAllData = async () => {
-    if (!session || !dbReady || !session.isManager) return;
+    if (!session || !dbReady) return;
     setLoading(true);
     try {
       const [p, i, t] = await Promise.all([
@@ -98,9 +91,28 @@ const App: React.FC = () => {
       ]);
       setProjects(p as ProjectChange[]);
       setIdeas(i as IdeaEntry[]);
-      setGeneralTasks(t as Task[]);
+      // Handle the fact that general_tasks is fetched as an array of items with a tasks array or single tasks
+      // For simplicity, let's assume we store the main tasks list in one doc per team
+      const teamTasksDoc = t.find(doc => doc.id === 'main_list');
+      if (teamTasksDoc && (teamTasksDoc as any).tasks) {
+        setGeneralTasks((teamTasksDoc as any).tasks);
+      } else {
+        setGeneralTasks(t as any as Task[]);
+      }
     } catch (e) {}
     setLoading(false);
+  };
+
+  const handleUpdateTasks = async (newTasks: Task[]) => {
+    setGeneralTasks(newTasks);
+    if (session && dbReady) {
+      // Store tasks list under a stable ID for the team
+      await syncToCloud('general_tasks', {
+        id: 'main_list',
+        managerId: session.teamId,
+        tasks: newTasks
+      });
+    }
   };
 
   const handleLogin = (teamId: string, isManager: boolean, isAdmin: boolean = false) => {
@@ -127,7 +139,7 @@ const App: React.FC = () => {
     switch(view) {
       case 'login': return <Login onLogin={handleLogin} message={loginMessage} />;
       case 'home': return <Landing onEnterTool={(v) => navigateToView(v as ViewType)} />;
-      case 'lab': return <TheLab onEnterTool={(v) => navigateToView(v as ViewType)} isLoggedIn={!!session} />;
+      case 'lab': return <TheLab onEnterTool={(v) => navigateToView(v as ViewType)} onBack={() => setView('home')} isLoggedIn={!!session} />;
       case 'admin': return <AdminPanel onBack={() => setView('home')} onGoToAssets={() => setView('brand_assets')} />;
       case 'brand_assets': return <BrandAssets onBack={() => setView('admin')} />;
       case 'dashboard': return <Dashboard projects={projects} onNew={() => setView('wizard')} onDelete={() => {}} onToggleTask={() => {}} onBack={backToLab} />;
@@ -135,7 +147,7 @@ const App: React.FC = () => {
       case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={() => {}} onBack={backToLab} />;
       case 'synergy': return <TeamSynergy session={session} onBack={backToLab} />;
       case 'executive': return <ExecutiveSynergy session={session} onBack={backToLab} />;
-      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={() => {}} onBack={backToLab} />;
+      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={handleUpdateTasks} onBack={backToLab} />;
       case 'feedback360': return <Feedback360 onBack={backToLab} />;
       case 'communication': return <CommunicationDNA onBack={backToLab} />;
       case 'about': return <About />;
@@ -155,9 +167,6 @@ const App: React.FC = () => {
                <div className="text-2xl md:text-3xl text-brand-dark leading-relaxed font-medium whitespace-pre-line border-r-8 border-brand-beige pr-10">
                   {selectedArticle.content}
                </div>
-               <div className="pt-20 border-t border-brand-dark/10">
-                  <p className="text-sm font-black text-brand-muted uppercase tracking-widest">{selectedArticle.date} • Gilad Kilon Focus</p>
-               </div>
             </div>
           </div>
         );
@@ -168,7 +177,6 @@ const App: React.FC = () => {
             <h2 className="text-6xl md:text-9xl font-black italic tracking-tighter leading-none">חומרים<br/>מקצועיים.</h2>
             <div className="h-3 w-40 bg-brand-dark"></div>
           </div>
-
           <div className="flex flex-col">
             {articles.map(article => (
               <ArticleCard 

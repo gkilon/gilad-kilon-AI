@@ -106,7 +106,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
     <div className="min-h-screen flex flex-col items-center pt-16 md:pt-32 pb-32 px-6">
       
       {/* 1. Hero Section */}
-      <section className="w-full max-w-6xl text-center space-y-16 mb-48">
+      <section className="w-full max-w-6xl text-center space-y-12 md:space-y-16 mb-48">
         <div className="relative inline-block px-10">
           <BrandLogo size="lg" />
           <div className="absolute top-0 bottom-0 left-0 w-px bg-brand-dark/10"></div>
@@ -121,6 +121,24 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <p className="text-xl md:text-3xl text-brand-muted max-w-3xl mx-auto font-medium leading-relaxed italic px-4">
             "אני עוזר למנהלים למצוא את העיקר בתוך הרעש. בלי מילים גבוהות, עם עומק מקצועי וכלים שבאמת עובדים."
           </p>
+          
+          {/* Mobile Quick Access Button - Enhanced with Lab Icon */}
+          <div className="block md:hidden pt-4">
+            <button 
+              onClick={() => onEnterTool('lab')}
+              className="group bg-brand-accent text-white px-10 py-6 font-black text-lg uppercase tracking-widest shadow-[10px_10px_0px_#1a1a1a] active:scale-95 transition-all flex items-center justify-center gap-4 mx-auto border-2 border-brand-dark"
+            >
+              <span>כניסה למעבדה</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 animate-pulse">
+                <path d="M10 2v7.5" />
+                <path d="M14 2v7.5" />
+                <path d="M8.5 2h7" />
+                <path d="M14 9.5a5 5 0 1 1-4 0" />
+                <path d="M5.5 16h13" />
+              </svg>
+            </button>
+            <p className="mt-4 text-[10px] font-black uppercase tracking-[0.3em] text-brand-muted animate-pulse">Your Professional Workspace</p>
+          </div>
         </div>
       </section>
 
@@ -190,7 +208,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             Active Workspace
           </div>
           
-          <div className="flex flex-col md:flex-row gap-16 items-center pt-8 md:pt-0">
+          <div className="flex flex-col md:flex-row gap-8 items-center pt-8 md:pt-0">
             <div className="w-full md:w-1/3 space-y-10 text-right">
               <span className="text-[13px] font-black text-brand-accent uppercase tracking-[0.7em]">STRATEGIC TOOLS</span>
               <h2 className="text-6xl md:text-8xl font-black italic tracking-tighter leading-none">המעבדה<br/>לניהול.</h2>
@@ -206,16 +224,21 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
                 כניסה למרחב העבודה ←
               </button>
             </div>
-            <div className="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
-               <div onClick={() => onEnterTool('dashboard')} className="p-10 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[10px_10px_0px_rgba(0,0,0,0.05)]">
-                  <div className="text-5xl mb-6">🎯</div>
-                  <h4 className="text-3xl font-black mb-4 italic">ניהול שינוי (WOOP)</h4>
-                  <p className="text-lg opacity-60 font-medium">הופכים רצון לתוכנית עבודה אמיתית ומשימות לביצוע.</p>
+            <div className="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-6">
+               <div onClick={() => onEnterTool('dashboard')} className="p-8 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
+                  <div className="text-4xl mb-4">🎯</div>
+                  <h4 className="text-2xl font-black mb-2 italic leading-tight">ניהול שינוי</h4>
+                  <p className="text-sm opacity-60 font-medium">הופכים רצון לתוכנית עבודה אמיתית.</p>
                </div>
-               <div onClick={() => onEnterTool('executive')} className="p-10 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[10px_10px_0px_rgba(0,0,0,0.05)]">
-                  <div className="text-5xl mb-6">💎</div>
-                  <h4 className="text-3xl font-black mb-4 italic">פורום הנהלה (TOWS)</h4>
-                  <p className="text-lg opacity-60 font-medium">חיבור בין המצב בשוק ליכולות שלכם כדי לקבל החלטות נכונות.</p>
+               <div onClick={() => onEnterTool('executive')} className="p-8 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
+                  <div className="text-4xl mb-4">💎</div>
+                  <h4 className="text-2xl font-black mb-2 italic leading-tight">פורום הנהלה</h4>
+                  <p className="text-sm opacity-60 font-medium">החלטות נכונות לפי השטח והיכולות.</p>
+               </div>
+               <div onClick={() => onEnterTool('feedback360')} className="p-8 border-4 border-brand-dark bg-brand-beige hover:bg-brand-dark hover:text-white transition-all cursor-pointer h-full group text-right shadow-[8px_8px_0px_rgba(0,0,0,0.05)]">
+                  <div className="text-4xl mb-4">👁️‍🗨️</div>
+                  <h4 className="text-2xl font-black mb-2 italic leading-tight">משוב 360</h4>
+                  <p className="text-sm opacity-60 font-medium">מה הסביבה באמת חושבת עליך?</p>
                </div>
             </div>
           </div>
@@ -239,7 +262,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             />
             <div className="flex justify-start">
               <button 
-                onClick={handleConsult}
+                onClick={handleConsult} 
                 disabled={isAiLoading || !consultationText.trim()}
                 className="bg-brand-accent text-white px-12 md:px-20 py-6 md:py-8 rounded-none font-black text-2xl md:text-3xl hover:bg-white hover:text-brand-dark transition-all disabled:opacity-20 shadow-2xl active:scale-95"
               >

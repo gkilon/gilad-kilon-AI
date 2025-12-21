@@ -4,13 +4,26 @@ import { ToolEntry } from './Landing';
 
 interface TheLabProps {
   onEnterTool: (view: string) => void;
+  onBack?: () => void;
   isLoggedIn: boolean;
 }
 
-const TheLab: React.FC<TheLabProps> = ({ onEnterTool, isLoggedIn }) => {
+const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
   return (
     <div className="min-h-screen pt-20 pb-40 px-6 max-w-7xl mx-auto">
       
+      {onBack && (
+        <div className="mb-8 text-right">
+          <button 
+            onClick={onBack} 
+            className="flex items-center gap-2 text-brand-muted font-black text-sm uppercase tracking-widest hover:text-brand-dark transition-all group mr-auto md:mr-0"
+          >
+            <span>חזרה לדף הבית</span>
+            <span className="text-xl group-hover:translate-x-1 transition-transform">←</span>
+          </button>
+        </div>
+      )}
+
       {/* 1. הדר - כותרת המעבדה */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-12 border-b-2 border-brand-dark pb-12">
         <div className="space-y-6 text-right">
@@ -22,7 +35,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, isLoggedIn }) => {
         </div>
       </div>
 
-      {/* 2. הסבר פרקטי וישיר עם הבהרת הרשמה */}
+      {/* 2. הסבר פרקטי */}
       <section className="mb-20 space-y-12 text-right">
         <div className="max-w-4xl mr-0">
           <h2 className="text-3xl md:text-5xl font-black text-brand-dark leading-tight mb-8">
@@ -34,35 +47,16 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, isLoggedIn }) => {
             <span className="text-brand-dark font-black">שימו לב: כדי להשתמש בכלים, לשמור את המידע ולקבל ניתוח AI אישי, יש לפתוח מרחב עבודה (הרשמה קצרה).</span>
           </p>
         </div>
-
-        {/* מדריך שימוש מהיר */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-brand-dark/10">
-          <div className="space-y-4">
-            <div className="text-brand-accent font-black text-4xl italic">01.</div>
-            <h4 className="text-xl font-black">פותחים מרחב אישי</h4>
-            <p className="text-brand-muted font-medium">נרשמים פעם אחת כדי שתוכלו לשמור את הנתונים שלכם ולעבוד בצורה מסודרת לאורך זמן.</p>
-          </div>
-          <div className="space-y-4">
-            <div className="text-brand-accent font-black text-4xl italic">02.</div>
-            <h4 className="text-xl font-black">בוחרים כלי ועובדים</h4>
-            <p className="text-brand-muted font-medium">בוחרים את הכלי שמתאים לאתגר שלכם ומזינים את המחשבות או הנתונים בצורה חופשית.</p>
-          </div>
-          <div className="space-y-4">
-            <div className="text-brand-accent font-black text-4xl italic">03.</div>
-            <h4 className="text-xl font-black">מקבלים כיוון מה-AI</h4>
-            <p className="text-brand-muted font-medium">הסוכן הדיגיטלי מנתח את מה שכתבתם, מציע ניסוחים מקצועיים ונותן צעדים פרקטיים לביצוע.</p>
-          </div>
-        </div>
       </section>
 
-      {/* 3. באנר אורחים - מודגש יותר לגבי הצורך בהרשמה */}
+      {/* 3. באנר אורחים */}
       {!isLoggedIn && (
         <div className="mb-24 border-4 border-brand-dark bg-brand-beige p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 animate-fadeIn shadow-[15px_15px_0px_#2563eb]">
           <div className="space-y-6 text-right">
             <div className="inline-block bg-brand-dark text-white px-4 py-1 text-[10px] font-black uppercase tracking-widest">REGISTRATION REQUIRED</div>
             <h3 className="text-3xl md:text-5xl font-black text-brand-dark italic tracking-tighter leading-none">הכלים מחכים למרחב שלך.</h3>
             <p className="text-brand-muted text-xl font-bold italic max-w-2xl leading-relaxed">
-              כרגע אפשר רק להתרשם מהכלים. כדי להתחיל להזין נתונים, להשתמש ב-AI ולנהל את המשימות שלכם, אתם צריכים לפתוח מרחב עבודה אישי (Login/Signup).
+              כרגע אפשר רק להתרשם מהכלים. כדי להתחיל להזין נתונים, להשתמש ב-AI ולנהל את המשימות שלכם, אתם צריכים לפתוח מרחב עבודה אישי.
             </p>
           </div>
           <button 
@@ -93,6 +87,12 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, isLoggedIn }) => {
           desc="מדידה פשוטה של המצב בצוות - מחויבות, תקשורת ואמון. ה-AI נותן לך שורה תחתונה ניהולית." 
           icon="📊" 
           onClick={() => onEnterTool('synergy')} 
+        />
+        <ToolEntry 
+          title="ניהול משימות" 
+          desc="מרכז הבקרה לביצוע השוטף. ניהול משימות פשוט, מהיר ואפקטיבי לצוות ולארגון." 
+          icon="📋" 
+          onClick={() => onEnterTool('tasks')} 
         />
         <ToolEntry 
           title="מעבדת רעיונות" 

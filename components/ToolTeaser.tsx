@@ -40,6 +40,17 @@ const toolInfo: Record<string, { title: string, subtitle: string, benefits: stri
       "כלי אנונימי ופשוט שמעלה את רמת האמון בצוות"
     ]
   },
+  tasks: {
+    title: "ניהול משימות",
+    subtitle: "הופכים החלטות לביצוע בשטח.",
+    icon: "📋",
+    benefits: [
+      "ניהול משימות צוותי ואישי בממשק אחד נקי",
+      "תיעוד מהיר של משימות שעולות בפורום הנהלה",
+      "סנכרון מלא עם מרחב העבודה שלך",
+      "פשטות מקסימלית בלי 'רעש' מיותר"
+    ]
+  },
   ideas: {
     title: "מעבדת רעיונות",
     subtitle: "אל תיתן לרעיונות הטובים ביותר שלך ללכת לאיבוד.",
@@ -49,6 +60,28 @@ const toolInfo: Record<string, { title: string, subtitle: string, benefits: stri
       "שיוך אוטומטי של רעיונות לפרויקטים קיימים",
       "סיכום אסטרטגי וגזירת צעדים באדיבות AI",
       "מקום מסודר לניהול היצירתיות הניהולית שלך"
+    ]
+  },
+  communication: {
+    title: "DNA תקשורת",
+    subtitle: "אבחון מקצועי להבנת סגנון התקשורת וההנעה.",
+    icon: "🧬",
+    benefits: [
+      "זיהוי סגנון התקשורת הדומיננטי שלך",
+      "טיפים פרקטיים לשיח עם סגנונות אחרים",
+      "כלי שעוזר לצמצם חיכוך ואי-הבנות בצוות",
+      "מבוסס על מודלים מוכחים בפיתוח ארגוני"
+    ]
+  },
+  feedback360: {
+    title: "משוב 360",
+    subtitle: "לראות את עצמך דרך העיניים של הסביבה.",
+    icon: "👁️‍🗨️",
+    benefits: [
+      "ניתוח פערים בין תפיסה עצמית למשוב חיצוני",
+      "זיהוי נקודות עיוורון (Blind Spots) קריטיות",
+      "בניית תוכנית פיתוח אישית מבוססת משוב",
+      "תהליך דיסקרטי ומובנה לצמיחה ניהולית"
     ]
   }
 };
@@ -60,7 +93,7 @@ const ToolTeaser: React.FC<ToolTeaserProps> = ({ toolId, onLogin }) => {
     <div className="max-w-5xl mx-auto py-20 px-6 animate-fadeIn" dir="rtl">
       <div className="grid md:grid-cols-2 gap-16 items-center">
         
-        <div className="space-y-8">
+        <div className="space-y-8 text-right">
           <div className="inline-block border-2 border-brand-dark px-4 py-1">
              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-dark">Preview Mode</span>
           </div>

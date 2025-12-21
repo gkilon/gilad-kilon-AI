@@ -10,6 +10,18 @@ interface HeaderProps {
   onLogout: () => void;
 }
 
+const LabIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M10 2v7.5" />
+    <path d="M14 2v7.5" />
+    <path d="M8.5 2h7" />
+    <path d="M14 9.5a5 5 0 1 1-4 0" />
+    <path d="M5.5 16h13" />
+    <path d="M10 16v.01" />
+    <path d="M14 16v.01" />
+  </svg>
+);
+
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isAdmin = session?.teamId === 'admin';
@@ -24,9 +36,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
   const handleNav = (id: ViewType) => {
     onNavigate(id);
     setIsMenuOpen(false);
-    // Force scroll to top on mobile nav
     window.scrollTo(0, 0);
   };
+
+  const isLabView = currentView === 'lab' || ['dashboard', 'executive', 'synergy', 'ideas', 'communication', 'feedback360', 'tasks', 'wizard'].includes(currentView);
 
   return (
     <>
@@ -53,25 +66,38 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             
             <button 
               onClick={() => handleNav('lab')} 
-              className={`px-6 py-2 border border-brand-dark/20 rounded-full text-[13px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${currentView === 'lab' || ['dashboard', 'executive', 'synergy', 'ideas', 'communication', 'feedback360'].includes(currentView) ? 'bg-brand-dark text-white' : 'text-brand-dark hover:bg-brand-dark/5'}`}
+              className={`px-6 py-2 border border-brand-dark/20 rounded-full text-[13px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${isLabView ? 'bg-brand-dark text-white' : 'text-brand-dark hover:bg-brand-dark/5'}`}
             >
               <span>המעבדה (Workspace)</span>
               <span className="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></span>
             </button>
           </nav>
           
-          {/* Mobile Menu Toggle Button */}
-          <button 
-            onClick={() => setIsMenuOpen(true)}
-            className="lg:hidden p-3 text-brand-dark bg-white border-2 border-brand-dark/10 shadow-sm rounded-none"
-            aria-label="Open Menu"
-          >
-            <div className="w-8 h-5 flex flex-col justify-between items-end">
-              <span className="h-1 bg-brand-dark w-8"></span>
-              <span className="h-1 bg-brand-dark w-5"></span>
-              <span className="h-1 bg-brand-dark w-8"></span>
-            </div>
-          </button>
+          {/* Mobile Access Buttons */}
+          <div className="flex lg:hidden items-center gap-3">
+            {/* Quick Access Lab Button for Mobile - Now with Lab Flask Icon */}
+            <button 
+              onClick={() => handleNav('lab')}
+              className={`h-12 px-4 border-2 transition-all flex items-center justify-center gap-2 ${isLabView ? 'bg-brand-accent border-brand-accent text-white shadow-lg' : 'bg-white border-brand-dark text-brand-dark shadow-[4px_4px_0px_#1a1a1a]'}`}
+              aria-label="The Lab"
+            >
+              <LabIcon className="w-6 h-6" />
+              <span className="text-[10px] font-black uppercase tracking-widest">Workspace</span>
+            </button>
+
+            {/* Menu Toggle */}
+            <button 
+              onClick={() => setIsMenuOpen(true)}
+              className="h-12 w-12 flex items-center justify-center text-brand-dark bg-white border-2 border-brand-dark/10 shadow-sm"
+              aria-label="Open Menu"
+            >
+              <div className="w-6 h-4 flex flex-col justify-between items-end">
+                <span className="h-0.5 bg-brand-dark w-6"></span>
+                <span className="h-0.5 bg-brand-dark w-4"></span>
+                <span className="h-0.5 bg-brand-dark w-6"></span>
+              </div>
+            </button>
+          </div>
 
           <div className="hidden lg:flex items-center gap-4">
             {session ? (
@@ -93,10 +119,9 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
         </div>
       </header>
 
-      {/* Full Screen Mobile Menu Overlay - Robust Height and Z-Index */}
+      {/* Full Screen Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 bg-white z-[99999] lg:hidden flex flex-col h-[100dvh] w-full overflow-hidden">
-          {/* Mobile Menu Top Bar */}
           <div className="flex items-center justify-between px-6 py-6 border-b border-brand-dark/10 bg-brand-beige shadow-sm">
             <div onClick={() => handleNav('home')}>
               <BrandLogo size="sm" />
@@ -112,7 +137,6 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             </button>
           </div>
 
-          {/* Mobile Menu Content - Scrollable area */}
           <div className="flex-1 overflow-y-auto bg-white px-8 py-12">
             <nav className="flex flex-col gap-10 text-right">
               {navItems.map(item => (
@@ -132,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
                 className="block w-full text-5xl font-black italic tracking-tighter text-brand-accent flex items-center justify-end gap-4 py-2"
               >
                 <span>המעבדה (Workspace)</span>
-                <span className="w-5 h-5 bg-brand-accent rounded-full animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]"></span>
+                <LabIcon className="w-8 h-8 animate-pulse" />
               </button>
             </nav>
 
