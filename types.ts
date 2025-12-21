@@ -57,15 +57,12 @@ export interface IdeaEntry {
 }
 
 export interface TeamSynergyPulse {
-  ownership: number;
-  roleClarity: number;
-  routines: number;
-  communication: number;
-  commitment: number;
-  respect: number;
-  vibe: string;
-  timestamp: number;
+  id?: string;
   teamId: string;
+  timestamp: number;
+  vibe: string;
+  // Dynamic metrics: key is metric ID, value is 1-6
+  [key: string]: any; 
 }
 
 export interface TowsAnalysis {
@@ -117,7 +114,7 @@ export interface ClientLogo {
 
 export interface SystemConfig {
   masterCode: string;
-  metrics: any[];
+  metrics: { key: string; label: string; icon: string; }[];
   articles: Article[];
   clients: ClientLogo[];
 }

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { TeamSynergyPulse, UserSession } from '../types';
-import { saveTeamPulse, getTeamPulses, getSystemConfig } from '../firebase';
+import { saveTeamPulse, getTeamPulses, getSystemConfig, DEFAULT_METRICS } from '../firebase';
 import { getSynergyInsight } from '../geminiService';
 
 const TrendLine: React.FC<{ data: TeamSynergyPulse[], metric: string, color: string }> = ({ data, metric, color }) => {
@@ -10,7 +10,7 @@ const TrendLine: React.FC<{ data: TeamSynergyPulse[], metric: string, color: str
   
   const points = sorted.map((d, i) => {
     const x = (i / (sorted.length - 1)) * 100;
-    const val = (d[metric as keyof TeamSynergyPulse] as number) || 3;
+    const val = Number(d[metric]) || 3;
     const y = 100 - ((val - 1) / 5) * 100;
     return `${x},${y}`;
   }).join(' ');
@@ -29,7 +29,7 @@ const TrendLine: React.FC<{ data: TeamSynergyPulse[], metric: string, color: str
         />
         {sorted.map((d, i) => {
           const x = (i / (sorted.length - 1)) * 100;
-          const val = (d[metric as keyof TeamSynergyPulse] as number) || 3;
+          const val = Number(d[metric]) || 3;
           const y = 100 - ((val - 1) / 5) * 100;
           return (
             <circle 
@@ -48,7 +48,7 @@ const TrendLine: React.FC<{ data: TeamSynergyPulse[], metric: string, color: str
 };
 
 const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }> = ({ session, onBack }) => {
-  const [metrics, setMetrics] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<any[]>(DEFAULT_METRICS);
   const [pulse, setPulse] = useState<any>({ vibe: '', timestamp: Date.now(), teamId: session?.teamId || '' });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -58,23 +58,27 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
   const [copyStatus, setCopyStatus] = useState(false);
   
   useEffect(() => {
-    getSystemConfig().then(config => {
-      setMetrics(config.metrics);
+    const init = async () => {
+      const config = await getSystemConfig();
+      // הבטחה שנטענים 6 המדדים המעודכנים
+      const activeMetrics = config.metrics && config.metrics.length > 0 ? config.metrics : DEFAULT_METRICS;
+      setMetrics(activeMetrics);
+      
       const initialPulse: any = { vibe: '', timestamp: Date.now(), teamId: session?.teamId || '' };
-      config.metrics.forEach((m: any) => initialPulse[m.key] = 3);
+      activeMetrics.forEach((m: any) => {
+        initialPulse[m.key] = 3; 
+      });
       setPulse(initialPulse);
-    });
-    if (session?.teamId && session.isManager) loadCloudData();
+
+      if (session?.teamId && session.isManager) {
+        const data = await getTeamPulses(session.teamId);
+        setCloudHistory(data as TeamSynergyPulse[]);
+      }
+    };
+    init();
   }, [session]);
 
-  const loadCloudData = async () => {
-    if (!session?.teamId) return;
-    const data = await getTeamPulses(session.teamId);
-    setCloudHistory(data as TeamSynergyPulse[]);
-  };
-
   const handleShare = () => {
-    // קישור ישיר למילוי הדופק עבור העובדים
     const url = `${window.location.origin}${window.location.pathname}?teamId=${session?.teamId}&view=synergy`;
     navigator.clipboard.writeText(url);
     setCopyStatus(true);
@@ -85,8 +89,13 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
     if (cloudHistory.length === 0 || metrics.length === 0) return null;
     const result: any = { count: cloudHistory.length };
     metrics.forEach(m => {
-      const sum = cloudHistory.reduce((acc, curr) => acc + (curr[m.key as keyof TeamSynergyPulse] as number || 0), 0);
-      result[m.key] = (sum / cloudHistory.length).toFixed(1);
+      const validPulses = cloudHistory.filter(h => h[m.key] !== undefined);
+      if (validPulses.length > 0) {
+        const sum = validPulses.reduce((acc, curr) => acc + (Number(curr[m.key]) || 0), 0);
+        result[m.key] = (sum / validPulses.length).toFixed(1);
+      } else {
+        result[m.key] = "0.0";
+      }
     });
     return result;
   }, [cloudHistory, metrics]);
@@ -107,20 +116,17 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
   };
 
   const handleSubmit = async () => {
-    if (!session?.teamId) {
-      // אם הגענו מקישור ישיר בלי סשן, אנחנו מחלצים את ה-teamId מה-URL
-      const params = new URLSearchParams(window.location.search);
-      const urlTeamId = params.get('teamId');
-      if (!urlTeamId) return alert("שגיאה: חסר מזהה צוות בקישור.");
-      setPulse(prev => ({ ...prev, teamId: urlTeamId }));
-    }
+    const targetTeamId = session?.teamId || new URLSearchParams(window.location.search).get('teamId');
+    if (!targetTeamId) return alert("שגיאה: חסר מזהה צוות.");
     
     setLoading(true);
-    const targetTeamId = session?.teamId || new URLSearchParams(window.location.search).get('teamId');
-    await saveTeamPulse(targetTeamId!, pulse);
-    setSubmitted(true);
+    try {
+      await saveTeamPulse(targetTeamId, pulse);
+      setSubmitted(true);
+    } catch (e) {
+      alert("שגיאה בשמירת הנתונים.");
+    }
     setLoading(false);
-    if (session?.isManager) loadCloudData();
   };
 
   if (submitted) return (
@@ -128,9 +134,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
       <div className="text-8xl">🚀</div>
       <h2 className="text-5xl font-black text-brand-dark italic">הדופק עודכן!</h2>
       <p className="text-brand-muted text-xl font-bold">הקול שלך עוזר לצוות להיות מסונכרן ומדויק יותר.</p>
-      {session?.isManager && (
-        <button onClick={() => setSubmitted(false)} className="bg-brand-dark text-white px-10 py-4 font-black">חזרה ללוח הבקרה</button>
-      )}
+      <button onClick={() => setSubmitted(false)} className="bg-brand-dark text-white px-10 py-4 font-black">חזרה</button>
     </div>
   );
 
@@ -160,11 +164,12 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
           <p className="text-brand-muted text-2xl font-bold italic">מדידת מגמות, אמון ואיכות עבודת הצוות לאורך זמן.</p>
         </div>
 
+        {/* הבטחת הצגת כפתור השיתוף למנהלים */}
         {session?.isManager && (
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto z-50">
             <button 
               onClick={handleShare}
-              className="bg-brand-accent text-white px-10 py-5 font-black text-sm uppercase tracking-[0.2em] hover:bg-brand-dark transition-all shadow-[8px_8px_0px_#1a1a1a] active:scale-95 flex items-center gap-3"
+              className="bg-brand-accent text-white px-10 py-5 font-black text-sm uppercase tracking-[0.2em] hover:bg-brand-dark transition-all shadow-[8px_8px_0px_#1a1a1a] active:scale-95 flex items-center justify-center gap-3"
             >
               <span className="text-xl">🔗</span>
               <span>{copyStatus ? "✓ הועתק" : "שלח שאלון לצוות"}</span>
@@ -172,7 +177,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
             <button 
               onClick={handleAiAnalysis}
               disabled={isAiAnalyzing || cloudHistory.length < 1}
-              className="bg-brand-dark text-white px-10 py-5 font-black text-sm uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-[8px_8px_0px_rgba(90,125,154,0.3)] disabled:opacity-20 active:scale-95 flex items-center gap-3"
+              className="bg-brand-dark text-white px-10 py-5 font-black text-sm uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-[8px_8px_0px_rgba(90,125,154,0.3)] disabled:opacity-20 active:scale-95 flex items-center justify-center gap-3"
             >
               <span>🪄</span>
               <span>{isAiAnalyzing ? "מנתח נתונים..." : "ניתוח מגמות AI"}</span>
@@ -187,16 +192,16 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
           {aggregateMetrics ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {metrics.map(m => (
-                <div key={m.key} className="studio-card p-10 bg-white border-brand-dark shadow-[10px_10px_0px_rgba(26,26,26,0.05)] hover:border-brand-accent transition-all">
+                <div key={m.key} className="studio-card p-8 bg-white border-brand-dark shadow-[10px_10px_0px_rgba(26,26,26,0.05)] hover:border-brand-accent transition-all">
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-4xl">{m.icon}</span>
                     <div className="text-right">
                       <p className="text-[10px] font-black text-brand-muted uppercase tracking-widest">{m.label}</p>
-                      <h4 className="text-5xl font-black text-brand-dark">{aggregateMetrics[m.key]} <span className="text-sm opacity-30">/ 6</span></h4>
+                      <h4 className="text-4xl font-black text-brand-dark">{aggregateMetrics[m.key]} <span className="text-xs opacity-30">/ 6</span></h4>
                     </div>
                   </div>
                   <div className="border-t border-brand-dark/5 pt-4">
-                     <p className="text-[9px] font-black text-brand-muted uppercase tracking-widest mb-2">Trend Analysis (History)</p>
+                     <p className="text-[9px] font-black text-brand-muted uppercase tracking-widest mb-2">Trend History</p>
                      <TrendLine data={cloudHistory} metric={m.key} color="#5a7d9a" />
                   </div>
                 </div>
@@ -204,7 +209,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
             </div>
           ) : (
             <div className="studio-card p-24 text-center border-dashed border-brand-dark/20 opacity-40 italic bg-white/50">
-               אין עדיין נתונים מהצוות. לחץ על "שלח שאלון לצוות" כדי להתחיל.
+               אין עדיין נתונים מהצוות. השתמש בכפתור השיתוף למעלה כדי לאסוף משוב.
             </div>
           )}
 
@@ -222,12 +227,12 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
         </div>
       )}
 
-      {/* Input Form for Staff/Members */}
+      {/* Input Form */}
       <div className="studio-card p-12 border-brand-dark bg-white shadow-[16px_16px_0px_rgba(26,26,26,0.05)] space-y-16 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-2 h-full bg-brand-accent"></div>
         <div className="space-y-4 border-b-2 border-brand-dark pb-6">
            <h3 className="text-3xl font-black text-brand-dark italic">עדכון דופק שוטף</h3>
-           <p className="text-brand-muted font-bold italic">איך נראית העבודה שלנו ביומיום? תהיה כנה, זה מה שיעזור לנו להשתפר.</p>
+           <p className="text-brand-muted font-bold italic">איך נראית העבודה שלנו ביומיום? (1=נמוך, 6=גבוה)</p>
         </div>
         
         <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
@@ -236,20 +241,20 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
               <div className="flex justify-between items-center">
                 <label className="text-2xl font-black text-brand-dark italic">{metric.label}</label>
                 <div className="flex items-baseline gap-1">
-                   <span className="text-5xl font-black text-brand-accent">{pulse[metric.key]}</span>
+                   <span className="text-5xl font-black text-brand-accent">{pulse[metric.key] || 3}</span>
                    <span className="text-xs font-black opacity-30">/6</span>
                 </div>
               </div>
               <input 
                 type="range" min="1" max="6" step="1" 
-                value={pulse[metric.key]} 
+                value={pulse[metric.key] || 3} 
                 onChange={e => setPulse({...pulse, [metric.key]: parseInt(e.target.value)})} 
                 className="w-full h-4 bg-brand-beige border-2 border-brand-dark appearance-none cursor-pointer accent-brand-dark" 
               />
               <div className="flex justify-between text-[9px] font-black text-brand-muted uppercase tracking-widest px-1">
-                 <span>נמוך מאוד</span>
+                 <span>נמוך</span>
                  <span>בינוני</span>
-                 <span>גבוה מאוד</span>
+                 <span>גבוה</span>
               </div>
             </div>
           ))}
@@ -259,7 +264,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
            <label className="text-[11px] font-black text-brand-muted uppercase tracking-widest">משהו שחשוב להגיד על האווירה בצוות כרגע?</label>
            <textarea 
              className="w-full bg-brand-beige/20 border-4 border-brand-dark p-8 text-2xl font-bold text-brand-dark outline-none focus:border-brand-accent min-h-[160px] resize-none" 
-             placeholder="שתף מחשבות, קשיים או ניצחונות..." 
+             placeholder="שתף מחשבות..." 
              value={pulse.vibe} 
              onChange={e => setPulse({...pulse, vibe: e.target.value})} 
            />

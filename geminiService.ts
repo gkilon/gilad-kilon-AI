@@ -222,9 +222,9 @@ export const getSynergyInsight = async (avgScores: any, vibes: string[]) => {
 Ownership: ${avgScores.ownership}
 Role Clarity: ${avgScores.roleClarity}
 Routines: ${avgScores.routines}
-Communication: ${avgScores.communication}
+Trust: ${avgScores.trust}
 Commitment: ${avgScores.commitment}
-Respect: ${avgScores.respect}
+Open Communication: ${avgScores.openComm}
 
 תגובות מילוליות מהשטח: "${vibes.join(' | ')}"
 

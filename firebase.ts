@@ -34,37 +34,42 @@ const normalizeId = (id: string) => id ? id.trim().toLowerCase() : "";
 const getLocal = (key: string) => JSON.parse(localStorage.getItem(`gk_mock_${key}`) || "[]");
 const setLocal = (key: string, data: any) => localStorage.setItem(`gk_mock_${key}`, JSON.stringify(data));
 
+// רשימת המדדים המעודכנת (6 פרמטרים)
+export const DEFAULT_METRICS = [
+  { key: 'ownership', label: 'Ownership על היעדים', icon: '🎯' },
+  { key: 'roleClarity', label: 'בהירות בתחומי אחריות', icon: '📋' },
+  { key: 'routines', label: 'שגרות וסדר יום', icon: '🔄' },
+  { key: 'trust', label: 'אמון וכבוד הדדי', icon: '✨' },
+  { key: 'commitment', label: 'רמת מחויבות לצוות', icon: '🤝' },
+  { key: 'openComm', label: 'תקשורת פתוחה וכנה', icon: '🗣️' }
+];
+
 export const getSystemConfig = async () => {
+  const defaultConfig = { 
+    masterCode: "GILAD2025", 
+    metrics: DEFAULT_METRICS,
+    articles: [],
+    clients: []
+  };
+
   if (!db) {
     const local = localStorage.getItem('gk_mock_system_config');
-    const defaultConfig = { 
-      masterCode: "GILAD2025", 
-      metrics: [
-        { key: 'ownership', label: 'Ownership על היעדים', icon: '🎯' },
-        { key: 'roleClarity', label: 'בהירות בתחומי אחריות', icon: '📋' },
-        { key: 'routines', label: 'שגרות וסדר יום', icon: '🔄' },
-        { key: 'communication', label: 'איכות התקשורת', icon: '💬' },
-        { key: 'commitment', label: 'רמת מחויבות', icon: '🤝' },
-        { key: 'respect', label: 'כבוד ואמון הדדי', icon: '✨' }
-      ],
-      articles: [],
-      clients: []
-    };
     if (local) return { ...defaultConfig, ...JSON.parse(local) };
     return defaultConfig;
   }
+
   const docRef = doc(db, "system", "config");
   const snap = await getDoc(docRef);
   if (snap.exists()) {
     const data = snap.data();
     return {
       masterCode: data.masterCode || "GILAD2025",
-      metrics: data.metrics || [],
+      metrics: (data.metrics && data.metrics.length > 0) ? data.metrics : DEFAULT_METRICS,
       articles: data.articles || [],
       clients: data.clients || []
     };
   }
-  return { masterCode: "GILAD2025", metrics: [], articles: [], clients: [] };
+  return defaultConfig;
 };
 
 export const updateSystemConfig = async (config: any) => {
