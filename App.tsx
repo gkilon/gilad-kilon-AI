@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import { ProjectChange, IdeaEntry, Task, UserSession, Article, ViewType } from './types';
-import { fetchFromCloud, isFirebaseReady, getSystemConfig, syncToCloud } from './firebase';
+import { ProjectChange, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types';
+import { fetchFromCloud, isFirebaseReady, getSystemConfig, syncToCloud, deleteFromCloud } from './firebase';
 import Dashboard from './components/Dashboard';
 import WoopWizard from './components/WoopWizard';
 import Header from './components/Header';
-import Landing, { ArticleCard } from './components/Landing';
+// Fix: removed ArticleCard import which does not exist in Landing.tsx
+import Landing from './components/Landing';
 import IdeaManager from './components/IdeaManager';
 import TeamSynergy from './components/TeamSynergy';
 import ExecutiveSynergy from './components/ExecutiveSynergy';
@@ -43,40 +44,24 @@ const App: React.FC = () => {
   const [ideas, setIdeas] = useState<IdeaEntry[]>([]);
   const [generalTasks, setGeneralTasks] = useState<Task[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(false);
-  const [loginMessage, setLoginMessage] = useState<string>('');
   
   const [session, setSession] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('gk_session');
     return saved ? JSON.parse(saved) : null;
   });
 
-  const [view, setView] = useState<ViewType>('home');
+  const [view, setView] = useState<ViewType>(() => {
+    // בדיקה האם הגענו מקישור דופק צוותי
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'synergy' && params.get('teamId')) return 'synergy';
+    return 'home';
+  });
+
   const dbReady = isFirebaseReady();
 
-  // מאמרי ברירת מחדל קבועים - ישמשו רק אם אין שום דבר ב-DB
-  const defaultArticles: Article[] = [
-    {
-      id: 'market-vs-strategy-2024',
-      title: 'קניות בשוק או אסטרטגיה?',
-      subtitle: 'כמה מחשבות על עובדים תפקידים וסדר כאוטי',
-      category: 'אסטרטגיה וניהול',
-      date: '2024',
-      content: `"איטלקי אמיתי לא בא לשוק עם רשימת קניות" סיפר לי פעם מכר איטלקי.\n\nלמה?\nכי הוא לא יודע איזה סחורה הוא יפגוש ביום נתון. הוא בא לשוק מסתכל על הסחורה ולפי חומרי הגלם האיכותיים שיש באותו יום הוא בונה את התפריט. \n\nמקסים, אה? \nקצת בלאגן קצת שכונה אבל יש פה משהו יפה ורומנטי בזה. \nואולי גם פרקטי לארגונים דווקא היום...\n\nהעולם המתוכנן והתכליתי שלנו עובד הפוך. יש כבר מסורת שלמה של רעיונות וסיפורים שמבססים את עקרון התכנון מהסוף להתחלה-תגיד לאן אתה רוצה להגיע, ולפי זה תחליט באיזו דרך ללכת. סה"כ הגיוני ונכון.\n\nבאחת החברות שליוויתי בשנים האחרונות היתה תופעה מרתקת - כפוגשים מועמד טוב קודם כל מביאים אותו אח"כ מוצאים מה לעשות איתו. \nזה הגיע לרמת כאוס אבל היה לי ברור שאי אפשר ולא נכון להפסיק את זה לחלוטין אלא קצת לתחום את זה. \nמה ההיגיון המארגן? היגיון השוק באיטליה. יש סחורה טובה אני לוקח. אח"כ נראה מה בדיוק לעשות עם זה ויש מצב שנצטרך ללמוד תוך כדי תנועה. \n\nאולי עכשיו זה זמן טוב לקחת משהו מההיגיון הזה גם לארגונים אחרים. \nלייצר טיפה יותר תנועה וטיפה וגמישות מבנית ותפקודית שתאפשר לנו לזוז קצת אחרת. \n\nהיום בהרבה מאוד מקרים עולם הגיוס שבוי בתוך הקונספט הזה (שלא הוא בנה) וצריך להתאים אנשים לתפקידים ספציפיים עם כישורים ספציפיים עם ניסיון ספציפי בתעשייה ספציפית (ולפעמים עם עוד רזולוציות). תשאלו את הג'וניורים... \nאז מחפשים בפינצטה מועמדים שיתאימו בדיוק לתפקיד ומשקיעים המון משאבים פיזיים ומנטליים עד שמוצאים\nופתאום אין...אז עובדים יותר קשה? אז מה עושים? \nאולי אולי לפעמים במקומות מסוימים אפשר קצת להתחיל לפתוח את היום בשוק ולא בספר מתכונים.\nזה לא עניין טכני וזו לא סוגיה של גיוס. זה מתחיל מאסטרטגיה.\nועכשיו זה זמן מצוין להסתכל עליה מחדש`
-    }
-  ];
-
   useEffect(() => {
-    getSystemConfig().then(config => {
-      const dbArticles = config.articles || [];
-      // אם יש מאמרים ב-DB, הם מקור הסמכות. אם אין כלום (ריק), נשתמש בדיפולטים.
-      if (dbArticles.length > 0) {
-        setArticles(dbArticles);
-      } else {
-        setArticles(defaultArticles);
-      }
-    });
+    getSystemConfig().then(config => setArticles(config.articles || []));
     
     if (session) {
       localStorage.setItem('gk_session', JSON.stringify(session));
@@ -107,103 +92,66 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
-  const handleUpdateTasks = async (newTasks: Task[]) => {
-    setGeneralTasks(newTasks);
-    if (session && dbReady) {
-      await syncToCloud('general_tasks', {
-        id: 'main_list',
-        managerId: session.teamId,
-        tasks: newTasks
-      });
-    }
+  const handleSaveWoop = async (woop: WoopData, suggestedTasks: string[]) => {
+    if (!session) return;
+    const newProject: ProjectChange = {
+      id: Math.random().toString(36).substr(2, 9),
+      title: woop.wish,
+      createdAt: Date.now(),
+      woop,
+      tasks: suggestedTasks.map(t => ({ id: Math.random().toString(36).substr(2, 9), text: t, completed: false, createdAt: Date.now() })),
+      readinessScore: 85,
+      managerId: session.teamId
+    } as any;
+    
+    setProjects([newProject, ...projects]);
+    if (dbReady) await syncToCloud('projects', newProject);
+    setView('dashboard');
   };
 
-  const handleLogin = (teamId: string, isManager: boolean, isAdmin: boolean = false) => {
-    setSession({ teamId, isManager });
-    if (isAdmin) setView('admin');
-    else setView('home');
+  const handleDeleteProject = async (id: string) => {
+    if (!window.confirm("למחוק את מהלך השינוי?")) return;
+    setProjects(projects.filter(p => p.id !== id));
+    if (dbReady) await deleteFromCloud('projects', id);
   };
 
-  const navigateToView = (targetView: ViewType) => {
-    setView(targetView);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleToggleWoopTask = async (projectId: string, taskId: string) => {
+    const newProjects = projects.map(p => {
+      if (p.id === projectId) {
+        return { ...p, tasks: p.tasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t) };
+      }
+      return p;
+    });
+    setProjects(newProjects);
+    const updated = newProjects.find(p => p.id === projectId);
+    if (dbReady && updated) await syncToCloud('projects', updated);
   };
 
   const renderView = () => {
     if (loading) return <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען נתונים...</div>;
-
-    const protectedViews: ViewType[] = ['dashboard', 'wizard', 'ideas', 'executive', 'tasks', 'synergy', 'communication', 'feedback360'];
-    if (!session && protectedViews.includes(view)) {
-      return <ToolTeaser toolId={view} onLogin={() => setView('login')} />;
-    }
-
-    const backToLab = () => navigateToView('lab');
+    const backToLab = () => setView('lab');
 
     switch(view) {
-      case 'login': return <Login onLogin={handleLogin} message={loginMessage} />;
-      case 'home': return <Landing onEnterTool={(v) => navigateToView(v as ViewType)} />;
-      case 'lab': return <TheLab onEnterTool={(v) => navigateToView(v as ViewType)} onBack={() => setView('home')} isLoggedIn={!!session} />;
-      case 'admin': return <AdminPanel onBack={() => setView('home')} onGoToAssets={() => setView('brand_assets')} />;
-      case 'brand_assets': return <BrandAssets onBack={() => setView('admin')} />;
-      case 'dashboard': return <Dashboard projects={projects} onNew={() => setView('wizard')} onDelete={() => {}} onToggleTask={() => {}} onBack={backToLab} />;
-      case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={() => setView('dashboard')} />;
-      case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={() => {}} onBack={backToLab} />;
+      case 'login': return <Login onLogin={(tid, isM, isA) => { setSession({teamId: tid, isManager: isM}); if (isA) setView('admin'); else setView('home'); }} />;
+      case 'home': return <Landing onEnterTool={(v) => setView(v as ViewType)} />;
+      case 'lab': return <TheLab onEnterTool={(v) => setView(v as ViewType)} onBack={() => setView('home')} isLoggedIn={!!session} />;
+      case 'dashboard': return <Dashboard projects={projects} onNew={() => setView('wizard')} onDelete={handleDeleteProject} onToggleTask={handleToggleWoopTask} onBack={backToLab} />;
+      case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={handleSaveWoop} />;
+      case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={(i) => { setIdeas([i, ...ideas]); if (dbReady && session) syncToCloud('ideas', {...i, managerId: session.teamId}); }} onBack={backToLab} />;
       case 'synergy': return <TeamSynergy session={session} onBack={backToLab} />;
       case 'executive': return <ExecutiveSynergy session={session} onBack={backToLab} />;
-      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={handleUpdateTasks} onBack={backToLab} />;
+      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={(t) => { setGeneralTasks(t); if (session && dbReady) syncToCloud('general_tasks', {id: 'main_list', managerId: session.teamId, tasks: t}); }} onBack={backToLab} />;
       case 'feedback360': return <Feedback360 onBack={backToLab} />;
       case 'communication': return <CommunicationDNA onBack={backToLab} />;
       case 'about': return <About />;
       case 'clients': return <ClientsPage />;
-      case 'article_detail': 
-        if (!selectedArticle) { setView('articles'); return null; }
-        return (
-          <div className="max-w-4xl mx-auto py-24 md:py-32 px-6 animate-fadeIn text-right">
-            <button onClick={() => setView('articles')} className="text-brand-muted font-black text-xs uppercase tracking-widest border-b-2 border-brand-dark mb-16 hover:text-brand-dark transition-all">← חזרה למאמרים</button>
-            <div className="space-y-12">
-               <div className="space-y-6">
-                  <span className="text-[12px] font-black text-brand-accent uppercase tracking-[0.4em]">{selectedArticle.category}</span>
-                  <h1 className="text-5xl md:text-8xl font-black italic tracking-tighter leading-none">{selectedArticle.title}</h1>
-                  {selectedArticle.subtitle && <p className="text-2xl md:text-3xl text-brand-muted font-bold italic">{selectedArticle.subtitle}</p>}
-                  <div className="h-2 w-32 bg-brand-dark"></div>
-               </div>
-               <div className="text-2xl md:text-3xl text-brand-dark leading-relaxed font-medium whitespace-pre-line border-r-8 border-brand-beige pr-10">
-                  {selectedArticle.content}
-               </div>
-            </div>
-          </div>
-        );
-      case 'articles': return (
-        <div className="max-w-5xl mx-auto py-32 px-6 space-y-24">
-          <div className="space-y-6 text-right">
-            <span className="text-[12px] font-black text-brand-accent uppercase tracking-[0.5em]">KNOWLEDGE HUB</span>
-            <h2 className="text-6xl md:text-9xl font-black italic tracking-tighter leading-none">חומרים<br/>מקצועיים.</h2>
-            <div className="h-3 w-40 bg-brand-dark"></div>
-          </div>
-          <div className="flex flex-col">
-            {articles.map(article => (
-              <ArticleCard 
-                key={article.id} 
-                title={article.title} 
-                subtitle={article.subtitle}
-                category={article.category} 
-                date={article.date} 
-                onClick={() => {
-                  setSelectedArticle(article);
-                  setView('article_detail');
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      );
-      default: return <Landing onEnterTool={(v) => navigateToView(v as ViewType)} />;
+      default: return <Landing onEnterTool={(v) => setView(v as ViewType)} />;
     }
   };
 
   return (
     <div className="min-h-screen" dir="rtl">
-      <Header onNavigate={(v) => navigateToView(v as ViewType)} currentView={view} session={session} onLogout={() => setSession(null)} />
+      <Header onNavigate={(v) => setView(v as ViewType)} currentView={view} session={session} onLogout={() => setSession(null)} />
       <main className="w-full mx-auto">{renderView()}</main>
       <FloatingWhatsApp />
     </div>

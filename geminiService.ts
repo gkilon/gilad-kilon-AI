@@ -4,12 +4,44 @@ import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TowsAna
 
 const SYSTEM_INSTRUCTION = `
 אתה "המצפן האסטרטגי" - העוזר הדיגיטלי הבכיר של גלעד קילון. 
-תפקידך לסייע להנהלות ליישם את המודלים המתקדמים ביותר בפיתוח ארגוני.
+תפקידך לסייע למנהלים להפוך כוונות לביצוע מושלם.
 אתה חד, ממוקד, משתמש בשפה עסקית גבוהה ומחויב לתוצאות.
-בניתוח TOWS, עליך להצליב בין גורמים פנימיים (חוזקות/חולשות) לחיצוניים (הזדמנויות/איומים) כדי לייצר אסטרטגיות פעולה.
+כשאתה מנתח משימות, היה פרקטי מאוד: פרק משימות גדולות לצעדים קטנים, זהה סיכונים והצע עדיפויות.
 `;
 
-// Fix: Added missing export analyzeTowsStrategy
+export const analyzeTaskMission = async (taskText: string) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const prompt = `
+נתח את המשימה הבאה: "${taskText}".
+1. פרק אותה ל-3-5 תתי-משימות קונקרטיות (Action Items).
+2. קבע רמת עדיפות (נמוכה, בינונית, גבוהה).
+3. תן "טיפ ניהולי" קצר - איך לבצע את זה הכי טוב?
+4. זהה את ה"ניצחון המהיר" (Quick Win) במשימה הזו.
+
+החזר בפורמט JSON בלבד.
+`;
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: prompt,
+    config: {
+      systemInstruction: SYSTEM_INSTRUCTION,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          subtasks: { type: Type.ARRAY, items: { type: Type.STRING } },
+          priority: { type: Type.STRING, enum: ['low', 'medium', 'high'] },
+          managerTip: { type: Type.STRING },
+          quickWin: { type: Type.STRING }
+        },
+        required: ["subtasks", "priority", "managerTip", "quickWin"]
+      }
+    }
+  });
+  return JSON.parse(response.text || '{}');
+};
+
 export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `
@@ -51,7 +83,6 @@ export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
   return JSON.parse(response.text || '{}');
 };
 
-// Fix: Added missing export getToolRecommendation
 export const getToolRecommendation = async (userInput: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `
@@ -97,7 +128,6 @@ export const getToolRecommendation = async (userInput: string) => {
   return JSON.parse(response.text || '{"recommendations": []}');
 };
 
-// Fix: Added missing export suggestTasksForWoop
 export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `
@@ -130,7 +160,6 @@ export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => 
   }
 };
 
-// Fix: Added missing export getCollaborativeFeedback
 export const getCollaborativeFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `נתח את שלב ${step} ב-WOOP עבור: "${currentData[step.toLowerCase() as keyof WoopData]}". החזר ניתוח אסטרטגי.`;
@@ -156,7 +185,6 @@ export const getCollaborativeFeedback = async (step: WoopStep, currentData: Part
   return JSON.parse(response.text || '{}');
 };
 
-// Fix: Added missing export processIdea
 export const processIdea = async (content: string, projects: ProjectChange[], isAudio: boolean = false) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const projectsContext = projects.map(p => `ID: ${p.id}, Title: ${p.title}, Wish: ${p.woop.wish}`).join(' | ');
@@ -186,7 +214,6 @@ export const processIdea = async (content: string, projects: ProjectChange[], is
   return JSON.parse(response.text || '{}');
 };
 
-// Fix: Added missing export getSynergyInsight
 export const getSynergyInsight = async (avgScores: any, vibes: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `
@@ -215,7 +242,6 @@ Respect: ${avgScores.respect}
   return response.text || "";
 };
 
-// Fix: Added analyzeCommStyle function to resolve import error in CommunicationDNA.tsx
 export const analyzeCommStyle = async (answers: Record<string, number>): Promise<CommStyleResult> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `
@@ -254,7 +280,6 @@ q5: העדפת תקשורת ישירה וקצרה
   return JSON.parse(response.text || '{}');
 };
 
-// Fix: Added analyze360Feedback function to resolve import error in Feedback360.tsx
 export const analyze360Feedback = async (self: string, peers: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const prompt = `

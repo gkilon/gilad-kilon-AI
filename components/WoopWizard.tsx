@@ -1,20 +1,21 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { WoopData, WoopStep, AiFeedback } from '../types';
-import { getCollaborativeFeedback } from '../geminiService';
+import { getCollaborativeFeedback, suggestTasksForWoop } from '../geminiService';
+import { Icons } from './Landing';
 
 interface WoopWizardProps {
   onCancel: () => void;
-  onSave: (data: WoopData) => void;
+  onSave: (data: WoopData, tasks: string[]) => void;
   initialData?: WoopData;
 }
 
 const steps = [
-  { id: WoopStep.CONTEXT, title: 'Context', label: 'הקשר ואסטרטגיה', desc: 'מהי התמונה הגדולה ולמה זה חשוב עכשיו?', color: 'brand-dark', icon: '🏠' },
-  { id: WoopStep.WISH, title: 'Goal', label: 'המשאלה הניהולית', desc: 'מהו היעד הספציפי שאתה שואף אליו?', color: 'brand-accent', icon: '❤️' },
-  { id: WoopStep.OUTCOME, title: 'Vision', label: 'התוצאה הרצויה', desc: 'איך נראית ההצלחה במציאות?', color: 'brand-accent', icon: '✨' },
-  { id: WoopStep.OBSTACLE, title: 'Barrier', label: 'זיהוי החסם', desc: 'מהו הדבר האמיתי שעוצר אותך מלפעול?', color: 'brand-muted', icon: '🧱' },
-  { id: WoopStep.PLAN, title: 'Response', label: 'תוכנית תגובה', desc: 'איך תפעל ברגע האמת כשהחסם יופיע?', color: 'brand-dark', icon: '🚀' }
+  { id: WoopStep.CONTEXT, title: 'Context', label: 'הקשר ואסטרטגיה', desc: 'מהי התמונה הגדולה ולמה השינוי הזה חשוב עכשיו?', icon: '🏠' },
+  { id: WoopStep.WISH, title: 'Wish', label: 'המשאלה הניהולית', desc: 'מהו היעד הספציפי והמרגש שאתה שואף אליו?', icon: '❤️' },
+  { id: WoopStep.OUTCOME, title: 'Outcome', label: 'התוצאה הרצויה', desc: 'איך תיראה ההצלחה? מה התועלת המרכזית?', icon: '✨' },
+  { id: WoopStep.OBSTACLE, title: 'Obstacle', label: 'זיהוי החסם', desc: 'מהו הדבר הפנימי (מחשבה/רגש) שעוצר אותך?', icon: '🧱' },
+  { id: WoopStep.PLAN, title: 'Plan', label: 'תוכנית תגובה', desc: 'אם החסם יופיע, אז אני אפעל בדרך של...', icon: '🚀' }
 ];
 
 const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }) => {
@@ -22,14 +23,14 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
   const [data, setData] = useState<WoopData>(initialData || { context: '', wish: '', outcome: '', obstacle: '', plan: '' });
   const [feedback, setFeedback] = useState<AiFeedback | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
+  const [isFinalizing, setIsFinalizing] = useState(false);
   const feedbackRequested = useRef<string>("");
 
   const currentStep = steps[currentStepIdx];
   const currentVal = data[currentStep.id.toLowerCase() as keyof WoopData];
 
   const fetchAiSupport = useCallback(async () => {
-    if (currentVal.length < 15 || feedbackRequested.current === currentVal) return;
+    if (!currentVal || currentVal.length < 10 || feedbackRequested.current === currentVal) return;
     
     feedbackRequested.current = currentVal;
     setIsAiLoading(true);
@@ -37,7 +38,7 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
       const result = await getCollaborativeFeedback(currentStep.id, data);
       setFeedback(result);
     } catch (e) {
-      console.error(e);
+      console.error("AI Feedback Error:", e);
     } finally {
       setIsAiLoading(false);
     }
@@ -46,189 +47,158 @@ const WoopWizard: React.FC<WoopWizardProps> = ({ onCancel, onSave, initialData }
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchAiSupport();
-    }, 2000);
+    }, 1500);
     return () => clearTimeout(timer);
   }, [currentVal, fetchAiSupport]);
 
   const handleInputChange = (val: string) => {
     const key = currentStep.id.toLowerCase() as keyof WoopData;
     setData(prev => ({ ...prev, [key]: val }));
-    setConfirmed(false);
   };
 
   const handleAdoptRefined = () => {
     if (feedback?.refinedText) {
       handleInputChange(feedback.refinedText);
-      setConfirmed(true);
+      setFeedback(null);
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStepIdx < steps.length - 1) {
       setCurrentStepIdx(prev => prev + 1);
       setFeedback(null);
-      setConfirmed(false);
       feedbackRequested.current = "";
     } else {
-      onSave(data);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStepIdx > 0) {
-      setCurrentStepIdx(prev => prev - 1);
-      setFeedback(null);
-      setConfirmed(false);
-      feedbackRequested.current = "";
-    } else {
-      onCancel();
+      setIsFinalizing(true);
+      try {
+        const suggestedTasks = await suggestTasksForWoop(data);
+        onSave(data, suggestedTasks);
+      } catch (e) {
+        onSave(data, ["להתחיל ביישום התוכנית", "שיחת עדכון עם הצוות"]);
+      }
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-12 px-6 animate-fadeIn text-right">
-      {/* Dynamic Breadcrumbs with Icons */}
-      <div className="flex items-center justify-between mb-16 px-4">
-        <div className="flex items-center gap-4">
+    <div className="max-w-7xl mx-auto py-12 px-6 animate-fadeIn text-right pt-32">
+      
+      {/* Progress Header */}
+      <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
+        <div className="flex items-center gap-3">
           {steps.map((s, i) => (
-            <React.Fragment key={s.id}>
-              <div className={`flex items-center justify-center w-10 h-10 border-2 transition-all duration-500 ${
-                i === currentStepIdx ? 'bg-brand-dark text-white border-brand-dark scale-125' : i < currentStepIdx ? 'bg-brand-beige border-brand-dark text-brand-dark' : 'bg-white border-brand-dark/10 text-brand-muted opacity-30'
+            <div key={s.id} className="flex items-center">
+              <div className={`w-12 h-12 flex items-center justify-center border-2 transition-all duration-500 ${
+                i === currentStepIdx ? 'bg-brand-dark text-white border-brand-dark scale-110 shadow-lg' : 
+                i < currentStepIdx ? 'bg-brand-accent border-brand-accent text-white' : 
+                'bg-white border-brand-dark/10 text-brand-muted opacity-30'
               }`}>
-                <span className="text-sm font-black">{s.icon}</span>
+                <span className="text-xl">{s.icon}</span>
               </div>
-              {i < steps.length - 1 && <div className="w-6 h-px bg-brand-dark/10" />}
-            </React.Fragment>
+              {i < steps.length - 1 && <div className={`w-8 h-1 ${i < currentStepIdx ? 'bg-brand-accent' : 'bg-brand-dark/10'}`} />}
+            </div>
           ))}
         </div>
-        <div className="flex flex-col items-end">
-          <span className="text-[10px] font-black text-brand-accent uppercase tracking-[0.2em]">WOOP PROCESS</span>
-          <span className="text-brand-dark font-black text-2xl italic">{currentStep.title}</span>
+        <div className="text-right">
+          <span className="text-[11px] font-black text-brand-accent uppercase tracking-[0.3em]">Phase {currentStepIdx + 1} of 5</span>
+          <h2 className="text-4xl font-black text-brand-dark italic tracking-tighter">{currentStep.label}</h2>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        {/* Editor Area */}
-        <div className="lg:col-span-7 flex flex-col gap-8">
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 justify-end">
-              <div className="text-right">
-                <h2 className="text-5xl font-black text-brand-dark leading-tight mb-2">{currentStep.label}</h2>
-                <p className="text-brand-muted text-xl font-medium italic">{currentStep.desc}</p>
-              </div>
-              <div className="text-6xl">{currentStep.icon}</div>
+        {/* Main Editor */}
+        <div className="lg:col-span-7 space-y-8">
+          <div className="studio-card p-10 border-brand-dark bg-white shadow-[12px_12px_0px_#1a1a1a]">
+            <p className="text-brand-muted text-xl font-medium italic mb-6">{currentStep.desc}</p>
+            <textarea
+              autoFocus
+              className="w-full h-[300px] bg-brand-beige/20 p-8 text-2xl font-bold text-brand-dark outline-none focus:border-brand-accent border-2 border-transparent transition-all resize-none text-right leading-relaxed"
+              placeholder="כתוב כאן..."
+              value={currentVal}
+              onChange={(e) => handleInputChange(e.target.value)}
+            />
+            <div className="mt-8 flex justify-between items-center">
+              <button onClick={onCancel} className="text-brand-muted font-black uppercase text-xs tracking-widest hover:text-brand-dark">ביטול</button>
+              <button 
+                onClick={handleNext}
+                disabled={!currentVal.trim() || isFinalizing}
+                className="bg-brand-dark text-white px-12 py-5 font-black text-xl hover:bg-brand-accent transition-all shadow-xl disabled:opacity-20 active:scale-95"
+              >
+                {isFinalizing ? "מעבד נתונים..." : currentStepIdx === steps.length - 1 ? "סיים וגזור משימות ←" : "המשך לשלב הבא ←"}
+              </button>
             </div>
-            
-            <div className="relative">
-               <textarea
-                autoFocus
-                className="w-full h-[350px] p-10 studio-card border-brand-dark focus:border-brand-accent outline-none text-2xl font-medium placeholder-brand-dark/10 leading-relaxed resize-none text-brand-dark text-right bg-white"
-                placeholder="שתף את המחשבות שלך כאן..."
-                value={currentVal}
-                onChange={(e) => handleInputChange(e.target.value)}
-              />
-              <div className="absolute bottom-6 right-8 flex items-center gap-2">
-                <span className="text-[10px] font-bold text-brand-muted uppercase tracking-widest">Studio Editor</span>
-                <div className="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center px-4">
-            <button onClick={handleBack} className="text-lg font-bold text-brand-muted hover:text-brand-dark transition-all py-2">
-              {currentStepIdx === 0 ? 'ביטול וחזרה' : 'חזרה'}
-            </button>
-            <button 
-              onClick={handleNext}
-              disabled={!currentVal.trim()}
-              className="bg-brand-dark text-white px-14 py-6 font-black text-xl shadow-[8px_8px_0px_#2563eb] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all active:scale-95 disabled:opacity-10"
-            >
-              {currentStepIdx === steps.length - 1 ? 'צור תוכנית עבודה' : 'המשך לשלב הבא'}
-            </button>
           </div>
         </div>
 
-        {/* AI Assistant Area */}
-        <div className="lg:col-span-5 flex flex-col gap-8">
-          <div className="studio-card p-10 border-brand-dark bg-brand-beige shadow-[12px_12px_0px_#1a1a1a] flex flex-col min-h-[500px] relative overflow-hidden">
-            <div className="flex items-center gap-4 mb-10 justify-end">
+        {/* AI Sidekick */}
+        <div className="lg:col-span-5">
+          <div className="studio-card p-10 border-brand-dark bg-brand-beige shadow-[10px_10px_0px_rgba(90,125,154,0.2)] min-h-[500px] flex flex-col relative overflow-hidden">
+            <div className="flex items-center gap-4 mb-8 justify-end">
               <div className="text-right">
-                <h4 className="font-black text-2xl text-brand-dark">סוכן AI אסטרטגי</h4>
-                <p className="text-[10px] text-brand-accent font-black uppercase tracking-widest mt-1">GK CO-PILOT</p>
+                <h4 className="font-black text-xl text-brand-dark italic">AI Strategic Co-Pilot</h4>
+                <div className="flex items-center gap-2 justify-end">
+                   <span className="text-[10px] font-black text-brand-accent uppercase tracking-widest">Active Analysis</span>
+                   <div className="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></div>
+                </div>
               </div>
-              <div className="w-14 h-14 bg-white border-2 border-brand-dark flex items-center justify-center">
-                <span className="text-2xl">🪄</span>
-              </div>
+              <div className="w-12 h-12 bg-white border-2 border-brand-dark flex items-center justify-center text-2xl">🪄</div>
             </div>
 
-            <div className="flex-1 space-y-8 overflow-y-auto">
+            <div className="flex-1 space-y-8">
               {isAiLoading ? (
-                <div className="flex flex-col items-center justify-center h-full gap-6 opacity-40">
+                <div className="h-full flex flex-col items-center justify-center gap-4 opacity-40">
                   <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 bg-brand-accent rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
-                    <div className="w-2.5 h-2.5 bg-brand-accent rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2.5 h-2.5 bg-brand-accent rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-brand-dark rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-brand-dark rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-brand-dark rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
-                  <p className="text-xs font-black uppercase tracking-widest text-brand-dark">ANALYZING STRATEGY...</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest">Deep Processing...</p>
                 </div>
               ) : feedback ? (
-                <div className="space-y-8 animate-fadeIn text-right">
-                  <div className="space-y-4">
-                    <h5 className="text-[10px] font-black text-brand-muted uppercase tracking-widest">תובנה ניהולית:</h5>
-                    <p className="text-xl text-brand-dark leading-relaxed font-bold italic border-r-4 border-brand-accent pr-6">
-                      "{feedback.analysis}"
-                    </p>
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="p-6 bg-white border-r-8 border-brand-accent shadow-sm">
+                    <div className="flex justify-between items-center mb-4">
+                       <span className="text-[10px] font-black text-brand-muted uppercase">Ready Score: {feedback.score}%</span>
+                       <div className="w-24 h-1.5 bg-brand-dark/5 rounded-full overflow-hidden">
+                          <div className="h-full bg-brand-accent transition-all duration-1000" style={{width: `${feedback.score}%`}}></div>
+                       </div>
+                    </div>
+                    <p className="text-lg font-bold text-brand-dark leading-relaxed italic">"{feedback.analysis}"</p>
                   </div>
 
-                  {!confirmed && (
-                    <div className="space-y-6">
-                      <div className="bg-white p-8 border-2 border-brand-dark shadow-[6px_6px_0px_rgba(26,26,26,0.1)]">
-                        <h5 className="text-[10px] font-black text-brand-accent uppercase tracking-widest mb-4">הצעה לדיוק הניסוח (Home & Passion):</h5>
-                        <p className="text-lg font-medium text-brand-dark leading-relaxed mb-8">
-                          {feedback.refinedText}
-                        </p>
-                        <button 
-                          onClick={handleAdoptRefined}
-                          className="w-full bg-brand-dark text-white font-black py-4 hover:bg-brand-accent transition-all flex items-center justify-center gap-3"
-                        >
-                          אמץ את הניסוח המקצועי
-                        </button>
-                      </div>
-
-                      <div className="p-6 border-r-4 border-brand-accent bg-white/50 italic">
-                        <h5 className="text-[10px] font-black text-brand-muted uppercase tracking-widest mb-2">שאלה למחשבה:</h5>
-                        <p className="text-lg font-bold text-brand-dark leading-tight">
-                          {feedback.clarifyingQuestion}
-                        </p>
-                      </div>
+                  {feedback.refinedText && (
+                    <div className="space-y-4">
+                       <h5 className="text-[10px] font-black text-brand-accent uppercase tracking-widest">הצעה לניסוח אסטרטגי:</h5>
+                       <div className="p-6 bg-brand-dark text-white italic text-lg leading-relaxed shadow-lg">
+                         {feedback.refinedText}
+                       </div>
+                       <button 
+                         onClick={handleAdoptRefined}
+                         className="w-full py-3 bg-white border-2 border-brand-dark text-brand-dark font-black text-xs uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all"
+                       >
+                         אמץ ניסוח AI
+                       </button>
                     </div>
                   )}
 
-                  {confirmed && (
-                    <div className="bg-white p-10 border-2 border-brand-dark flex flex-col items-center text-center gap-6 animate-fadeIn">
-                      <div className="text-5xl">✅</div>
-                      <div>
-                        <h6 className="text-2xl font-black text-brand-dark mb-2">השלב דויק בהצלחה</h6>
-                        <p className="text-brand-muted font-medium italic">הניסוח המקצועי עודכן במערכת.</p>
-                      </div>
+                  {feedback.clarifyingQuestion && (
+                    <div className="p-4 border-2 border-dashed border-brand-dark/20 text-brand-muted italic text-sm">
+                      <span className="block font-black text-[10px] uppercase mb-1">שאלה למחשבה:</span>
+                      {feedback.clarifyingQuestion}
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="h-full flex flex-col items-center justify-center text-center px-8 opacity-30">
-                  <div className="text-6xl mb-8">✍️</div>
-                  <h6 className="text-2xl font-bold text-brand-dark mb-4">אני מקשיב ומנתח...</h6>
-                  <p className="text-lg font-medium">תתחיל לכתוב, ואני אעזור לך להפוך את המשאלה לתוכנית עבודה מיוצבת (Home) ומלאת תשוקה (Passion).</p>
+                <div className="h-full flex flex-col items-center justify-center text-center px-6 opacity-20">
+                  <div className="text-6xl mb-6">✍️</div>
+                  <p className="text-xl font-bold">התחל לכתוב...</p>
+                  <p className="text-sm">אני אנתח את המילים שלך ואעזור לך לדייק את המהלך האסטרטגי.</p>
                 </div>
               )}
             </div>
             
-            <div className="mt-8 pt-6 border-t border-brand-dark/5 flex justify-between items-center text-[10px] font-black text-brand-muted tracking-widest">
-              <span>GK AI AGENT v2</span>
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-brand-accent rounded-full"></div>
-                <span>CONNECTED</span>
-              </div>
+            <div className="mt-8 pt-4 border-t border-brand-dark/5 text-[9px] font-black text-brand-muted uppercase tracking-widest flex justify-between">
+              <span>GK Strategy Lab</span>
+              <span>v3.0.1</span>
             </div>
           </div>
         </div>
