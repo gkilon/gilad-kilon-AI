@@ -118,22 +118,11 @@ export const ToolEntry: React.FC<{ title: string, desc: string, onClick: () => v
 interface LandingProps { onEnterTool: (view: string) => void; }
 
 const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
-  const [consultationText, setConsultationText] = useState('');
-  const [isAiLoading, setIsAiLoading] = useState(false);
   const [clients, setClients] = useState<ClientLogo[]>([]);
 
   useEffect(() => {
     getSystemConfig().then(config => setClients(config.clients || []));
   }, []);
-
-  const handleConsult = async () => {
-    if (!consultationText.trim()) return;
-    setIsAiLoading(true);
-    try {
-      const result = await getToolRecommendation(consultationText);
-      if (result.recommendations?.[0]) onEnterTool(result.recommendations[0].moduleId);
-    } catch (e) { console.error(e); } finally { setIsAiLoading(false); }
-  };
 
   return (
     <div className="min-h-screen flex flex-col items-center pt-16 md:pt-32 pb-32 px-6 relative overflow-hidden">
@@ -144,58 +133,52 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         <div className="absolute top-[400px] left-[-200px] w-[500px] h-[500px] bg-brand-accent/[0.03] rounded-full blur-[100px]"></div>
       </div>
 
-      {/* 1. Hero Section */}
-      <section className="w-full max-w-6xl text-center space-y-12 md:space-y-16 mb-48 relative z-10">
-        <div className="relative inline-block px-4 md:px-10 max-w-full group">
-          
-          {/* Hero Background Image - ללא Grayscale ועם Opacity מלא */}
-          <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden rounded-3xl border-4 border-brand-dark/5 shadow-2xl">
-            <img 
-              src="/hero-bg.jpg" 
-              alt="Gilad at Work" 
-              className="w-full h-full object-cover opacity-100 group-hover:scale-105 transition-transform duration-[2000ms] ease-out"
-              onError={(e) => { 
-                console.warn("Hero image failed to load, path attempted: /hero-bg.jpg");
-                if (e.currentTarget.src.includes('/hero-bg.jpg')) {
-                    e.currentTarget.src = 'hero-bg.jpg';
-                } else {
-                    e.currentTarget.style.display = 'none'; 
-                }
-              }}
-            />
-          </div>
-
-          {/* ללא רקע לבן חוסם וללא טשטוש כדי לראות את התמונה בבירור */}
-          <div className="relative z-10 py-16 md:py-20 bg-transparent rounded-3xl">
-            <BrandLogo size="lg" />
-            <div className="absolute top-0 bottom-0 left-0 w-px bg-brand-dark/10"></div>
-            <div className="absolute top-0 bottom-0 right-0 w-px bg-brand-dark/10"></div>
-          </div>
-        </div>
+      {/* 1. Hero Section - עם רקע תמונה סופר-עדין וחופשי */}
+      <section className="w-full max-w-6xl text-center space-y-12 md:space-y-24 mb-48 relative z-10 py-12">
         
-        <div className="space-y-10 max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-6xl font-black text-kern leading-[0.95] tracking-tighter uppercase italic">
-            Simple <span className="text-brand-accent font-semibold italic">Deep</span> Real
-          </h1>
-          <div className="h-2 w-24 bg-brand-accent mx-auto"></div>
-          <p className="text-xl md:text-3xl text-brand-dark max-w-3xl mx-auto font-black leading-relaxed italic px-4 drop-shadow-sm">
-            "אני עוזר למנהלים למצוא את העיקר בתוך הרעש. בלי מילים גבוהות, עם עומק מקצועי וכלים שבאמת עובדים."
-          </p>
+        {/* תמונת רקע - חופשית, ללא מסגרת, כמעט שקופה */}
+        <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
+          <img 
+            src="/hero-bg.jpg" 
+            alt="" 
+            className="w-full h-full object-cover grayscale opacity-[0.08] scale-110"
+            onError={(e) => { 
+              if (e.currentTarget.src.includes('/hero-bg.jpg')) {
+                  e.currentTarget.src = 'hero-bg.jpg';
+              } else {
+                  e.currentTarget.style.display = 'none'; 
+              }
+            }}
+          />
+        </div>
+
+        <div className="space-y-16">
+          <BrandLogo size="lg" />
           
-          <div className="flex justify-center gap-4">
-            <button 
-              onClick={() => onEnterTool('lab')}
-              className="group bg-brand-dark text-white px-10 py-6 font-black text-lg uppercase tracking-widest shadow-[10px_10px_0px_#5a7d9a] active:scale-95 transition-all flex items-center justify-center gap-4 border-2 border-brand-dark"
-            >
-              <span>כניסה למעבדה</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 animate-pulse">
-                <path d="M10 2v7.5" />
-                <path d="M14 2v7.5" />
-                <path d="M8.5 2h7" />
-                <path d="M14 9.5a5 5 0 1 1-4 0" />
-                <path d="M5.5 16h13" />
-              </svg>
-            </button>
+          <div className="space-y-10 max-w-4xl mx-auto">
+            <h1 className="text-3xl md:text-6xl font-black text-kern leading-[0.95] tracking-tighter uppercase italic">
+              Simple <span className="text-brand-accent font-semibold italic">Deep</span> Real
+            </h1>
+            <div className="h-2 w-24 bg-brand-accent mx-auto"></div>
+            <p className="text-xl md:text-4xl text-brand-dark max-w-3xl mx-auto font-black leading-relaxed italic px-4">
+              "אני עוזר למנהלים למצוא את העיקר בתוך הרעש. בלי מילים גבוהות, עם עומק מקצועי וכלים שבאמת עובדים."
+            </p>
+            
+            <div className="flex justify-center pt-8">
+              <button 
+                onClick={() => onEnterTool('lab')}
+                className="group bg-brand-dark text-white px-12 py-8 font-black text-xl uppercase tracking-widest shadow-[12px_12px_0px_#5a7d9a] active:scale-95 transition-all flex items-center justify-center gap-4 border-2 border-brand-dark"
+              >
+                <span>כניסה למעבדה (The Lab)</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 animate-pulse">
+                  <path d="M10 2v7.5" />
+                  <path d="M14 2v7.5" />
+                  <path d="M8.5 2h7" />
+                  <path d="M14 9.5a5 5 0 1 1-4 0" />
+                  <path d="M5.5 16h13" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </section>
