@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getSystemConfig } from '../firebase';
 import { ClientLogo } from '../types';
 
-// Sophisticated, Minimalist Architectural Stroke Icons
+// Sophisticated Architectural Stroke Icons
 const ExpertiseIcons = {
   Leadership: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
