@@ -117,9 +117,15 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
   };
   
   const subSizes = {
-    sm: 'text-[4px] md:text-[5px]', 
+    sm: 'text-[11px] md:text-[12px]', 
     md: 'text-[8px] md:text-[12px]', 
     lg: 'text-[12px] md:text-[19px]' 
+  };
+
+  const tracking = {
+    sm: 'tracking-tight',
+    md: 'tracking-[0.1em]',
+    lg: 'tracking-[0.15em]'
   };
 
   const color = dark ? 'text-brand-dark' : 'text-white';
@@ -131,7 +137,7 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
         KILON
         <span className="text-brand-accent absolute top-0 left-[100%] ml-1">.</span>
       </div>
-      <div className={`relative ${subSizes[size]} tracking-[0.15em] mt-3 font-bold opacity-70 whitespace-nowrap text-center`}>
+      <div className={`relative ${subSizes[size]} ${tracking[size]} mt-3 font-bold opacity-70 whitespace-nowrap text-center`}>
         <span>Management Consulting</span>
       </div>
     </div>
@@ -185,25 +191,25 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   return (
     <div className="min-h-screen flex flex-col items-center pt-24 md:pt-40 pb-40 px-6 relative overflow-hidden">
       
-      {/* Background Layering - Expanded Hero anchored top-aligned */}
+      {/* Background Layering - Full Top Hero Image */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
          <div 
-           className="absolute top-0 left-0 w-full h-[700px] opacity-[0.18] bg-no-repeat bg-top"
+           className="absolute top-0 left-0 w-full h-[800px] opacity-[0.18] bg-no-repeat bg-top"
            style={{ 
              backgroundImage: 'url("hero.jpg")',
              backgroundSize: 'cover'
            }}
          ></div>
          
-         {/* Gradient overlay to fade the image into the page background */}
-         <div className="absolute top-0 left-0 w-full h-[700px] bg-gradient-to-b from-transparent to-brand-beige"></div>
+         {/* Extended Gradient overlay for smoother transition */}
+         <div className="absolute top-0 left-0 w-full h-[800px] bg-gradient-to-b from-transparent via-brand-beige/50 to-brand-beige"></div>
          
          <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px]"></div>
       </div>
 
       {/* Hero Section */}
-      <section className="w-full max-w-6xl text-center space-y-24 md:space-y-32 mb-64 relative z-10">
-        <div className="space-y-10 md:space-y-12">
+      <section className="w-full max-w-6xl text-center space-y-12 md:space-y-16 mb-64 relative z-10">
+        <div className="space-y-12 md:space-y-16">
           <div className="animate-fadeIn">
             <BrandLogo size="lg" />
           </div>
@@ -213,11 +219,12 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               Simple <span className="text-brand-accent font-semibold italic">Deep</span> Real
             </h1>
             <div className="h-2 w-32 bg-brand-accent mx-auto shadow-[0_0_15px_var(--brand-accent)] opacity-60"></div>
+            
             <p className="text-2xl md:text-5xl text-brand-dark max-w-3xl mx-auto font-medium leading-tight italic px-4">
               "אני עוזר למנהלים למצוא את העיקר בתוך הרעש. בלי מילים גבוהות, עם עומק מקצועי וכלים שבאמת עובדים."
             </p>
             
-            <div className="flex justify-center pt-12">
+            <div className="flex justify-center pt-8">
               <button 
                 onClick={() => onEnterTool('lab')}
                 className="group bg-brand-dark text-white px-16 py-10 font-black text-2xl uppercase tracking-widest shadow-[15px_15px_0px_var(--brand-accent)] active:scale-95 transition-all flex items-center justify-center gap-6 border-4 border-brand-dark hover:bg-brand-accent hover:border-brand-accent"
