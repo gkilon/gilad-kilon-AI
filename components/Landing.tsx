@@ -224,7 +224,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               "אני עוזר למנהלים למצוא את העיקר בתוך הרעש. בלי מילים גבוהות, עם עומק מקצועי וכלים שבאמת עובדים."
             </p>
             
-            <div className="flex justify-center pt-8">
+            <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
               <button 
                 onClick={() => onEnterTool('lab')}
                 className="group bg-brand-dark text-white px-16 py-10 font-black text-2xl uppercase tracking-widest shadow-[15px_15px_0px_var(--brand-accent)] active:scale-95 transition-all flex items-center justify-center gap-6 border-4 border-brand-dark hover:bg-brand-accent hover:border-brand-accent"

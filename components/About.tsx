@@ -2,6 +2,10 @@
 import React from 'react';
 
 const About: React.FC = () => {
+  const handleDownload = () => {
+    window.print();
+  };
+
   return (
     <div className="max-w-5xl mx-auto py-24 animate-fadeIn space-y-24 pb-48 text-right px-6" dir="rtl">
       
@@ -27,6 +31,16 @@ const About: React.FC = () => {
               style={{ filter: 'none' }}
             />
           </div>
+          
+          <button 
+            onClick={handleDownload}
+            className="w-full mt-6 bg-brand-dark text-white py-4 font-black text-xs uppercase tracking-[0.2em] shadow-[6px_6px_0px_var(--brand-accent)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all flex items-center justify-center gap-3"
+          >
+            <span>הורדת פרופיל PDF</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+          </button>
         </div>
 
         <div className="flex-1 space-y-10">
@@ -86,7 +100,7 @@ const About: React.FC = () => {
           
           <div className="flex flex-col items-center group">
              <span className="text-[9px] font-bold text-brand-muted uppercase tracking-tighter mb-2 group-hover:text-brand-accent transition-colors">Email</span>
-             <a href="mailto:gilad@kilon.co.il" className="text-xl md:text-3xl font-black text-brand-dark hover:text-brand-accent transition-colors tracking-tighter">gilad@kilon.co.il</a>
+             <a href="mailto:gilad@kilon.org" className="text-xl md:text-3xl font-black text-brand-dark hover:text-brand-accent transition-colors tracking-tighter">gilad@kilon.org</a>
           </div>
 
           <div className="flex flex-col items-center group">

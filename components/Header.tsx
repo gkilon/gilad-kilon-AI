@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
   const isAdmin = session?.teamId === 'admin';
 
   const navItems: { id: ViewType; label: string }[] = [
-    { id: 'home', label: 'דף הבית' },
+    { id: 'home', label: 'עמוד ראשי' },
     { id: 'about', label: 'אודות' },
     { id: 'clients', label: 'לקוחות' },
     { id: 'articles', label: 'חומרים מקצועיים' },
@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center">
             <div className="flex items-center gap-10 border-l border-brand-dark/10 pl-10 ml-10">
-              {navItems.filter(i => i.id !== 'home').map(item => (
+              {navItems.map(item => (
                 <button 
                   key={item.id}
                   onClick={() => handleNav(item.id)} 
@@ -75,7 +75,6 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           
           {/* Mobile Access Buttons */}
           <div className="flex lg:hidden items-center gap-3">
-            {/* Quick Access Lab Button for Mobile - Now with Lab Flask Icon */}
             <button 
               onClick={() => handleNav('lab')}
               className={`h-12 px-4 border-2 transition-all flex items-center justify-center gap-2 ${isLabView ? 'bg-brand-accent border-brand-accent text-white shadow-lg' : 'bg-white border-brand-dark text-brand-dark shadow-[4px_4px_0px_#1a1a1a]'}`}
