@@ -18,7 +18,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
             onClick={onBack} 
             className="flex items-center gap-2 text-brand-muted font-black text-sm uppercase tracking-widest hover:text-brand-dark transition-all group mr-auto md:mr-0"
           >
-            <span>חזרה לדף הבית</span>
+            <span>חזרה לעמוד הראשי</span>
             <span className="text-xl group-hover:translate-x-1 transition-transform">←</span>
           </button>
         </div>
@@ -31,45 +31,64 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
           <h1 className="text-7xl md:text-9xl font-black italic tracking-tighter leading-none">המעבדה<span className="text-brand-accent">.</span></h1>
         </div>
         <div className="bg-brand-dark text-white px-10 py-5 text-[12px] font-black uppercase tracking-[0.3em] shadow-[8px_8px_0px_var(--brand-accent)] mb-2">
-          {isLoggedIn ? 'PREMIUM ACCESS' : 'GUEST MODE'}
+          {isLoggedIn ? 'PREMIUM ACCESS' : 'STRATEGIC PREVIEW'}
         </div>
       </div>
 
-      {/* 2. הסבר פרקטי */}
-      <section className="mb-20 space-y-12 text-right">
-        <div className="max-w-4xl mr-0">
-          <h2 className="text-3xl md:text-5xl font-black text-brand-dark leading-tight mb-8">
-            מרחב עבודה פרקטי <br/>
-            <span className="text-brand-accent italic">עם כלים מבוססי AI.</span>
+      {/* 2. הסבר מקצועי מודגש (הועבר למעלה) */}
+      <section className="mb-16 text-right animate-fadeIn">
+        <div className="max-w-5xl mr-0 space-y-8">
+          <h2 className="text-3xl md:text-5xl font-black text-brand-dark italic leading-tight">
+            המרחב שבו אסטרטגיה ניהולית פוגשת בינה מלאכותית.
           </h2>
-          <p className="text-xl md:text-2xl text-brand-muted font-bold leading-relaxed border-r-8 border-brand-accent pr-8 mb-12">
-            כאן הניסיון שלי פוגש את הטכנולוגיה. אלו כלים פשוטים שעוזרים לך לנהל משימות, להבין מה קורה בצוות ולקבל החלטות טובות יותר. <br/>
-            <span className="text-brand-dark font-black">שימו לב: כדי להשתמש בכלים, לשמור את המידע ולקבל ניתוח AI אישי, יש לפתוח מרחב עבודה (הרשמה קצרה).</span>
+          <p className="text-xl md:text-3xl text-brand-muted font-medium leading-relaxed border-r-8 border-brand-accent pr-8 py-2 italic">
+            פיתחתי את הכלים האלו כדי לעזור לך לזקק את העיקר בתוך הרעש הארגוני. 
+            כל כלי כאן הוא זיקוק של עשרות שנים בשטח, המונגש דרך יכולות AI מתקדמות כדי לפנות לך זמן למה שחשוב באמת: האנשים והתוצאות.
           </p>
         </div>
       </section>
 
-      {/* 3. באנר אורחים */}
+      {/* 3. דיסקליימר שיווקי ומזמין (רק לאורחים) */}
       {!isLoggedIn && (
-        <div className="mb-24 border-4 border-brand-dark bg-brand-beige p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 animate-fadeIn shadow-[15px_15px_0px_var(--brand-accent)]">
-          <div className="space-y-6 text-right">
-            <div className="inline-block bg-brand-dark text-white px-4 py-1 text-[10px] font-black uppercase tracking-widest">REGISTRATION REQUIRED</div>
-            <h3 className="text-3xl md:text-5xl font-black text-brand-dark italic tracking-tighter leading-none">הכלים מחכים למרחב שלך.</h3>
-            <p className="text-brand-muted text-xl font-bold italic max-w-2xl leading-relaxed">
-              כרגע אפשר רק להתרשם מהכלים. כדי להתחיל להזין נתונים, להשתמש ב-AI ולנהל את המשימות שלכם, אתם צריכים לפתוח מרחב עבודה אישי.
-            </p>
+        <section className="mb-20 animate-fadeIn">
+          <div className="studio-card p-10 md:p-14 border-[4px] border-brand-dark bg-white shadow-[15px_15px_0px_var(--brand-accent)] relative overflow-hidden group">
+            {/* Background design element */}
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-brand-accent/5 rounded-full blur-2xl"></div>
+            
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12 text-right">
+              <div className="flex-1 space-y-4">
+                <div className="inline-flex items-center gap-2 text-brand-accent font-black text-[10px] uppercase tracking-[0.4em] mb-2">
+                   <span>Unlock Full Experience</span>
+                   <div className="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></div>
+                </div>
+                
+                <h3 className="text-2xl md:text-4xl font-black text-brand-dark italic tracking-tight">
+                  בואו נהפוך את התובנות לביצועים.
+                </h3>
+                
+                <p className="text-lg md:text-xl text-brand-muted font-bold leading-relaxed">
+                  הכלים כאן פתוחים לכם לשימוש והתנסות בגרסת "טעימה". 
+                  כדי לקבל את מלוא המעטפת המקצועית, לשמור נתונים ולהפעיל את סוכני ה-AI האישיים - 
+                  כל מה שצריך זה להזין את <span className="text-brand-dark border-b-2 border-brand-accent">קוד הגישה שקיבלתם ממני</span>.
+                </p>
+              </div>
+
+              <div className="shrink-0 w-full lg:w-auto">
+                <button 
+                  onClick={() => onEnterTool('login')}
+                  className="w-full lg:w-auto bg-brand-dark text-white px-12 py-7 font-black text-xl uppercase tracking-widest hover:bg-brand-accent transition-all shadow-xl active:scale-95 border-4 border-brand-dark flex items-center justify-center gap-4"
+                >
+                  <span>התחברות לגישה מלאה</span>
+                  <span className="text-2xl">🗝️</span>
+                </button>
+              </div>
+            </div>
           </div>
-          <button 
-            onClick={() => onEnterTool('login')}
-            className="whitespace-nowrap bg-brand-accent text-white px-12 py-7 font-black text-xl uppercase tracking-widest hover:bg-brand-dark transition-all shadow-2xl active:scale-95 border-2 border-brand-dark"
-          >
-            פתח מרחב עבודה והתחל ←
-          </button>
-        </div>
+        </section>
       )}
 
       {/* 4. גריד הכלים */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
         <ToolEntry 
           title="ניהול שינוי (WOOP)" 
           desc="להפוך רצונות לתוכנית עבודה אמיתית. ה-AI עוזר לך לדייק את המכשולים ואת הצעדים הבאים." 
