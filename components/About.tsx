@@ -17,7 +17,7 @@ const About: React.FC = () => {
       {/* 2. Personal Story Section */}
       <section className="flex flex-col md:flex-row-reverse items-start gap-16">
         
-        {/* Profile Image Area - Using ONLY local profile.jpg with NO filters */}
+        {/* Profile Image Area */}
         <div className="relative shrink-0 w-full md:w-1/3">
           <div className="relative aspect-square md:aspect-[3/4] overflow-hidden border-2 border-brand-dark shadow-[12px_12px_0px_#1a1a1a] bg-white">
             <img 
@@ -31,9 +31,6 @@ const About: React.FC = () => {
 
         <div className="flex-1 space-y-10">
           <div className="space-y-6 text-xl md:text-2xl text-brand-dark leading-relaxed font-medium">
-            <p className="text-brand-accent font-black text-3xl md:text-4xl italic mb-8 border-r-4 border-brand-accent pr-6">
-              "עומק עם קלילות וחיוך ופשטות."
-            </p>
             <p>
               גדלתי בקיבוץ בצפון והשורשים האלה מלווים אותי בכל מהלך. עם השנים למדתי לקחת דברים מסוימים ולשחרר דברים אחרים, תובנה שעוזרת לי לזקק את העיקר מהטפל גם בעבודה עם הנהלות.
             </p>
