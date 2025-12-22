@@ -132,7 +132,7 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
         <span className="text-brand-accent absolute top-0 left-[100%] ml-1">.</span>
       </div>
       <div className={`relative ${subSizes[size]} tracking-[0.15em] mt-3 font-bold opacity-70 whitespace-nowrap text-center`}>
-        <span>Deeply Rooted Leadership</span>
+        <span>Management Consulting</span>
       </div>
     </div>
   );
@@ -203,12 +203,12 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
 
       {/* Hero Section */}
       <section className="w-full max-w-6xl text-center space-y-24 md:space-y-32 mb-64 relative z-10">
-        <div className="space-y-20">
+        <div className="space-y-10 md:space-y-12">
           <div className="animate-fadeIn">
             <BrandLogo size="lg" />
           </div>
           
-          <div className="space-y-16 max-w-4xl mx-auto">
+          <div className="space-y-12 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-7xl font-black text-kern leading-none tracking-tighter uppercase italic">
               Simple <span className="text-brand-accent font-semibold italic">Deep</span> Real
             </h1>
