@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center">
-            <div className="flex items-center gap-10 border-l border-brand-dark/10 pl-10 ml-10">
+            <div className="flex items-center gap-8 border-l border-brand-dark/10 pl-8 ml-8">
               {navItems.map(item => (
                 <button 
                   key={item.id}
@@ -62,6 +62,15 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
                   {item.label}
                 </button>
               ))}
+              <a 
+                href="http://obt.kilon-consulting.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-brand-accent text-white px-5 py-2 rounded-full text-[13px] font-black uppercase tracking-[0.2em] hover:bg-brand-dark transition-all flex items-center gap-2 shadow-lg shadow-brand-accent/20"
+              >
+                <span>OBT</span>
+                <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+              </a>
             </div>
             
             <button 
@@ -69,22 +78,20 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
               className={`px-6 py-2 border border-brand-dark/20 rounded-full text-[13px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${isLabView ? 'bg-brand-dark text-white' : 'text-brand-dark hover:bg-brand-dark/5'}`}
             >
               <span>המעבדה (Workspace)</span>
-              <span className="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></span>
             </button>
           </nav>
           
           {/* Mobile Access Buttons */}
           <div className="flex lg:hidden items-center gap-3">
-            <button 
-              onClick={() => handleNav('lab')}
-              className={`h-12 px-4 border-2 transition-all flex items-center justify-center gap-2 ${isLabView ? 'bg-brand-accent border-brand-accent text-white shadow-lg' : 'bg-white border-brand-dark text-brand-dark shadow-[4px_4px_0px_#1a1a1a]'}`}
-              aria-label="The Lab"
+            <a 
+              href="http://obt.kilon-consulting.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="h-12 px-5 bg-brand-accent border-2 border-brand-accent text-white shadow-lg flex items-center justify-center rounded-full"
             >
-              <LabIcon className="w-6 h-6" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Workspace</span>
-            </button>
+               <span className="text-xs font-black uppercase tracking-widest">OBT</span>
+            </a>
 
-            {/* Menu Toggle */}
             <button 
               onClick={() => setIsMenuOpen(true)}
               className="h-12 w-12 flex items-center justify-center text-brand-dark bg-white border-2 border-brand-dark/10 shadow-sm"
@@ -138,6 +145,16 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
 
           <div className="flex-1 overflow-y-auto bg-white px-8 py-12">
             <nav className="flex flex-col gap-10 text-right">
+              <a 
+                href="http://obt.kilon-consulting.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block w-full text-5xl font-black italic tracking-tighter text-right py-2 text-brand-accent flex items-center justify-end gap-4"
+              >
+                <span>OBT</span>
+                <span className="w-4 h-4 bg-brand-accent rounded-full animate-pulse"></span>
+              </a>
+
               {navItems.map(item => (
                 <button 
                   key={item.id}
@@ -152,10 +169,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
               
               <button 
                 onClick={() => handleNav('lab')}
-                className="block w-full text-5xl font-black italic tracking-tighter text-brand-accent flex items-center justify-end gap-4 py-2"
+                className="block w-full text-5xl font-black italic tracking-tighter text-brand-dark flex items-center justify-end gap-4 py-2"
               >
                 <span>המעבדה (Workspace)</span>
-                <LabIcon className="w-8 h-8 animate-pulse" />
+                <LabIcon className="w-8 h-8 animate-pulse text-brand-accent" />
               </button>
             </nav>
 
