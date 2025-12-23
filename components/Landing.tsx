@@ -189,9 +189,9 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-24 md:pt-40 pb-40 px-6 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center pb-40 px-6 relative overflow-hidden">
       
-      {/* Background Layering - Full Top Hero Image */}
+      {/* Background Layering */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
          <div 
            className="absolute top-0 left-0 w-full h-[800px] opacity-[0.18] bg-no-repeat bg-top"
@@ -201,14 +201,36 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
            }}
          ></div>
          
-         {/* Extended Gradient overlay for smoother transition */}
          <div className="absolute top-0 left-0 w-full h-[800px] bg-gradient-to-b from-transparent via-brand-beige/50 to-brand-beige"></div>
-         
          <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px]"></div>
       </div>
 
+      {/* OBT Strip Section - Dark Background (Slate-900) as per provided design */}
+      <section className="w-full bg-[#0a1120] py-6 md:py-8 relative z-50 mb-12 shadow-xl border-b border-brand-accent/20">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 text-center md:text-right">
+          <div className="flex flex-col items-center md:items-start gap-1">
+             <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none mb-1">
+                לפצח את ה-<span className="font-bold">One Big Thing</span>
+             </h2>
+             <p className="text-[#f26522] text-xl md:text-2xl font-bold tracking-tight">
+                הדור הבא של פיתוח עובדים וטאלנטים
+             </p>
+          </div>
+          <div className="shrink-0">
+            <a 
+              href="http://obt.kilon-consulting.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block bg-[#f26522] text-white px-10 py-4 font-black text-sm md:text-lg uppercase tracking-widest shadow-[4px_4px_0px_rgba(255,255,255,0.2)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all border-2 border-[#f26522] whitespace-nowrap"
+            >
+              פרטים נוספים ←
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
-      <section className="w-full max-w-6xl text-center space-y-12 md:space-y-16 mb-64 relative z-10">
+      <section className="w-full max-w-6xl text-center space-y-12 md:space-y-16 mb-48 relative z-10 mt-12">
         <div className="space-y-12 md:space-y-16">
           <div className="animate-fadeIn">
             <BrandLogo size="lg" />
@@ -227,7 +249,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
               <button 
                 onClick={() => onEnterTool('lab')}
-                className="group bg-brand-dark text-white px-16 py-10 font-black text-2xl uppercase tracking-widest shadow-[15px_15px_0px_var(--brand-accent)] active:scale-95 transition-all flex items-center justify-center gap-6 border-4 border-brand-dark hover:bg-brand-accent hover:border-brand-accent"
+                className="group bg-brand-dark text-white px-10 py-6 md:px-16 md:py-10 font-black text-xl md:text-2xl uppercase tracking-widest shadow-[10px_10px_0px_var(--brand-accent)] md:shadow-[15px_15px_0px_var(--brand-accent)] active:scale-95 transition-all flex items-center justify-center gap-6 border-4 border-brand-dark hover:bg-brand-accent hover:border-brand-accent"
               >
                 <span>כניסה למעבדה (The Lab)</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 group-hover:rotate-12 transition-transform">
