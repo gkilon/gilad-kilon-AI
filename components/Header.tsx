@@ -46,32 +46,49 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
       <header className="px-6 md:px-12 py-6 sticky top-0 z-[1000] bg-brand-beige/95 backdrop-blur-xl border-b border-brand-dark/10 w-full">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
-          <div className="cursor-pointer" onClick={() => handleNav('home')}>
-            <BrandLogo size="sm" />
+          {/* Mobile: Hamburger on the Right */}
+          <div className="flex lg:hidden items-center gap-3">
+            <button 
+              onClick={() => setIsMenuOpen(true)}
+              className="h-10 w-10 flex items-center justify-center text-brand-dark bg-white border-2 border-brand-dark/10 shadow-sm"
+              aria-label="Open Menu"
+            >
+              <div className="w-5 h-3.5 flex flex-col justify-between items-end">
+                <span className="h-0.5 bg-brand-dark w-5"></span>
+                <span className="h-0.5 bg-brand-dark w-5"></span>
+                <span className="h-0.5 bg-brand-dark w-5"></span>
+              </div>
+            </button>
+            <a 
+              href="http://obt.kilon-consulting.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="h-10 px-4 bg-brand-accent border-2 border-brand-accent text-white shadow-lg flex items-center justify-center rounded-full"
+            >
+               <span className="text-[10px] font-black uppercase tracking-widest">OBT</span>
+            </a>
           </div>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center">
-            <div className="flex items-center gap-8 border-l border-brand-dark/10 pl-8 ml-8">
-              {navItems.map(item => (
-                <button 
-                  key={item.id}
-                  onClick={() => handleNav(item.id)} 
-                  className={`text-[13px] font-bold uppercase tracking-[0.2em] nav-underline transition-all ${currentView === item.id ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}
-                >
-                  {item.label}
-                </button>
-              ))}
-              <a 
-                href="http://obt.kilon-consulting.com/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-brand-accent text-white px-5 py-2 rounded-full text-[13px] font-black uppercase tracking-[0.2em] hover:bg-brand-dark transition-all flex items-center gap-2 shadow-lg shadow-brand-accent/20"
+          {/* Desktop Nav - Centered */}
+          <nav className="hidden lg:flex items-center gap-8 border-l border-brand-dark/10 pl-8 ml-8">
+            {navItems.map(item => (
+              <button 
+                key={item.id}
+                onClick={() => handleNav(item.id)} 
+                className={`text-[13px] font-bold uppercase tracking-[0.2em] nav-underline transition-all ${currentView === item.id ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}
               >
-                <span>OBT</span>
-                <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
-              </a>
-            </div>
+                {item.label}
+              </button>
+            ))}
+            <a 
+              href="http://obt.kilon-consulting.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-brand-accent text-white px-5 py-2 rounded-full text-[13px] font-black uppercase tracking-[0.2em] hover:bg-brand-dark transition-all flex items-center gap-2 shadow-lg shadow-brand-accent/20"
+            >
+              <span>OBT</span>
+              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+            </a>
             
             <button 
               onClick={() => handleNav('lab')} 
@@ -80,31 +97,13 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
               <span>המעבדה (Workspace)</span>
             </button>
           </nav>
-          
-          {/* Mobile Access Buttons */}
-          <div className="flex lg:hidden items-center gap-3">
-            <a 
-              href="http://obt.kilon-consulting.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="h-12 px-5 bg-brand-accent border-2 border-brand-accent text-white shadow-lg flex items-center justify-center rounded-full"
-            >
-               <span className="text-xs font-black uppercase tracking-widest">OBT</span>
-            </a>
 
-            <button 
-              onClick={() => setIsMenuOpen(true)}
-              className="h-12 w-12 flex items-center justify-center text-brand-dark bg-white border-2 border-brand-dark/10 shadow-sm"
-              aria-label="Open Menu"
-            >
-              <div className="w-6 h-4 flex flex-col justify-between items-end">
-                <span className="h-0.5 bg-brand-dark w-6"></span>
-                <span className="h-0.5 bg-brand-dark w-4"></span>
-                <span className="h-0.5 bg-brand-dark w-6"></span>
-              </div>
-            </button>
+          {/* Brand Logo - Left */}
+          <div className="cursor-pointer" onClick={() => handleNav('home')}>
+            <BrandLogo size="sm" />
           </div>
 
+          {/* Desktop Auth Actions */}
           <div className="hidden lg:flex items-center gap-4">
             {session ? (
               <div className="flex items-center gap-6">
@@ -125,73 +124,73 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
         </div>
       </header>
 
-      {/* Full Screen Mobile Menu Overlay */}
+      {/* Full Screen Mobile Menu Overlay - Adjusted for transparency */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-white z-[99999] lg:hidden flex flex-col h-[100dvh] w-full overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-6 border-b border-brand-dark/10 bg-brand-beige shadow-sm">
-            <div onClick={() => handleNav('home')}>
-              <BrandLogo size="sm" />
-            </div>
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-lg z-[99999] lg:hidden flex flex-col h-[100dvh] w-full overflow-hidden animate-fadeIn">
+          <div className="flex items-center justify-between px-6 py-6 border-b border-brand-dark/10 bg-white/30 shadow-sm">
             <button 
               onClick={() => setIsMenuOpen(false)}
-              className="p-4 text-brand-dark bg-white border-2 border-brand-dark rounded-full shadow-lg active:scale-90 transition-all"
+              className="p-3 text-brand-dark bg-white border-2 border-brand-dark rounded-full shadow-lg active:scale-90 transition-all"
               aria-label="Close Menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
+            <div onClick={() => handleNav('home')}>
+              <BrandLogo size="sm" />
+            </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto bg-white px-8 py-12">
-            <nav className="flex flex-col gap-10 text-right">
+          <div className="flex-1 overflow-y-auto px-10 py-12 flex flex-col items-start">
+            <nav className="flex flex-col gap-6 text-right w-full">
               <a 
                 href="http://obt.kilon-consulting.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="block w-full text-5xl font-black italic tracking-tighter text-right py-2 text-brand-accent flex items-center justify-end gap-4"
+                className="block w-full text-base font-black italic tracking-tighter text-right py-1 text-[#f26522] flex items-center justify-start gap-3"
               >
+                <span className="w-2.5 h-2.5 bg-[#f26522] rounded-full animate-pulse"></span>
                 <span>OBT</span>
-                <span className="w-4 h-4 bg-brand-accent rounded-full animate-pulse"></span>
               </a>
 
               {navItems.map(item => (
                 <button 
                   key={item.id}
                   onClick={() => handleNav(item.id)}
-                  className={`block w-full text-5xl font-black italic tracking-tighter text-right py-2 ${currentView === item.id ? 'text-brand-accent' : 'text-brand-dark'}`}
+                  className={`block w-full text-base font-black italic tracking-tighter text-right py-1 ${currentView === item.id ? 'text-brand-accent underline decoration-brand-accent/30 underline-offset-8' : 'text-brand-dark'}`}
                 >
                   {item.label}
                 </button>
               ))}
               
-              <div className="h-1.5 w-16 bg-brand-accent/30 mr-0"></div>
+              <div className="h-0.5 w-10 bg-brand-accent/20 mt-1"></div>
               
               <button 
                 onClick={() => handleNav('lab')}
-                className="block w-full text-5xl font-black italic tracking-tighter text-brand-dark flex items-center justify-end gap-4 py-2"
+                className="block w-full text-base font-black italic tracking-tighter text-brand-dark flex items-center justify-start gap-3 py-1"
               >
+                <LabIcon className="w-5 h-5 animate-pulse text-brand-accent" />
                 <span>המעבדה (Workspace)</span>
-                <LabIcon className="w-8 h-8 animate-pulse text-brand-accent" />
               </button>
             </nav>
 
-            <div className="mt-20 pt-10 border-t-2 border-brand-dark/10 space-y-10 pb-32">
+            <div className="mt-12 pt-6 border-t border-brand-dark/10 w-full space-y-6 pb-32">
               {session ? (
-                <div className="space-y-8">
-                  <div className="bg-brand-beige p-8 border-r-8 border-brand-dark shadow-md text-right">
-                    <p className="text-brand-muted font-bold text-xs mb-1 uppercase tracking-widest">מחובר כצוות</p>
-                    <p className="text-brand-dark font-black text-2xl">{isAdmin ? 'מנהל מערכת' : session.teamId}</p>
+                <div className="space-y-4">
+                  <div className="bg-white/40 p-5 border-r-4 border-brand-dark shadow-sm text-right">
+                    <p className="text-brand-muted font-bold text-[8px] mb-1 uppercase tracking-widest">מחובר כצוות</p>
+                    <p className="text-brand-dark font-black text-sm">{isAdmin ? 'מנהל מערכת' : session.teamId}</p>
                   </div>
                   {isAdmin && (
-                    <button onClick={() => handleNav('admin')} className="w-full py-5 bg-brand-accent/5 text-brand-accent border-4 border-brand-accent font-black text-2xl italic shadow-lg">
+                    <button onClick={() => handleNav('admin')} className="w-full py-3 bg-brand-accent/5 text-brand-accent border-2 border-brand-accent font-black text-sm italic shadow-md">
                       אזור עריכה ⚙️
                     </button>
                   )}
-                  <button onClick={onLogout} className="block w-full text-2xl font-black text-brand-muted underline decoration-2 decoration-brand-accent text-right">התנתק מהמערכת</button>
+                  <button onClick={onLogout} className="block w-full text-sm font-black text-brand-muted underline decoration-1 decoration-brand-accent text-right">התנתק מהמערכת</button>
                 </div>
               ) : (
-                <button onClick={() => handleNav('login')} className="w-full py-8 bg-brand-dark text-white font-black text-2xl shadow-[10px_10px_0px_#2563eb] active:translate-x-1 active:translate-y-1 transition-all">
+                <button onClick={() => handleNav('login')} className="w-full py-4 bg-brand-dark text-white font-black text-lg shadow-[6px_6px_0px_var(--brand-accent)] active:translate-x-1 active:translate-y-1 transition-all">
                   כניסה למרחב העבודה
                 </button>
               )}

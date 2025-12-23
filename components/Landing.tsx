@@ -144,6 +144,7 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
   );
 };
 
+// Fixed prop destructuring in ExpertiseCard
 export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNode }> = ({ title, desc, icon }) => (
   <div className="studio-card p-10 border-brand-dark flex flex-col items-start gap-10 hover:bg-white transition-all h-full group relative overflow-hidden bg-gradient-to-br from-white to-brand-accent/[0.03] shadow-[8px_8px_0px_rgba(26,26,26,0.03)]">
     <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/[0.04] rounded-bl-full translate-x-12 -translate-y-12 transition-transform duration-700 ease-out group-hover:translate-x-0 group-hover:translate-y-0"></div>
@@ -163,6 +164,7 @@ export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.
   </div>
 );
 
+// Fixed prop destructuring in ToolEntry
 export const ToolEntry: React.FC<{ title: string, desc: string, onClick: () => void, icon: React.ReactNode }> = ({ title, desc, onClick, icon }) => (
   <div onClick={onClick} className="studio-card p-10 md:p-12 rounded-none cursor-pointer group flex flex-col justify-between border-brand-dark min-h-[380px] h-full shadow-[10px_10px_0px_rgba(26,26,26,0.06)] hover:bg-white hover:shadow-[12px_12px_0px_var(--brand-accent)] transition-all">
     <div className="w-20 h-20 group-hover:scale-110 transition-transform duration-500 text-brand-dark group-hover:text-brand-accent mb-8">
@@ -188,6 +190,18 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
     getSystemConfig().then(config => setClients(config.clients || []));
   }, []);
 
+  const MarqueeItem = () => (
+    <div className="flex items-center gap-12 shrink-0">
+      <span className="flex items-center gap-4">
+        <span className="text-white font-black text-xl md:text-3xl tracking-tight">לפצח את ה-One Big Thing</span>
+        <span className="w-2 h-2 bg-[#f26522] rounded-full"></span>
+        <span className="text-[#f26522] font-black text-lg md:text-2xl italic">הדור הבא של מימוש פוטנציאל והשפעה</span>
+        <span className="bg-[#f26522] text-white text-[10px] font-black px-3 py-1 uppercase tracking-widest shadow-sm ml-4">תוכנית חדשה</span>
+      </span>
+      <span className="text-brand-accent/20 text-4xl font-black">/</span>
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex flex-col items-center pb-40 px-6 relative overflow-hidden">
       
@@ -205,26 +219,38 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
          <div className="absolute top-[-100px] right-[-200px] w-[800px] h-[800px] bg-brand-accent/[0.04] rounded-full blur-[150px]"></div>
       </div>
 
-      {/* OBT Strip Section - Dark Background (Slate-900) as per provided design */}
-      <section className="w-full bg-[#0a1120] py-6 md:py-8 relative z-50 mb-12 shadow-xl border-b border-brand-accent/20">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 text-center md:text-right">
-          <div className="flex flex-col items-center md:items-start gap-1">
-             <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none mb-1">
-                לפצח את ה-<span className="font-bold">One Big Thing</span>
-             </h2>
-             <p className="text-[#f26522] text-xl md:text-2xl font-bold tracking-tight">
-                הדור הבא של פיתוח עובדים וטאלנטים
-             </p>
-          </div>
-          <div className="shrink-0">
-            <a 
+      {/* OBT Creative Ticker Section - Thinner, Lighter, Animated */}
+      <section className="w-full bg-[#1c2a41]/95 py-3 md:py-4 relative z-50 mb-10 shadow-2xl border-b border-white/10 overflow-hidden backdrop-blur-md">
+        <div className="flex items-center relative h-10 md:h-14">
+          {/* Action Button - Sticky at one end for usability */}
+          <div className="absolute left-6 z-[60] h-full flex items-center bg-transparent">
+             <a 
               href="http://obt.kilon-consulting.com/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-block bg-[#f26522] text-white px-10 py-4 font-black text-sm md:text-lg uppercase tracking-widest shadow-[4px_4px_0px_rgba(255,255,255,0.2)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all border-2 border-[#f26522] whitespace-nowrap"
+              className="bg-[#f26522] text-white px-6 py-2 md:px-8 md:py-3 font-black text-[10px] md:text-xs uppercase tracking-widest shadow-lg hover:bg-white hover:text-[#f26522] transition-all border border-white/20 whitespace-nowrap"
             >
               פרטים נוספים ←
             </a>
+          </div>
+
+          {/* Marquee Container */}
+          <div className="flex-1 flex overflow-hidden group">
+            <div className="flex animate-marquee hover:pause whitespace-nowrap pr-12">
+              <MarqueeItem />
+              <MarqueeItem />
+              <MarqueeItem />
+              <MarqueeItem />
+              <MarqueeItem />
+            </div>
+            {/* Duplicated for infinite effect */}
+            <div className="flex animate-marquee hover:pause whitespace-nowrap" aria-hidden="true">
+              <MarqueeItem />
+              <MarqueeItem />
+              <MarqueeItem />
+              <MarqueeItem />
+              <MarqueeItem />
+            </div>
           </div>
         </div>
       </section>
