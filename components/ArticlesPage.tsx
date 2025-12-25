@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Article } from '../types';
 
 interface ArticlesPageProps {
@@ -8,6 +8,17 @@ interface ArticlesPageProps {
 }
 
 const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, onSelectArticle }) => {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleShare = (e: React.MouseEvent, article: Article) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}${window.location.pathname}?view=article_detail&articleId=${article.id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedId(article.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
+
   return (
     <div className="max-w-6xl mx-auto py-24 animate-fadeIn space-y-16 pb-48 text-right px-6" dir="rtl">
       <section className="text-center space-y-8">
@@ -37,7 +48,22 @@ const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, onSelectArticle }
                 <span className="text-[10px] font-black text-brand-accent uppercase tracking-widest bg-brand-accent/5 px-3 py-1 border border-brand-accent/10">
                   {article.category}
                 </span>
-                <span className="text-[10px] font-black text-brand-muted uppercase tracking-widest">{article.date}</span>
+                <div className="flex items-center gap-4">
+                  <span className="text-[10px] font-black text-brand-muted uppercase tracking-widest">{article.date}</span>
+                  <button 
+                    onClick={(e) => handleShare(e, article)}
+                    className="p-2 border border-brand-dark/10 hover:bg-brand-dark hover:text-white transition-all text-brand-muted"
+                    title="Share Article"
+                  >
+                    {copiedId === article.id ? (
+                      <span className="text-[9px] font-black text-brand-accent">LINK COPIED!</span>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
               
               <div className="flex-1 space-y-4 mb-8">

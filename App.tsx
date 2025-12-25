@@ -55,6 +55,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewType>(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('view') === 'synergy' && params.get('teamId')) return 'synergy';
+    if (params.get('view') === 'article_detail' && params.get('articleId')) return 'article_detail';
     return 'home';
   });
 
@@ -62,7 +63,19 @@ const App: React.FC = () => {
 
   useEffect(() => {
     getSystemConfig().then(config => {
-      setArticles(config.articles || []);
+      const fetchedArticles = config.articles || [];
+      setArticles(fetchedArticles);
+
+      // Handle deep linking for articles after config is loaded
+      const params = new URLSearchParams(window.location.search);
+      const articleId = params.get('articleId');
+      if (articleId) {
+        const found = fetchedArticles.find((a: Article) => a.id === articleId);
+        if (found) {
+          setSelectedArticle(found);
+          setView('article_detail');
+        }
+      }
     });
     
     if (session) {
