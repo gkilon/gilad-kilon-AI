@@ -12,6 +12,27 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Dynamic SEO update
+    const originalTitle = document.title;
+    document.title = `${article.title} | גלעד קילון`;
+    
+    // Attempt to update Meta Tags (Best effort for dynamic bots)
+    const updateMeta = (property: string, content: string) => {
+      let element = document.querySelector(`meta[property="${property}"]`) || 
+                    document.querySelector(`meta[name="${property}"]`);
+      if (element) {
+        element.setAttribute('content', content);
+      }
+    };
+
+    updateMeta('og:title', article.title);
+    updateMeta('og:description', article.subtitle || article.content?.substring(0, 150) || '');
+    updateMeta('description', article.subtitle || article.content?.substring(0, 150) || '');
+
+    return () => {
+      document.title = originalTitle;
+    };
   }, [article]);
 
   const getArticleUrl = () => {
@@ -37,7 +58,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
     let shareUrl = '';
     
     if (platform === 'fb') {
-      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      // For FB, adding the quote/title to the share URL helps context
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${encodeURIComponent(article.title)}`;
     } else {
       shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
     }
