@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { ProjectChange, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types';
 import { fetchFromCloud, isFirebaseReady, getSystemConfig, syncToCloud, deleteFromCloud } from './firebase';
 import Dashboard from './components/Dashboard';
@@ -40,6 +41,8 @@ const FloatingWhatsApp: React.FC = () => (
 );
 
 const App: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [projects, setProjects] = useState<ProjectChange[]>([]);
   const [ideas, setIdeas] = useState<IdeaEntry[]>([]);
   const [generalTasks, setGeneralTasks] = useState<Task[]>([]);
@@ -52,29 +55,24 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const [view, setView] = useState<ViewType>(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('view') === 'synergy' && params.get('teamId')) return 'synergy';
-    if (params.get('view') === 'article_detail' && params.get('articleId')) return 'article_detail';
-    return 'home';
-  });
-
   const dbReady = isFirebaseReady();
+
+  // Helper for manual navigation
+  const handleNavigate = (view: ViewType) => {
+    navigate(`/${view}`);
+    window.scrollTo(0, 0);
+  };
 
   useEffect(() => {
     getSystemConfig().then(config => {
       const fetchedArticles = config.articles || [];
       setArticles(fetchedArticles);
 
-      // Handle deep linking for articles after config is loaded
-      const params = new URLSearchParams(window.location.search);
-      const articleId = params.get('articleId');
-      if (articleId) {
-        const found = fetchedArticles.find((a: Article) => a.id === articleId);
-        if (found) {
-          setSelectedArticle(found);
-          setView('article_detail');
-        }
+      // Deep linking for articles
+      const pathParts = location.pathname.split('/');
+      if (pathParts[1] === 'article_detail' && pathParts[2]) {
+        const found = fetchedArticles.find((a: Article) => a.id === pathParts[2]);
+        if (found) setSelectedArticle(found);
       }
     });
     
@@ -84,7 +82,7 @@ const App: React.FC = () => {
     } else {
       localStorage.removeItem('gk_session');
     }
-  }, [session, dbReady]);
+  }, [session, dbReady, location.pathname]);
 
   const loadAllData = async () => {
     if (!session || !dbReady) return;
@@ -121,7 +119,7 @@ const App: React.FC = () => {
     
     setProjects([newProject, ...projects]);
     if (dbReady) await syncToCloud('projects', newProject);
-    setView('dashboard');
+    navigate('/dashboard');
   };
 
   const handleDeleteProject = async (id: string) => {
@@ -142,36 +140,39 @@ const App: React.FC = () => {
     if (dbReady && updated) await syncToCloud('projects', updated);
   };
 
-  const renderView = () => {
-    if (loading) return <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען נתונים...</div>;
-    const backToLab = () => setView('lab');
-
-    switch(view) {
-      case 'login': return <Login onLogin={(tid, isM, isA) => { setSession({teamId: tid, isManager: isM}); if (isA) setView('admin'); else setView('home'); }} />;
-      case 'home': return <Landing onEnterTool={(v) => setView(v as ViewType)} />;
-      case 'lab': return <TheLab onEnterTool={(v) => setView(v as ViewType)} onBack={() => setView('home')} isLoggedIn={!!session} />;
-      case 'dashboard': return <Dashboard projects={projects} onNew={() => setView('wizard')} onDelete={handleDeleteProject} onToggleTask={handleToggleWoopTask} onBack={backToLab} />;
-      case 'wizard': return <WoopWizard onCancel={() => setView('dashboard')} onSave={handleSaveWoop} />;
-      case 'ideas': return <IdeaManager ideas={ideas} projects={projects} onSave={(i) => { setIdeas([i, ...ideas]); if (dbReady && session) syncToCloud('ideas', {...i, managerId: session.teamId}); }} onBack={backToLab} />;
-      case 'synergy': return <TeamSynergy session={session} onBack={backToLab} />;
-      case 'executive': return <ExecutiveSynergy session={session} onBack={backToLab} />;
-      case 'tasks': return <TaskHub tasks={generalTasks} onUpdate={(t) => { setGeneralTasks(t); if (session && dbReady) syncToCloud('general_tasks', {id: 'main_list', managerId: session.teamId, tasks: t}); }} onBack={backToLab} />;
-      case 'feedback360': return <Feedback360 onBack={backToLab} />;
-      case 'communication': return <CommunicationDNA onBack={backToLab} />;
-      case 'about': return <About />;
-      case 'clients': return <ClientsPage />;
-      case 'admin': return <AdminPanel onBack={() => setView('home')} onGoToAssets={() => setView('brand_assets')} />;
-      case 'brand_assets': return <BrandAssets onBack={() => setView('admin')} />;
-      case 'articles': return <ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); setView('article_detail'); }} />;
-      case 'article_detail': return selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => setView('articles')} /> : <ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); setView('article_detail'); }} />;
-      default: return <Landing onEnterTool={(v) => setView(v as ViewType)} />;
-    }
-  };
+  if (loading) return <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען נתונים...</div>;
 
   return (
     <div className="min-h-screen" dir="rtl">
-      <Header onNavigate={(v) => { setSelectedArticle(null); setView(v as ViewType); }} currentView={view} session={session} onLogout={() => setSession(null)} />
-      <main className="w-full mx-auto">{renderView()}</main>
+      <Header 
+        onNavigate={handleNavigate} 
+        currentView={location.pathname.substring(1) || 'home'} 
+        session={session} 
+        onLogout={() => { setSession(null); navigate('/home'); }} 
+      />
+      <main className="w-full mx-auto">
+        <Routes>
+          <Route path="/" element={<Landing onEnterTool={handleNavigate} />} />
+          <Route path="/home" element={<Landing onEnterTool={handleNavigate} />} />
+          <Route path="/login" element={<Login onLogin={(tid, isM, isA) => { setSession({teamId: tid, isManager: isM}); if (isA) navigate('/admin'); else navigate('/home'); }} />} />
+          <Route path="/lab" element={<TheLab onEnterTool={handleNavigate} onBack={() => navigate('/home')} isLoggedIn={!!session} />} />
+          <Route path="/dashboard" element={<Dashboard projects={projects} onNew={() => navigate('/wizard')} onDelete={handleDeleteProject} onToggleTask={handleToggleWoopTask} onBack={() => navigate('/lab')} />} />
+          <Route path="/wizard" element={<WoopWizard onCancel={() => navigate('/dashboard')} onSave={handleSaveWoop} />} />
+          <Route path="/ideas" element={<IdeaManager ideas={ideas} projects={projects} onSave={(i) => { setIdeas([i, ...ideas]); if (dbReady && session) syncToCloud('ideas', {...i, managerId: session.teamId}); }} onBack={() => navigate('/lab')} />} />
+          <Route path="/synergy" element={<TeamSynergy session={session} onBack={() => navigate('/lab')} />} />
+          <Route path="/executive" element={<ExecutiveSynergy session={session} onBack={() => navigate('/lab')} />} />
+          <Route path="/tasks" element={<TaskHub tasks={generalTasks} onUpdate={(t) => { setGeneralTasks(t); if (session && dbReady) syncToCloud('general_tasks', {id: 'main_list', managerId: session.teamId, tasks: t}); }} onBack={() => navigate('/lab')} />} />
+          <Route path="/feedback360" element={<Feedback360 onBack={() => navigate('/lab')} />} />
+          <Route path="/communication" element={<CommunicationDNA onBack={() => navigate('/lab')} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/clients" element={<ClientsPage />} />
+          <Route path="/admin" element={<AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} />} />
+          <Route path="/brand_assets" element={<BrandAssets onBack={() => navigate('/admin')} />} />
+          <Route path="/articles" element={<ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); navigate(`/article_detail/${a.id}`); }} />} />
+          <Route path="/article_detail/:articleId" element={selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => navigate('/articles')} /> : <Navigate to="/articles" />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </main>
       <FloatingWhatsApp />
     </div>
   );
