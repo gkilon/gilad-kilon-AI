@@ -1,7 +1,10 @@
+
 {
-  "name": "Gilad Kilon Management consulting",
+  "name": "Gilad Kilon",
   "description": "פיתוח ניהולי | פיתוח צוותי | כלי ניהול ושינוי מבוססי AI - המעטפת המקצועית למצוינות ניהולית מבית גלעד קילון.",
   "requestFramePermissions": [
-    "microphone"
+    "microphone",
+    "camera",
+    "geolocation"
   ]
 }

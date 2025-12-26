@@ -27,7 +27,7 @@ const FloatingWhatsApp: React.FC = () => (
     href="https://wa.me/972526417512" 
     target="_blank" 
     rel="noopener noreferrer"
-    className="fixed bottom-8 left-8 z-[100] group flex items-center gap-4"
+    className="fixed bottom-8 left-8 z-[100] group flex items-center gap-4 no-print"
   >
     <div className="bg-white border-2 border-brand-dark px-4 py-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0 shadow-lg pointer-events-none">
       <span className="text-[10px] font-black text-brand-dark uppercase tracking-widest whitespace-nowrap">Chat on WhatsApp</span>
@@ -142,6 +142,9 @@ const App: React.FC = () => {
 
   if (loading) return <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען נתונים...</div>;
 
+  // Generalized logic for full-screen partitions
+  const isFullScreenPartition = location.pathname.includes('feedback360') || location.pathname.includes('communication');
+
   return (
     <div className="min-h-screen" dir="rtl">
       <Header 
@@ -150,7 +153,7 @@ const App: React.FC = () => {
         session={session} 
         onLogout={() => { setSession(null); navigate('/home'); }} 
       />
-      <main className="w-full mx-auto">
+      <main className={`w-full mx-auto`}>
         <Routes>
           <Route path="/" element={<Landing onEnterTool={handleNavigate} />} />
           <Route path="/home" element={<Landing onEnterTool={handleNavigate} />} />
@@ -173,7 +176,7 @@ const App: React.FC = () => {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
-      <FloatingWhatsApp />
+      {!isFullScreenPartition && <FloatingWhatsApp />}
     </div>
   );
 };

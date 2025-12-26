@@ -99,6 +99,31 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
                 className="w-full bg-brand-beige/30 border-2 border-brand-dark p-6 text-2xl font-black text-center text-brand-dark focus:border-brand-accent outline-none"
               />
             </div>
+            
+            <div className="space-y-4">
+              <label className="text-brand-accent font-black uppercase tracking-widest text-[10px]">כתובת שאלון 360 (Netlify URL)</label>
+              <input 
+                type="text" 
+                value={config.feedback360Url} 
+                onChange={e => setConfig({...config, feedback360Url: e.target.value})}
+                placeholder="https://your-site.netlify.app/"
+                className="w-full bg-brand-beige/30 border-2 border-brand-dark p-6 text-xl font-bold text-left text-brand-dark focus:border-brand-accent outline-none"
+                dir="ltr"
+              />
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-brand-accent font-black uppercase tracking-widest text-[10px]">כתובת אבחון DNA תקשורת (Netlify URL)</label>
+              <input 
+                type="text" 
+                value={config.communicationDnaUrl} 
+                onChange={e => setConfig({...config, communicationDnaUrl: e.target.value})}
+                placeholder="https://your-site.netlify.app/"
+                className="w-full bg-brand-beige/30 border-2 border-brand-dark p-6 text-xl font-bold text-left text-brand-dark focus:border-brand-accent outline-none"
+                dir="ltr"
+              />
+              <p className="text-[10px] text-brand-muted font-bold italic mt-2">הזן את הכתובת המלאה כולל https://</p>
+            </div>
           </div>
         )}
 

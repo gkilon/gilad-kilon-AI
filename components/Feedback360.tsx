@@ -1,52 +1,86 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getSystemConfig } from '../firebase';
 
 const Feedback360: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [feedbackUrl, setFeedbackUrl] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    getSystemConfig().then(config => {
+      // Prioritize the URL from config, but ensure it's not empty
+      if (config.feedback360Url) {
+        setFeedbackUrl(config.feedback360Url);
+      } else {
+        // Fallback to the specific Netlify URL requested
+        setFeedbackUrl("https://ubiquitous-nougat-41808d.netlify.app/");
+      }
+    }).catch(err => {
+      console.error("Config load failed, using fallback URL");
+      setFeedbackUrl("https://ubiquitous-nougat-41808d.netlify.app/");
+    });
+  }, []);
+
   return (
-    <div className="max-w-4xl mx-auto py-32 animate-fadeIn text-center space-y-12 px-6">
+    <div className="flex flex-col h-[calc(100vh-80px)] animate-fadeIn">
       
-      {onBack && (
-        <div className="text-right mb-8">
+      {/* סרגל ניווט עליון פנימי - מעוגן למערכת המקורית */}
+      <div className="bg-white border-b-2 border-brand-dark px-6 py-4 flex justify-between items-center no-print">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-brand-dark text-white flex items-center justify-center rounded-none font-black text-lg">360</div>
+          <div>
+            <h2 className="text-xl md:text-2xl font-black text-brand-dark italic leading-none">שאלון 360 למנהלים</h2>
+            <p className="text-[10px] font-black text-brand-accent uppercase tracking-widest mt-1">Strategic Feedback Integration</p>
+          </div>
+        </div>
+
+        {onBack && (
           <button 
             onClick={onBack} 
-            className="flex items-center gap-2 text-brand-accent font-black text-sm uppercase tracking-widest hover:text-brand-dark transition-all group"
+            className="flex items-center gap-3 bg-brand-beige border-2 border-brand-dark px-6 py-2 text-brand-dark font-black text-xs uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all shadow-[4px_4px_0px_#1a1a1a] active:translate-x-0.5 active:translate-y-0.5"
           >
-            <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
-            <span>חזרה לתפריט המעבדה</span>
+            <span>חזרה למעבדה</span>
+            <span className="text-lg">←</span>
           </button>
-        </div>
-      )}
-
-      <div className="space-y-6">
-        <div className="inline-block border-2 border-brand-dark px-6 py-2 mb-4">
-           <span className="text-[12px] font-black uppercase tracking-[0.4em]">External Professional Tool</span>
-        </div>
-        <h2 className="text-6xl md:text-8xl font-black text-brand-dark tracking-tighter uppercase italic">Feedback 360</h2>
-        <p className="text-brand-muted text-xl md:text-2xl font-medium max-w-2xl mx-auto italic">
-          "היכולת לראות את עצמנו דרך עיני האחר היא המפתח לצמיחה."
-        </p>
+        )}
       </div>
 
-      <div className="studio-card p-12 md:p-20 border-brand-dark bg-white shadow-[12px_12px_0px_#1a1a1a] space-y-10">
-        <div className="text-8xl">👁️‍🗨️</div>
-        <div className="space-y-4">
-           <p className="text-2xl text-brand-dark font-bold leading-relaxed">ניתוח פערים ומשוב רב-כיווני</p>
-           <p className="text-brand-muted font-medium italic">הכלי המלא פועל בסביבה החיצונית המקצועית של גלעד.</p>
-        </div>
-        <div className="pt-6">
-          <a 
-            href="https://gilad-360-placeholder.netlify.app/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-block bg-brand-dark text-white px-16 py-7 font-black text-2xl hover:bg-brand-accent transition-all shadow-xl active:scale-95"
-          >
-            פתח כלי משוב 360 חיצוני ←
-          </a>
-        </div>
+      {/* אזור השאלון המוטמע - המחיצה */}
+      <div className="flex-1 relative bg-brand-beige overflow-hidden">
+        {isLoading && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-beige z-20">
+            <div className="w-16 h-16 border-4 border-brand-dark border-t-brand-accent rounded-full animate-spin mb-6"></div>
+            <div className="text-center space-y-2">
+              <p className="text-xl font-black text-brand-dark italic">פותח מרחב משוב מאובטח...</p>
+              <p className="text-xs font-bold text-brand-muted uppercase tracking-widest">Powered by Gilad Kilon Consulting</p>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-30 p-10 text-center">
+            <div className="text-6xl mb-6">⚠️</div>
+            <h3 className="text-3xl font-black text-brand-dark mb-4">{error}</h3>
+            <p className="text-brand-muted max-w-md font-bold italic">נא לוודא שהכתובת הוגדרה כראוי בלוח הבקרה של המנהל.</p>
+            {onBack && <button onClick={onBack} className="mt-8 px-10 py-4 bg-brand-dark text-white font-black">חזרה</button>}
+          </div>
+        )}
+        
+        {feedbackUrl && !error && (
+          <iframe 
+            src={feedbackUrl}
+            className="w-full h-full border-none"
+            title="Gilad Kilon 360 Questionnaire"
+            onLoad={() => setIsLoading(false)}
+            allow="camera;microphone;geolocation"
+          />
+        )}
       </div>
 
-      <div className="pt-10 border-t border-brand-dark/10">
-        <p className="text-brand-muted text-[11px] font-black uppercase tracking-[0.4em] italic">Developed by Gilad Kilon • Strategic Laboratory</p>
+      {/* פוטר קטן לשמירה על הקשר המותג */}
+      <div className="bg-brand-dark text-white/40 py-2 px-6 text-[9px] font-black uppercase tracking-[0.4em] text-center no-print">
+        The Laboratory • Strategic Diagnostic Module • Gilad Kilon © 2025
       </div>
     </div>
   );

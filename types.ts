@@ -114,6 +114,8 @@ export interface ClientLogo {
 
 export interface SystemConfig {
   masterCode: string;
+  feedback360Url: string;
+  communicationDnaUrl: string;
   metrics: { key: string; label: string; icon: string; }[];
   articles: Article[];
   clients: ClientLogo[];
