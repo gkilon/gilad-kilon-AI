@@ -1,5 +1,1 @@
-[[redirects]]
-  from = "/360"
-  to = "https://ubiquitous-nougat-41808d.netlify.app"
-  status = 200
-  force = true
+/360   https://ubiquitous-nougat-41808d.netlify.app   301
