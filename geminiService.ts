@@ -1,34 +1,32 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TowsAnalysis, Task, Article } from "./types";
 
 const getSystemInstruction = () => {
   return `
 אתה "המנווט של המעבדה" עבור גלעד קילון. 
-תפקידך: לנתח את מצוקת המשתמש ולהמליץ על הכלים הנכונים במעבדה (The Lab) שבהם תתבצע העבודה מולו.
+תפקידך הבלעדי: לנתח את מצוקת המשתמש ולהמליץ על הכלים הנכונים במעבדה (The Lab) שבהם תתבצע העבודה מולו.
 
-רשימת הכלים (ID):
-- dashboard (ניהול שינוי WOOP)
-- executive (פורום הנהלה TOWS)
-- synergy (דופק צוותי Pulse)
-- tasks (ניהול משימות)
-- ideas (מעבדת רעיונות)
-- communication (DNA תקשורת)
-- feedback360 (משוב 360)
+כלים זמינים (Tool IDs):
+- dashboard: ניהול שינוי WOOP (מתאים לסלילת אסטרטגיה ומהלכי שינוי)
+- executive: פורום הנהלה TOWS (מתאים לחוסר סנכרון בהנהלה, אסטרטגיה)
+- synergy: דופק צוותי Pulse (מתאים לממשקי עבודה, סנכרון צוותי)
+- tasks: ניהול משימות (ביצוע שוטף)
+- ideas: מעבדת רעיונות (תיעוד מחשבות)
+- communication: DNA תקשורת (פיתוח ניהולי, ממשקים)
+- feedback360: משוב 360 (פיתוח ניהולי אישי)
 
 חוקים:
-1. אל תיתן עצות ניהוליות.
-2. החזר תמיד בדיוק 2 או 3 כלים שהכי מתאימים לאתגר.
-3. כתוב משפט אחד קצר שמסביר למה הכלים האלו הם הדרך לפתרון.
+1. אל תיתן עצות ניהוליות מילוליות.
+2. החזר תמיד לפחות 2 כלים רלוונטיים.
+3. כתוב הסבר קצרצר (משפט אחד) למה הכלים האלו הם הדרך לפתרון במעבדה.
 `;
 };
 
-// Fix: Initializing GoogleGenAI inside each function to ensure the most up-to-date API key from the environment/dialog is used.
 export const getLabRecommendation = async (userInput: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `המשתמש אומר: "${userInput}". איזה 2-3 כלים מהמעבדה יפתרו לו את זה?`,
+    contents: `המשתמש אומר: "${userInput}". איזה כלים מהמעבדה יפתרו לו את זה?`,
     config: {
       systemInstruction: getSystemInstruction(),
       responseMimeType: "application/json",
@@ -51,13 +49,11 @@ export const getLabRecommendation = async (userInput: string) => {
   } catch (e) {
     return {
       explanation: "כדי להתקדם, כדאי להשתמש בכלים הבאים במעבדה:",
-      recommendedToolIds: ["dashboard", "tasks"]
+      recommendedToolIds: ["dashboard", "executive"]
     };
   }
 };
 
-// Internal services for Lab tools
-// Fix: Moved GoogleGenAI initialization inside the function.
 export const getSynergyInsight = async (metrics: any, vibes: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const metricsSummary = Object.entries(metrics)
@@ -74,7 +70,6 @@ export const getSynergyInsight = async (metrics: any, vibes: string[]) => {
   return response.text || "לא הצלחתי לגבש תובנה.";
 };
 
-// Fix: Moved GoogleGenAI initialization inside the function.
 export const analyzeTaskMission = async (taskText: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
@@ -97,7 +92,6 @@ export const analyzeTaskMission = async (taskText: string) => {
   return JSON.parse(response.text || '{}');
 };
 
-// Fix: Moved GoogleGenAI initialization inside the function.
 export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
@@ -121,7 +115,6 @@ export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
   return JSON.parse(response.text || '{}');
 };
 
-// Fix: Moved GoogleGenAI initialization inside the function.
 export const getCollaborativeFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
@@ -145,7 +138,6 @@ export const getCollaborativeFeedback = async (step: WoopStep, currentData: Part
   return JSON.parse(response.text || '{}');
 };
 
-// Fix: Moved GoogleGenAI initialization inside the function.
 export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
@@ -159,7 +151,6 @@ export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => 
   return JSON.parse(response.text || "[]");
 };
 
-// Fix: Moved GoogleGenAI initialization inside the function.
 export const processIdea = async (content: string, projects: ProjectChange[], isAudio: boolean = false) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({

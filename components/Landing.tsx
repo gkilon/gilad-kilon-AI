@@ -90,17 +90,17 @@ export const Icons = {
   )
 };
 
-const toolCatalog: Record<string, { label: string, icon: React.ReactNode }> = {
-  dashboard: { label: "ניהול שינוי (WOOP)", icon: <Icons.WOOP /> },
-  executive: { label: "פורום הנהלה (TOWS)", icon: <Icons.TOWS /> },
-  synergy: { label: "דופק צוותי (Pulse)", icon: <Icons.Pulse /> },
-  tasks: { label: "ניהול משימות", icon: <Icons.Tasks /> },
-  ideas: { label: "מעבדת רעיונות", icon: <Icons.Ideas /> },
-  communication: { label: "DNA תקשורת", icon: <Icons.DNA /> },
-  feedback360: { label: "משוב 360", icon: <Icons.Feedback /> }
+const toolCatalog: Record<string, { label: string, icon: React.ReactNode, view: string }> = {
+  dashboard: { label: "ניהול שינוי (WOOP)", icon: <Icons.WOOP />, view: "dashboard" },
+  executive: { label: "פורום הנהלה (TOWS)", icon: <Icons.TOWS />, view: "executive" },
+  synergy: { label: "דופק צוותי (Pulse)", icon: <Icons.Pulse />, view: "synergy" },
+  tasks: { label: "ניהול משימות", icon: <Icons.Tasks />, view: "tasks" },
+  ideas: { label: "מעבדת רעיונות", icon: <Icons.Ideas />, view: "ideas" },
+  communication: { label: "DNA תקשורת", icon: <Icons.DNA />, view: "communication" },
+  feedback360: { label: "משוב 360", icon: <Icons.Feedback />, view: "feedback360" }
 };
 
-// RESTORED ORIGINAL LOGO DESIGN
+// Logo positioned perfectly
 export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> = ({ size = 'lg', dark = true }) => {
   const mainFontSizes = {
     sm: 'text-2xl md:text-3xl',
@@ -124,7 +124,7 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> 
       <div className={mainFontSizes[size]}>GILAD</div>
       <div className={`${mainFontSizes[size]} flex items-end gap-1 md:gap-2`}>
         KILON
-        <div className={`${dotSizes[size]} rounded-full bg-brand-accent mb-[0.11em]`}></div>
+        <div className={`${dotSizes[size]} rounded-full bg-brand-accent mb-[0.12em]`}></div>
       </div>
       <div className={`${subFontSizes[size]} tracking-[0.35em] mt-2 md:mt-3 font-bold opacity-60 whitespace-nowrap text-center`}>
         MANAGEMENT CONSULTING
@@ -172,8 +172,8 @@ const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNo
   </div>
 );
 
-// Strategic Lab Navigator (Updated)
-const StrategicSandbox: React.FC<{ onNavigateToTool: (toolId: string) => void }> = ({ onNavigateToTool }) => {
+// Strategic Lab Navigator (Updated to Tool Mapper)
+const StrategicSandbox: React.FC<{ onNavigateToTool: (view: string) => void }> = ({ onNavigateToTool }) => {
   const [input, setInput] = useState('');
   const [recommendation, setRecommendation] = useState<{ explanation: string, toolIds: string[] } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -185,7 +185,7 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (toolId: string) => void }>
     "סלילת אסטרטגיה ומהלכי שינוי"
   ];
 
-  const handleConsult = async (text: string) => {
+  const handleConsult = async (text?: string) => {
     const val = text || input;
     if (!val.trim()) return;
     setLoading(true);
@@ -198,7 +198,7 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (toolId: string) => void }>
       });
     } catch (e) {
       setRecommendation({
-        explanation: "כדי להתחיל את העבודה, כדאי להיכנס למעבדה ולנסות את הכלים הבאים:",
+        explanation: "כדי להתחיל את העבודה המשותפת, כדאי להכיר את הכלים הבאים במעבדה:",
         toolIds: ["dashboard", "executive"]
       });
     }
@@ -207,25 +207,26 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (toolId: string) => void }>
 
   return (
     <div className="w-full max-w-5xl mx-auto mt-12 animate-fadeIn space-y-8">
-      <div className="text-center space-y-4 max-w-2xl mx-auto mb-10">
-         <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter">המעבדה האסטרטגית<span className="text-brand-accent">.</span></h2>
-         <p className="text-lg md:text-xl font-bold text-brand-muted italic">
+      <div className="text-center space-y-4 max-w-3xl mx-auto mb-10">
+         <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter">מנווט המעבדה<span className="text-brand-accent">.</span></h2>
+         <p className="text-lg md:text-2xl font-bold text-brand-muted italic leading-relaxed">
            המעבדה אינה אתר רגיל - היא מרחב עבודה ייחודי המשולב בתהליכי הליווי שלי. הכלים כאן מיועדים לעבודה משותפת, ולקוחות קיימים מקבלים גישה מלאה לאורך זמן לדיוק הביצועים בארגון.
          </p>
+         <div className="h-1 w-20 bg-brand-gold mx-auto mt-4"></div>
       </div>
 
       <div className="studio-card p-1 bg-brand-navy border-brand-dark shadow-[20px_20px_0px_var(--brand-gold)]">
         <div className="bg-white p-6 md:p-12 space-y-10">
            <div className="flex justify-between items-center border-b-4 border-brand-dark pb-6">
               <div className="text-right">
-                <p className="text-[12px] font-black text-brand-accent uppercase tracking-widest mb-1 italic">Strategic Lab Navigator</p>
-                <h3 className="text-3xl font-black italic">מפה לפתרונות.</h3>
+                <p className="text-[12px] font-black text-brand-accent uppercase tracking-widest mb-1 italic">The Lab Navigator</p>
+                <h3 className="text-3xl font-black italic">איזה כלי מתאים לאתגר שלך?</h3>
               </div>
               <div className="w-14 h-14 bg-brand-navy flex items-center justify-center text-white text-2xl font-black">?</div>
            </div>
 
            <div className="space-y-6">
-              <p className="text-xl font-bold text-brand-dark text-right">במה הארגון שלך צריך להתמקד כרגע?</p>
+              <p className="text-xl font-bold text-brand-dark text-right">בחר את הסוגיה שמעסיקה אותך כרגע:</p>
               <div className="flex flex-wrap justify-end gap-3">
                  {presets.map((p, i) => (
                    <button 
@@ -242,12 +243,12 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (toolId: string) => void }>
                   type="text" 
                   value={input}
                   onChange={e => setInput(e.target.value)}
-                  placeholder="כתוב כאן על אתגר ניהולי..."
+                  placeholder="או תאר כאן אתגר ניהולי אחר..."
                   className="w-full bg-brand-beige/30 border-4 border-brand-dark p-6 text-2xl font-black text-brand-dark focus:border-brand-navy outline-none text-right placeholder:opacity-20"
-                  onKeyPress={e => e.key === 'Enter' && handleConsult('')}
+                  onKeyPress={e => e.key === 'Enter' && handleConsult()}
                 />
                 <button 
-                  onClick={() => handleConsult('')}
+                  onClick={() => handleConsult()}
                   disabled={loading || !input.trim()}
                   className="absolute left-4 top-1/2 -translate-y-1/2 bg-brand-navy text-white px-8 py-3 font-black uppercase text-[12px] tracking-widest hover:bg-brand-gold transition-all disabled:opacity-20"
                 >
@@ -257,9 +258,9 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (toolId: string) => void }>
            </div>
 
            {recommendation && (
-             <div className="space-y-6 animate-fadeIn pt-4">
+             <div className="space-y-8 animate-fadeIn pt-4">
                 <div className="p-6 bg-brand-navy text-white border-r-8 border-brand-gold">
-                   <p className="text-[10px] font-black uppercase tracking-widest text-brand-gold mb-2 italic">Recommendation</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-brand-gold mb-2 italic">Strategic Direction</p>
                    <p className="text-2xl font-black italic leading-tight text-right">{recommendation.explanation}</p>
                 </div>
                 
@@ -270,7 +271,7 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (toolId: string) => void }>
                      return (
                        <button 
                          key={id}
-                         onClick={() => onNavigateToTool('lab')}
+                         onClick={() => onNavigateToTool(tool.view)}
                          className="flex items-center justify-between p-6 bg-white border-4 border-brand-dark hover:border-brand-accent group transition-all text-right shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[8px_8px_0px_var(--brand-accent)]"
                        >
                          <span className="text-xl group-hover:translate-x-[-5px] transition-transform">←</span>
@@ -284,6 +285,10 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (toolId: string) => void }>
                      );
                    })}
                 </div>
+                
+                <p className="text-brand-muted text-[11px] font-bold italic text-center opacity-60">
+                  הכלים נועדו לשימוש כחלק מתהליך הליווי ולא לשימוש עצמאי מלא.
+                </p>
              </div>
            )}
         </div>
@@ -402,7 +407,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </div>
          </div>
       </section>
-    </div>
+    </div>ס
   );
 };
 

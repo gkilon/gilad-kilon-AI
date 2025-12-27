@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ToolEntry, Icons } from './Landing';
 
@@ -27,23 +26,23 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
       {/* 1. הדר - כותרת המעבדה */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-12 border-b-2 border-brand-dark pb-12">
         <div className="space-y-6 text-right">
-          <span className="text-[13px] font-black text-brand-accent uppercase tracking-[0.6em]">PRACTICAL WORKSPACE</span>
+          <span className="text-[13px] font-black text-brand-accent uppercase tracking-[0.6em]">PROFESSIONAL WORKSPACE</span>
           <h1 className="text-7xl md:text-9xl font-black italic tracking-tighter leading-none">המעבדה<span className="text-brand-accent">.</span></h1>
         </div>
         <div className="bg-brand-dark text-white px-10 py-5 text-[12px] font-black uppercase tracking-[0.3em] shadow-[8px_8px_0px_var(--brand-accent)] mb-2">
-          {isLoggedIn ? 'PREMIUM ACCESS' : 'STRATEGIC PREVIEW'}
+          {isLoggedIn ? 'CONSULTING ACCESS' : 'STRATEGIC PREVIEW'}
         </div>
       </div>
 
-      {/* 2. הסבר מקצועי מודגש (הועבר למעלה) */}
+      {/* 2. הסבר מקצועי מודגש */}
       <section className="mb-16 text-right animate-fadeIn">
         <div className="max-w-5xl mr-0 space-y-8">
           <h2 className="text-3xl md:text-5xl font-black text-brand-dark italic leading-tight">
             המרחב שבו אסטרטגיה ניהולית פוגשת בינה מלאכותית.
           </h2>
           <p className="text-xl md:text-3xl text-brand-muted font-medium leading-relaxed border-r-8 border-brand-accent pr-8 py-2 italic">
-            פיתחתי את הכלים האלו כדי לעזור לך לזקק את העיקר בתוך הרעש הארגוני. 
-            כל כלי כאן הוא זיקוק של עשרות שנים בשטח, המונגש דרך יכולות AI מתקדמות כדי לפנות לך זמן למה שחשוב באמת: האנשים והתוצאות.
+            פיתחתי את הכלים האלו כדי לעזור לנו לזקק את העיקר בתוך הרעש הארגוני במהלך העבודה המשותפת. 
+            כל כלי כאן הוא זיקוק של עשרות שנים בשטח, המונגש דרך יכולות AI מתקדמות כדי לפנות זמן למה שחשוב באמת: האנשים והתוצאות.
           </p>
         </div>
       </section>
@@ -52,13 +51,12 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
       {!isLoggedIn && (
         <section className="mb-20 animate-fadeIn">
           <div className="studio-card p-10 md:p-14 border-[4px] border-brand-dark bg-white shadow-[15px_15px_0px_var(--brand-accent)] relative overflow-hidden group">
-            {/* Background design element */}
             <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-brand-accent/5 rounded-full blur-2xl"></div>
             
             <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12 text-right">
               <div className="flex-1 space-y-4">
                 <div className="inline-flex items-center gap-2 text-brand-accent font-black text-[10px] uppercase tracking-[0.4em] mb-2">
-                   <span>Unlock Full Experience</span>
+                   <span>Unlock Consultant Experience</span>
                    <div className="w-1.5 h-1.5 bg-brand-accent rounded-full animate-pulse"></div>
                 </div>
                 
@@ -91,19 +89,19 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">
         <ToolEntry 
           title="ניהול שינוי (WOOP)" 
-          desc="להפוך רצונות לתוכנית עבודה אמיתית. ה-AI עוזר לך לדייק את המכשולים ואת הצעדים הבאים." 
+          desc="להפוך רצונות לתוכנית עבודה אמיתית. ה-AI עוזר לנו לדייק את המכשולים ואת הצעדים הבאים." 
           icon={<Icons.WOOP />} 
           onClick={() => onEnterTool('dashboard')} 
         />
         <ToolEntry 
           title="פורום הנהלה (TOWS)" 
-          desc="כלי שעוזר לקבל החלטות על בסיס חיבור בין המצב בחוץ ליכולות שלכם בפנים." 
+          desc="כלי לקבלת החלטות על בסיס חיבור בין המצב בחוץ ליכולות שלכם בפנים." 
           icon={<Icons.TOWS />} 
           onClick={() => onEnterTool('executive')} 
         />
         <ToolEntry 
           title="דופק צוותי (Pulse)" 
-          desc="מדידה פשוטה של המצב בצוות - מחויבות, תקשורת ואמון. ה-AI נותן לך שורה תחתונה ניהולית." 
+          desc="מדידה פשוטה של המצב בצוות - מחויבות, תקשורת ואמון. ה-AI נותן לנו שורה תחתונה ניהולית." 
           icon={<Icons.Pulse />} 
           onClick={() => onEnterTool('synergy')} 
         />
@@ -115,19 +113,19 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
         />
         <ToolEntry 
           title="מעבדת רעיונות" 
-          desc="מקום לרשום או להקליט רעיונות. ה-AI יסכם אותם ויחבר אותם למה שאתה עושה עכשיו." 
+          desc="מקום לרשום או להקליט רעיונות. ה-AI יסכם אותם ויחבר אותם למה שאנחנו עושים עכשיו." 
           icon={<Icons.Ideas />} 
           onClick={() => onEnterTool('ideas')} 
         />
         <ToolEntry 
           title="DNA תקשורת" 
-          desc="אבחון פשוט שעוזר להבין איך לדבר עם אחרים ולהניע אותם בצורה טובה יותר." 
+          desc="אבחון מקצועי שעוזר להבין איך לדבר עם אחרים ולהניע אותם בצורה טובה יותר." 
           icon={<Icons.DNA />} 
           onClick={() => onEnterTool('communication')} 
         />
         <ToolEntry 
           title="משוב 360" 
-          desc="סיכום חכם של משוב מכמה כיוונים. עוזר לראות איפה אפשר להשתפר ומהן החוזקות שלך." 
+          desc="סיכום חכם של משוב מכמה כיוונים. עוזר לראות איפה אפשר להשתפר ומהן החוזקות." 
           icon={<Icons.Feedback />} 
           onClick={() => onEnterTool('feedback360')} 
         />
@@ -135,10 +133,10 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
 
       <div className="mt-32 p-16 border-4 border-brand-dark text-center space-y-8 italic bg-white shadow-[10px_10px_0px_var(--brand-accent)]">
         <p className="text-2xl md:text-3xl text-brand-dark font-black tracking-tight leading-relaxed max-w-3xl mx-auto">
-          "הכלים האלה לא מחליפים את החשיבה שלך, הם עוזרים לה לקרות מהר יותר וטוב יותר."
+          "הכלים האלה לא מחליפים את החשיבה שלך, הם עוזרים לה לקרות מהר יותר וטוב יותר במהלך העבודה המשותפת שלנו."
         </p>
         <div className="h-px w-24 bg-brand-accent mx-auto"></div>
-        <span className="text-sm font-black uppercase tracking-[0.4em] text-brand-muted">GK STRATEGIC LABORATORY v2.0</span>
+        <span className="text-sm font-black uppercase tracking-[0.4em] text-brand-muted">GK STRATEGIC LABORATORY v2.1 • PROFESSIONAL USE ONLY</span>
       </div>
     </div>
   );

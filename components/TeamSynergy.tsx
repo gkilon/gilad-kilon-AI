@@ -60,7 +60,6 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
   useEffect(() => {
     const init = async () => {
       const config = await getSystemConfig();
-      // הבטחה שנטענים 6 המדדים המעודכנים
       const activeMetrics = config.metrics && config.metrics.length > 0 ? config.metrics : DEFAULT_METRICS;
       setMetrics(activeMetrics);
       
@@ -133,7 +132,7 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
     <div className="py-40 text-center space-y-8 animate-fadeIn px-6">
       <div className="text-8xl">🚀</div>
       <h2 className="text-5xl font-black text-brand-dark italic">הדופק עודכן!</h2>
-      <p className="text-brand-muted text-xl font-bold">הקול שלך עוזר לצוות להיות מסונכרן ומדויק יותר.</p>
+      <p className="text-brand-muted text-xl font-bold">הקול שלך עוזר לצוות להיות מסונכרנ ומדויק יותר.</p>
       <button onClick={() => setSubmitted(false)} className="bg-brand-dark text-white px-10 py-4 font-black">חזרה</button>
     </div>
   );
@@ -153,7 +152,6 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
         </div>
       )}
 
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-10 border-b-4 border-brand-dark pb-12">
         <div className="space-y-4">
           <div className="flex items-center gap-3 justify-end">
@@ -164,7 +162,6 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
           <p className="text-brand-muted text-2xl font-bold italic">מדידת מגמות, אמון ואיכות עבודת הצוות לאורך זמן.</p>
         </div>
 
-        {/* הבטחת הצגת כפתור השיתוף למנהלים */}
         {session?.isManager && (
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto z-50">
             <button 
@@ -186,7 +183,6 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
         )}
       </div>
 
-      {/* Analytics View for Manager */}
       {session?.isManager && (
         <div className="space-y-12 animate-fadeIn pt-8">
           {aggregateMetrics ? (
@@ -227,7 +223,6 @@ const TeamSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }
         </div>
       )}
 
-      {/* Input Form */}
       <div className="studio-card p-12 border-brand-dark bg-white shadow-[16px_16px_0px_rgba(26,26,26,0.05)] space-y-16 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-2 h-full bg-brand-accent"></div>
         <div className="space-y-4 border-b-2 border-brand-dark pb-6">
