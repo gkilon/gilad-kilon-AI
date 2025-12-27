@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
   const navItems: { id: ViewType; label: string }[] = [
     { id: 'home', label: 'עמוד ראשי' },
     { id: 'about', label: 'אודות' },
-    { id: 'clients', label: 'לקוחות' },
+    { id: 'clients', label: 'לקוחות ושותפים' },
     { id: 'articles', label: 'חומרים מקצועיים' },
   ];
 
@@ -70,12 +70,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           </div>
 
           {/* Desktop Nav - Centered */}
-          <nav className="hidden lg:flex items-center gap-8 border-l border-brand-dark/10 pl-8 ml-8">
+          <nav className="hidden lg:flex items-center gap-8 border-l border-brand-dark/10 pl-8 ml-8 overflow-x-auto no-scrollbar">
             {navItems.map(item => (
               <button 
                 key={item.id}
                 onClick={() => handleNav(item.id)} 
-                className={`text-[13px] font-bold uppercase tracking-[0.2em] nav-underline transition-all ${currentView === item.id ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}
+                className={`text-[13px] font-bold uppercase tracking-[0.2em] nav-underline transition-all whitespace-nowrap ${currentView === item.id ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}
               >
                 {item.label}
               </button>
@@ -84,7 +84,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
               href="http://obt.kilon-consulting.com/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="bg-brand-accent text-white px-5 py-2 rounded-full text-[13px] font-black uppercase tracking-[0.2em] hover:bg-brand-dark transition-all flex items-center gap-2 shadow-lg shadow-brand-accent/20"
+              className="bg-brand-accent text-white px-5 py-2 rounded-full text-[13px] font-black uppercase tracking-[0.2em] hover:bg-brand-dark transition-all flex items-center gap-2 shadow-lg shadow-brand-accent/20 whitespace-nowrap"
             >
               <span>OBT</span>
               <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
@@ -92,19 +92,19 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             
             <button 
               onClick={() => handleNav('lab')} 
-              className={`px-6 py-2 border border-brand-dark/20 rounded-full text-[13px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${isLabView ? 'bg-brand-dark text-white' : 'text-brand-dark hover:bg-brand-dark/5'}`}
+              className={`px-6 py-2 border border-brand-dark/20 rounded-full text-[13px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 whitespace-nowrap ${isLabView ? 'bg-brand-dark text-white' : 'text-brand-dark hover:bg-brand-dark/5'}`}
             >
               <span>המעבדה (Workspace)</span>
             </button>
           </nav>
 
           {/* Brand Logo - Left */}
-          <div className="cursor-pointer" onClick={() => handleNav('home')}>
+          <div className="cursor-pointer shrink-0" onClick={() => handleNav('home')}>
             <BrandLogo size="sm" />
           </div>
 
           {/* Desktop Auth Actions */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4 shrink-0">
             {session ? (
               <div className="flex items-center gap-6">
                 {isAdmin && (
@@ -124,7 +124,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
         </div>
       </header>
 
-      {/* Full Screen Mobile Menu Overlay - Adjusted for transparency */}
+      {/* Full Screen Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 bg-white/50 backdrop-blur-lg z-[99999] lg:hidden flex flex-col h-[100dvh] w-full overflow-hidden animate-fadeIn">
           <div className="flex items-center justify-between px-6 py-6 border-b border-brand-dark/10 bg-white/30 shadow-sm">

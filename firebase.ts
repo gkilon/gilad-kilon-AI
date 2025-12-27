@@ -51,7 +51,8 @@ export const getSystemConfig = async () => {
     communicationDnaUrl: "https://hilarious-kashata-9aafa2.netlify.app/",
     metrics: DEFAULT_METRICS,
     articles: [],
-    clients: []
+    clients: [],
+    collaborations: []
   };
 
   if (!db) {
@@ -70,7 +71,8 @@ export const getSystemConfig = async () => {
       communicationDnaUrl: data.communicationDnaUrl || "https://hilarious-kashata-9aafa2.netlify.app/",
       metrics: (data.metrics && data.metrics.length > 0) ? data.metrics : DEFAULT_METRICS,
       articles: data.articles || [],
-      clients: data.clients || []
+      clients: data.clients || [],
+      collaborations: data.collaborations || []
     };
   }
   return defaultConfig;

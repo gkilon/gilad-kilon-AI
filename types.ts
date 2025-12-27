@@ -112,6 +112,14 @@ export interface ClientLogo {
   url: string;
 }
 
+export interface Collaboration {
+  id: string;
+  name: string;
+  logoUrl: string;
+  description?: string;
+  link?: string;
+}
+
 export interface SystemConfig {
   masterCode: string;
   feedback360Url: string;
@@ -119,6 +127,7 @@ export interface SystemConfig {
   metrics: { key: string; label: string; icon: string; }[];
   articles: Article[];
   clients: ClientLogo[];
+  collaborations: Collaboration[];
 }
 
-export type ViewType = 'home' | 'lab' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'clients' | 'login' | 'communication' | 'feedback360' | 'admin' | 'articles' | 'article_detail' | 'brand_assets';
+export type ViewType = 'home' | 'lab' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'clients' | 'partners' | 'login' | 'communication' | 'feedback360' | 'admin' | 'articles' | 'article_detail' | 'brand_assets';
