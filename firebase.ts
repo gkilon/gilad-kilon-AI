@@ -1,184 +1,186 @@
 
-import { initializeApp } from "firebase/app";
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  query, 
-  where, 
-  getDocs, 
-  doc, 
-  deleteDoc, 
-  setDoc, 
-  getDoc,
-  Firestore
-} from "firebase/firestore";
+import { GoogleGenAI, Type } from "@google/genai";
+import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TowsAnalysis, Task, Article } from "./types";
 
-const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID
+const getSystemInstruction = () => {
+  return `
+אתה "המנווט של המעבדה" עבור גלעד קילון. 
+תפקידך: לנתח את מצוקת המשתמש ולהמליץ על הכלים הנכונים במעבדה (The Lab) שבהם תתבצע העבודה מולו.
+
+רשימת הכלים (ID):
+- dashboard (ניהול שינוי WOOP)
+- executive (פורום הנהלה TOWS)
+- synergy (דופק צוותי Pulse)
+- tasks (ניהול משימות)
+- ideas (מעבדת רעיונות)
+- communication (DNA תקשורת)
+- feedback360 (משוב 360)
+
+חוקים:
+1. אל תיתן עצות ניהוליות.
+2. החזר תמיד בדיוק 2 או 3 כלים שהכי מתאימים לאתגר.
+3. כתוב משפט אחד קצר שמסביר למה הכלים האלו הם הדרך לפתרון.
+`;
 };
 
-const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined" && firebaseConfig.projectId !== "undefined";
-const app = isConfigValid ? initializeApp(firebaseConfig) : null;
-export const db = app ? getFirestore(app) : null;
-
-export const isFirebaseReady = () => !!db;
-
-const normalizeId = (id: string) => id ? id.trim().toLowerCase() : "";
-
-const getLocal = (key: string) => JSON.parse(localStorage.getItem(`gk_mock_${key}`) || "[]");
-const setLocal = (key: string, data: any) => localStorage.setItem(`gk_mock_${key}`, JSON.stringify(data));
-
-// רשימת המדדים המעודכנת (6 פרמטרים)
-export const DEFAULT_METRICS = [
-  { key: 'ownership', label: 'Ownership על היעדים', icon: '🎯' },
-  { key: 'roleClarity', label: 'בהירות בתחומי אחריות', icon: '📋' },
-  { key: 'routines', label: 'שגרות וסדר יום', icon: '🔄' },
-  { key: 'trust', label: 'אמון וכבוד הדדי', icon: '✨' },
-  { key: 'commitment', label: 'רמת מחויבות לצוות', icon: '🤝' },
-  { key: 'openComm', label: 'תקשורת פתוחה וכנה', icon: '🗣️' }
-];
-
-export const getSystemConfig = async () => {
-  const defaultConfig = { 
-    masterCode: "GILAD2025", 
-    feedback360Url: "https://ubiquitous-nougat-41808d.netlify.app/",
-    communicationDnaUrl: "https://hilarious-kashata-9aafa2.netlify.app/",
-    metrics: DEFAULT_METRICS,
-    articles: [],
-    clients: [],
-    collaborations: []
-  };
-
-  if (!db) {
-    const local = localStorage.getItem('gk_mock_system_config');
-    if (local) return { ...defaultConfig, ...JSON.parse(local) };
-    return defaultConfig;
-  }
-
-  const docRef = doc(db, "system", "config");
-  const snap = await getDoc(docRef);
-  if (snap.exists()) {
-    const data = snap.data();
+// Fix: Initializing GoogleGenAI inside each function to ensure the most up-to-date API key from the environment/dialog is used.
+export const getLabRecommendation = async (userInput: string) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: `המשתמש אומר: "${userInput}". איזה 2-3 כלים מהמעבדה יפתרו לו את זה?`,
+    config: {
+      systemInstruction: getSystemInstruction(),
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          explanation: { type: Type.STRING },
+          recommendedToolIds: { 
+            type: Type.ARRAY, 
+            items: { type: Type.STRING } 
+          }
+        },
+        required: ["explanation", "recommendedToolIds"]
+      }
+    }
+  });
+  
+  try {
+    return JSON.parse(response.text || '{}');
+  } catch (e) {
     return {
-      masterCode: data.masterCode || "GILAD2025",
-      feedback360Url: data.feedback360Url || "https://ubiquitous-nougat-41808d.netlify.app/",
-      communicationDnaUrl: data.communicationDnaUrl || "https://hilarious-kashata-9aafa2.netlify.app/",
-      metrics: (data.metrics && data.metrics.length > 0) ? data.metrics : DEFAULT_METRICS,
-      articles: data.articles || [],
-      clients: data.clients || [],
-      collaborations: data.collaborations || []
+      explanation: "כדי להתקדם, כדאי להשתמש בכלים הבאים במעבדה:",
+      recommendedToolIds: ["dashboard", "tasks"]
     };
   }
-  return defaultConfig;
 };
 
-export const updateSystemConfig = async (config: any) => {
-  if (!db) {
-    localStorage.setItem('gk_mock_system_config', JSON.stringify(config));
-    return;
-  }
-  await setDoc(doc(db, "system", "config"), config, { merge: true });
+// Internal services for Lab tools
+// Fix: Moved GoogleGenAI initialization inside the function.
+export const getSynergyInsight = async (metrics: any, vibes: string[]) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const metricsSummary = Object.entries(metrics)
+    .filter(([key]) => key !== 'count')
+    .map(([key, val]) => `${key}: ${val}/6`)
+    .join(', ');
+
+  const prompt = `נתח את מצב הצוות: ${metricsSummary}. תגובות: ${vibes.join('\n')}. תן תובנה אסטרטגית אחת והמלצה אחת פשוטה.`;
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: prompt,
+    config: { systemInstruction: "Simple. Deep. Real." }
+  });
+  return response.text || "לא הצלחתי לגבש תובנה.";
 };
 
-export const createWorkspace = async (teamId: string, password: string) => {
-  const tid = normalizeId(teamId);
-  if (!db) {
-    const workspaces = getLocal('workspaces');
-    if (workspaces.find((w: any) => w.id === tid)) return { success: false, error: "מרחב כבר קיים" };
-    setLocal('workspaces', [...workspaces, { id: tid, password, createdAt: Date.now() }]);
-    return { success: true };
-  }
-  const docRef = doc(db, "workspaces", tid);
-  const existing = await getDoc(docRef);
-  if (existing.exists()) return { success: false, error: "מרחב כבר קיים" };
-  await setDoc(docRef, { id: tid, password, createdAt: Date.now() });
-  return { success: true };
+// Fix: Moved GoogleGenAI initialization inside the function.
+export const analyzeTaskMission = async (taskText: string) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: `נתח את המשימה: "${taskText}".`,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          subtasks: { type: Type.ARRAY, items: { type: Type.STRING } },
+          priority: { type: Type.STRING, enum: ['low', 'medium', 'high'] },
+          managerTip: { type: Type.STRING },
+          quickWin: { type: Type.STRING }
+        },
+        required: ["subtasks", "priority", "managerTip", "quickWin"]
+      }
+    }
+  });
+  return JSON.parse(response.text || '{}');
 };
 
-export const loginToWorkspace = async (teamId: string, password: string) => {
-  const tid = normalizeId(teamId);
-  if (!db) {
-    const workspaces = getLocal('workspaces');
-    const ws = workspaces.find((w: any) => w.id === tid && w.password === password);
-    if (ws) return { success: true };
-    return { success: false, error: "פרטים שגויים" };
-  }
-  const docRef = doc(db, "workspaces", tid);
-  const snap = await getDoc(docRef);
-  if (snap.exists() && snap.data().password === password) return { success: true };
-  return { success: false, error: "פרטים שגויים" };
+// Fix: Moved GoogleGenAI initialization inside the function.
+export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-pro-preview',
+    contents: `בצע ניתוח TOWS: ${tows.title}`,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          strategiesSO: { type: Type.ARRAY, items: { type: Type.STRING } },
+          strategiesST: { type: Type.ARRAY, items: { type: Type.STRING } },
+          strategiesWO: { type: Type.ARRAY, items: { type: Type.STRING } },
+          strategiesWT: { type: Type.ARRAY, items: { type: Type.STRING } },
+          executiveSummary: { type: Type.STRING }
+        },
+        required: ["strategiesSO", "strategiesST", "strategiesWO", "strategiesWT", "executiveSummary"]
+      }
+    }
+  });
+  return JSON.parse(response.text || '{}');
 };
 
-export const checkWorkspaceExists = async (teamId: string) => {
-  const tid = normalizeId(teamId);
-  if (!db) {
-    const workspaces = getLocal('workspaces');
-    return workspaces.some((w: any) => w.id === tid);
-  }
-  const snap = await getDoc(doc(db, "workspaces", tid));
-  return snap.exists();
+// Fix: Moved GoogleGenAI initialization inside the function.
+export const getCollaborativeFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-pro-preview',
+    contents: `נתח שלב ${step} ב-WOOP`,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          score: { type: Type.NUMBER },
+          analysis: { type: Type.STRING },
+          refinedText: { type: Type.STRING },
+          clarifyingQuestion: { type: Type.STRING },
+          isReady: { type: Type.BOOLEAN }
+        },
+        required: ["score", "analysis", "refinedText", "clarifyingQuestion", "isReady"]
+      }
+    }
+  });
+  return JSON.parse(response.text || '{}');
 };
 
-export const syncToCloud = async (collectionName: string, data: any) => {
-  if (!db) {
-    const list = getLocal(collectionName);
-    const id = data.id || Math.random().toString(36).substr(2, 9);
-    const index = list.findIndex((item: any) => item.id === id);
-    const newItem = { ...data, id, updatedAt: Date.now() };
-    if (index > -1) list[index] = newItem;
-    else list.push(newItem);
-    setLocal(collectionName, list);
-    return;
-  }
-  const id = data.id || Math.random().toString(36).substr(2, 9);
-  await setDoc(doc(db, collectionName, id), { ...data, id, updatedAt: Date.now() }, { merge: true });
+// Fix: Moved GoogleGenAI initialization inside the function.
+export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: `משימות עבור WOOP: ${woop.wish}`,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: { type: Type.ARRAY, items: { type: Type.STRING } }
+    }
+  });
+  return JSON.parse(response.text || "[]");
 };
 
-export const fetchFromCloud = async (collectionName: string, managerId: string) => {
-  const mid = normalizeId(managerId);
-  if (!db) {
-    const list = getLocal(collectionName);
-    return list.filter((item: any) => normalizeId(item.managerId) === mid);
-  }
-  const q = query(collection(db, collectionName), where("managerId", "==", mid));
-  const snap = await getDocs(q);
-  return snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-};
-
-export const deleteFromCloud = async (collectionName: string, id: string) => {
-  if (!db) {
-    const list = getLocal(collectionName);
-    setLocal(collectionName, list.filter((item: any) => item.id !== id));
-    return;
-  }
-  await deleteDoc(doc(db, collectionName, id));
-};
-
-export const saveTeamPulse = async (teamId: string, data: any) => {
-  const tid = normalizeId(teamId);
-  if (!db) {
-    const pulses = getLocal('team_pulses');
-    pulses.push({ teamId: tid, ...data, timestamp: Date.now() });
-    setLocal('team_pulses', pulses);
-    return true;
-  }
-  await addDoc(collection(db, "team_pulses"), { teamId: tid, ...data, timestamp: Date.now() });
-  return true;
-};
-
-export const getTeamPulses = async (teamId: string) => {
-  const tid = normalizeId(teamId);
-  if (!db) {
-    const pulses = getLocal('team_pulses');
-    return pulses.filter((p: any) => normalizeId(p.teamId) === tid).sort((a: any, b: any) => b.timestamp - a.timestamp);
-  }
-  const q = query(collection(db, "team_pulses"), where("teamId", "==", tid));
-  const snap = await getDocs(q);
-  return snap.docs.map(doc => doc.data()).sort((a: any, b: any) => b.timestamp - a.timestamp);
+// Fix: Moved GoogleGenAI initialization inside the function.
+export const processIdea = async (content: string, projects: ProjectChange[], isAudio: boolean = false) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: `נתח רעיון: ${content}`,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          title: { type: Type.STRING },
+          category: { type: Type.STRING },
+          summary: { type: Type.STRING },
+          nextSteps: { type: Type.ARRAY, items: { type: Type.STRING } },
+          priority: { type: Type.STRING },
+          matchedProjectId: { type: Type.STRING },
+          matchingExplanation: { type: Type.STRING }
+        },
+        required: ["title", "category", "summary", "nextSteps", "priority"]
+      }
+    }
+  });
+  return JSON.parse(response.text || '{}');
 };
