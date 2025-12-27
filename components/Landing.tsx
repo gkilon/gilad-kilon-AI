@@ -1,8 +1,5 @@
-
-import React, { useState, useEffect } from 'react';
-import { getSystemConfig } from '../firebase';
-import { ClientLogo, Article } from '../types';
 import { getLabRecommendation } from '../geminiService';
+import React, { useState } from 'react';
 
 // Sophisticated Architectural Stroke Icons for Expertise
 const ExpertiseIcons = {
@@ -407,7 +404,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </div>
          </div>
       </section>
-    </div>ס
+    </div>
   );
 };
 
