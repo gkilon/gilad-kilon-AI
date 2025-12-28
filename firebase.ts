@@ -1,5 +1,5 @@
-// Re-ordered and formatted imports to resolve potential module resolution issues with initializeApp
-import { initializeApp } from "firebase/app";
+// Standard modular import for initializeApp from firebase/app
+import { initializeApp } from 'firebase/app';
 import { 
   getFirestore, 
   collection, 
@@ -11,7 +11,7 @@ import {
   deleteDoc, 
   setDoc, 
   getDoc 
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,

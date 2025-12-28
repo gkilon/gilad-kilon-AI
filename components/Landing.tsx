@@ -212,42 +212,42 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (view: string) => void }> =
          <div className="h-1 w-20 bg-brand-gold mx-auto mt-4"></div>
       </div>
 
-      <div className="studio-card p-1 bg-brand-navy border-brand-dark shadow-[20px_20px_0px_var(--brand-gold)]">
-        <div className="bg-white p-6 md:p-12 space-y-10">
-           <div className="flex justify-between items-center border-b-4 border-brand-dark pb-6">
-              <div className="text-right">
-                <p className="text-[12px] font-black text-brand-accent uppercase tracking-widest mb-1 italic">The Lab Navigator</p>
-                <h3 className="text-3xl font-black italic">איזה כלי מתאים לאתגר שלך?</h3>
+      <div className="studio-card p-1 bg-brand-navy border-brand-dark shadow-[10px_10px_0px_var(--brand-gold)] md:shadow-[20px_20px_0px_var(--brand-gold)]">
+        <div className="bg-white p-6 md:p-12 space-y-8 md:space-y-10">
+           <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b-4 border-brand-dark pb-6 gap-4">
+              <div className="text-right flex-1 w-full">
+                <p className="text-[10px] md:text-[12px] font-black text-brand-accent uppercase tracking-widest mb-1 italic">The Lab Navigator</p>
+                <h3 className="text-2xl md:text-3xl font-black italic">איזה כלי מתאים לאתגר שלך?</h3>
               </div>
-              <div className="w-14 h-14 bg-brand-navy flex items-center justify-center text-white text-2xl font-black">?</div>
+              <div className="hidden md:flex w-14 h-14 bg-brand-navy items-center justify-center text-white text-2xl font-black">?</div>
            </div>
 
            <div className="space-y-6">
-              <p className="text-xl font-bold text-brand-dark text-right">בחר את הסוגיה שמעסיקה אותך כרגע:</p>
-              <div className="flex flex-wrap justify-end gap-3">
+              <p className="text-lg md:text-xl font-bold text-brand-dark text-right">בחר את הסוגיה שמעסיקה אותך כרגע:</p>
+              <div className="flex flex-wrap justify-end gap-2 md:gap-3">
                  {presets.map((p, i) => (
                    <button 
                     key={i} 
                     onClick={() => { setInput(p); handleConsult(p); }}
-                    className="px-4 py-2 border-2 border-brand-dark text-[11px] font-black italic hover:bg-brand-navy hover:text-white transition-all"
+                    className="px-3 py-1.5 md:px-4 md:py-2 border-2 border-brand-dark text-[9px] md:text-[11px] font-black italic hover:bg-brand-navy hover:text-white transition-all text-right"
                    >
                      {p}
                    </button>
                  ))}
               </div>
-              <div className="relative group mt-6">
+              <div className="flex flex-col md:relative group mt-8">
                 <input 
                   type="text" 
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   placeholder="או תאר כאן אתגר ניהולי אחר..."
-                  className="w-full bg-brand-beige/30 border-4 border-brand-dark p-6 text-2xl font-black text-brand-dark focus:border-brand-navy outline-none text-right placeholder:opacity-20"
+                  className="w-full bg-brand-beige/30 border-4 border-brand-dark p-4 md:p-6 md:pl-44 text-lg md:text-2xl font-black text-brand-dark focus:border-brand-navy outline-none text-right placeholder:opacity-20"
                   onKeyPress={e => e.key === 'Enter' && handleConsult()}
                 />
                 <button 
                   onClick={() => handleConsult()}
                   disabled={loading || !input.trim()}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-brand-navy text-white px-8 py-3 font-black uppercase text-[12px] tracking-widest hover:bg-brand-gold transition-all disabled:opacity-20"
+                  className="mt-4 md:mt-0 md:absolute md:left-4 md:top-1/2 md:-translate-y-1/2 bg-brand-navy text-white px-6 md:px-8 py-3 md:py-3.5 font-black uppercase text-[10px] md:text-[12px] tracking-widest hover:bg-brand-gold transition-all disabled:opacity-20 active:scale-95 shadow-lg md:shadow-none"
                 >
                   {loading ? 'מפענח...' : 'מצא את הכלים המתאימים ←'}
                 </button>
@@ -256,12 +256,12 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (view: string) => void }> =
 
            {recommendation && (
              <div className="space-y-8 animate-fadeIn pt-4">
-                <div className="p-6 bg-brand-navy text-white border-r-8 border-brand-gold">
+                <div className="p-4 md:p-6 bg-brand-navy text-white border-r-8 border-brand-gold">
                    <p className="text-[10px] font-black uppercase tracking-widest text-brand-gold mb-2 italic">Strategic Direction</p>
-                   <p className="text-2xl font-black italic leading-tight text-right">{recommendation.explanation}</p>
+                   <p className="text-xl md:text-2xl font-black italic leading-tight text-right">{recommendation.explanation}</p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                    {recommendation.toolIds.map(id => {
                      const tool = toolCatalog[id];
                      if (!tool) return null;
@@ -269,12 +269,12 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (view: string) => void }> =
                        <button 
                          key={id}
                          onClick={() => onNavigateToTool(tool.view)}
-                         className="flex items-center justify-between p-6 bg-white border-4 border-brand-dark hover:border-brand-accent group transition-all text-right shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[8px_8px_0px_var(--brand-accent)]"
+                         className="flex items-center justify-between p-4 md:p-6 bg-white border-4 border-brand-dark hover:border-brand-accent group transition-all text-right shadow-[6px_6px_0px_rgba(0,0,0,0.05)] hover:shadow-[8px_8px_0px_var(--brand-accent)]"
                        >
-                         <span className="text-xl group-hover:translate-x-[-5px] transition-transform">←</span>
-                         <div className="flex items-center gap-4">
-                            <span className="font-black text-lg italic">{tool.label}</span>
-                            <div className="w-10 h-10 text-brand-dark group-hover:text-brand-accent transition-colors">
+                         <span className="text-lg md:text-xl group-hover:translate-x-[-5px] transition-transform">←</span>
+                         <div className="flex items-center gap-3 md:gap-4">
+                            <span className="font-black text-base md:text-lg italic">{tool.label}</span>
+                            <div className="w-8 h-8 md:w-10 md:h-10 text-brand-dark group-hover:text-brand-accent transition-colors">
                                {tool.icon}
                             </div>
                          </div>
@@ -283,7 +283,7 @@ const StrategicSandbox: React.FC<{ onNavigateToTool: (view: string) => void }> =
                    })}
                 </div>
                 
-                <p className="text-brand-muted text-[11px] font-bold italic text-center opacity-60">
+                <p className="text-brand-muted text-[10px] md:text-[11px] font-bold italic text-center opacity-60">
                   הכלים נועדו לשימוש כחלק מתהליך הליווי ולא לשימוש עצמאי מלא.
                 </p>
              </div>

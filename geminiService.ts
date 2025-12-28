@@ -22,6 +22,7 @@ const getSystemInstruction = () => {
 `;
 };
 
+// Use gemini-3-flash-preview for basic recommendation logic
 export const getLabRecommendation = async (userInput: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
@@ -54,6 +55,7 @@ export const getLabRecommendation = async (userInput: string) => {
   }
 };
 
+// Use gemini-3-flash-preview for team pulse analysis
 export const getSynergyInsight = async (metrics: any, vibes: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const metricsSummary = Object.entries(metrics)
@@ -70,11 +72,12 @@ export const getSynergyInsight = async (metrics: any, vibes: string[]) => {
   return response.text || "לא הצלחתי לגבש תובנה.";
 };
 
+// Use gemini-3-flash-preview for operative task breakdown
 export const analyzeTaskMission = async (taskText: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `נתח את המשימה: "${taskText}".`,
+    contents: `נתח את המשימה: "${taskText}". פרק אותה לתת-משימות וספק טיפ ניהולי קצר.`,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -92,11 +95,19 @@ export const analyzeTaskMission = async (taskText: string) => {
   return JSON.parse(response.text || '{}');
 };
 
+// Use gemini-3-pro-preview for complex TOWS strategic analysis
 export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const prompt = `בצע ניתוח TOWS עבור: ${tows.title}. 
+  נתונים: 
+  חוזקות: ${tows.strengths?.join(', ')}
+  חולשות: ${tows.weaknesses?.join(', ')}
+  הזדמנויות: ${tows.opportunities?.join(', ')}
+  איומים: ${tows.threats?.join(', ')}`;
+
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
-    contents: `בצע ניתוח TOWS: ${tows.title}`,
+    contents: prompt,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -115,11 +126,18 @@ export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
   return JSON.parse(response.text || '{}');
 };
 
+// Use gemini-3-pro-preview for advanced WOOP feedback with context
 export const getCollaborativeFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const stepValue = currentData[step.toLowerCase() as keyof WoopData] || "";
+  const prompt = `נתח את שלב ה-${step} במודל ה-WOOP של המשתמש. 
+  מה שכתב המשתמש לשלב הזה: "${stepValue}". 
+  הקשר של כלל הנתונים שנאספו עד כה: ${JSON.stringify(currentData)}.
+  ספק משוב אסטרטגי, ציון מוכנות, ניסוח משופר ושאלה מבהירה.`;
+
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
-    contents: `נתח שלב ${step} ב-WOOP`,
+    contents: prompt,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -138,11 +156,19 @@ export const getCollaborativeFeedback = async (step: WoopStep, currentData: Part
   return JSON.parse(response.text || '{}');
 };
 
+// Use gemini-3-flash-preview for generating tasks from WOOP
 export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const prompt = `בהתבסס על ה-WOOP הבא: 
+  משאלה: ${woop.wish}
+  תוצאה: ${woop.outcome}
+  מכשול: ${woop.obstacle}
+  תוכנית: ${woop.plan}
+  הצע 3-5 משימות קונקרטיות לביצוע.`;
+
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `משימות עבור WOOP: ${woop.wish}`,
+    contents: prompt,
     config: {
       responseMimeType: "application/json",
       responseSchema: { type: Type.ARRAY, items: { type: Type.STRING } }
@@ -151,11 +177,17 @@ export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => 
   return JSON.parse(response.text || "[]");
 };
 
+// Use gemini-3-flash-preview for idea contextual matching
 export const processIdea = async (content: string, projects: ProjectChange[], isAudio: boolean = false) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const projectContext = projects.map(p => ({ id: p.id, title: p.title }));
+  const prompt = `נתח את הרעיון הבא (${isAudio ? 'קולי' : 'טקסט'}): "${content}". 
+  נסה לקשר אותו לאחד מהפרויקטים הקיימים: ${JSON.stringify(projectContext)}.
+  החזר ניתוח מלא כולל כותרת, קטגוריה וצעדים הבאים.`;
+
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `נתח רעיון: ${content}`,
+    contents: prompt,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
