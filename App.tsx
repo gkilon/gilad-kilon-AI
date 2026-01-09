@@ -1,26 +1,26 @@
 
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { ProjectChange, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types';
-import { fetchFromCloud, isFirebaseReady, getSystemConfig, syncToCloud, deleteFromCloud } from './firebase';
-import Dashboard from './components/Dashboard';
-import WoopWizard from './components/WoopWizard';
-import Header from './components/Header';
-import Landing from './components/Landing';
-import IdeaManager from './components/IdeaManager';
-import TeamSynergy from './components/TeamSynergy';
-import ExecutiveSynergy from './components/ExecutiveSynergy';
-import TaskHub from './components/TaskHub';
-import About from './components/About';
-import Login from './components/Login';
-import AdminPanel from './components/AdminPanel';
-import Feedback360 from './components/Feedback360';
-import CommunicationDNA from './components/CommunicationDNA';
-import TheLab from './components/TheLab';
-import ClientsPage from './components/ClientsPage';
-import BrandAssets from './components/BrandAssets';
-import ArticlesPage from './components/ArticlesPage';
-import ArticleDetail from './components/ArticleDetail';
+import { WoopProject, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types.ts';
+import { fetchFromCloud, isFirebaseReady, getSystemConfig, syncToCloud, deleteFromCloud } from './firebase.ts';
+import Dashboard from './components/Dashboard.tsx';
+import WoopWizard from './components/WoopWizard.tsx';
+import Header from './components/Header.tsx';
+import Landing from './components/Landing.tsx';
+import IdeaManager from './components/IdeaManager.tsx';
+import TeamSynergy from './components/TeamSynergy.tsx';
+import ExecutiveSynergy from './components/ExecutiveSynergy.tsx';
+import TaskHub from './components/TaskHub.tsx';
+import About from './components/About.tsx';
+import Login from './components/Login.tsx';
+import AdminPanel from './components/AdminPanel.tsx';
+import Feedback360 from './components/Feedback360.tsx';
+import CommunicationDNA from './components/CommunicationDNA.tsx';
+import TheLab from './components/TheLab.tsx';
+import ClientsPage from './components/ClientsPage.tsx';
+import BrandAssets from './components/BrandAssets.tsx';
+import ArticlesPage from './components/ArticlesPage.tsx';
+import ArticleDetail from './components/ArticleDetail.tsx';
 
 const FloatingWhatsApp: React.FC = () => (
   <a 
@@ -43,7 +43,8 @@ const FloatingWhatsApp: React.FC = () => (
 const App: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [projects, setProjects] = useState<ProjectChange[]>([]);
+  // Fixed: Use WoopProject[] instead of ProjectChange[] to resolve property access errors
+  const [projects, setProjects] = useState<WoopProject[]>([]);
   const [ideas, setIdeas] = useState<IdeaEntry[]>([]);
   const [generalTasks, setGeneralTasks] = useState<Task[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -93,7 +94,8 @@ const App: React.FC = () => {
         fetchFromCloud('ideas', session.teamId),
         fetchFromCloud('general_tasks', session.teamId)
       ]);
-      setProjects(p as ProjectChange[]);
+      // Fixed: Cast to WoopProject[]
+      setProjects(p as WoopProject[]);
       setIdeas(i as IdeaEntry[]);
       const teamTasksDoc = t.find(doc => doc.id === 'main_list');
       if (teamTasksDoc && (teamTasksDoc as any).tasks) {
@@ -107,15 +109,16 @@ const App: React.FC = () => {
 
   const handleSaveWoop = async (woop: WoopData, suggestedTasks: string[]) => {
     if (!session) return;
-    const newProject: ProjectChange = {
+    // Fixed: Properly define newProject as WoopProject with 'data' field
+    const newProject: WoopProject = {
       id: Math.random().toString(36).substr(2, 9),
       title: woop.wish,
       createdAt: Date.now(),
-      woop,
+      data: woop,
       tasks: suggestedTasks.map(t => ({ id: Math.random().toString(36).substr(2, 9), text: t, completed: false, createdAt: Date.now() })),
       readinessScore: 85,
       managerId: session.teamId
-    } as any;
+    };
     
     setProjects([newProject, ...projects]);
     if (dbReady) await syncToCloud('projects', newProject);
@@ -131,6 +134,7 @@ const App: React.FC = () => {
   const handleToggleWoopTask = async (projectId: string, taskId: string) => {
     const newProjects = projects.map(p => {
       if (p.id === projectId) {
+        // Fixed: p now correctly inferred as WoopProject which contains 'tasks'
         return { ...p, tasks: p.tasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t) };
       }
       return p;
@@ -159,7 +163,7 @@ const App: React.FC = () => {
           <Route path="/home" element={<Landing onEnterTool={handleNavigate} />} />
           <Route path="/login" element={<Login onLogin={(tid, isM, isA) => { setSession({teamId: tid, isManager: isM}); if (isA) navigate('/admin'); else navigate('/home'); }} />} />
           <Route path="/lab" element={<TheLab onEnterTool={handleNavigate} onBack={() => navigate('/home')} isLoggedIn={!!session} />} />
-          <Route path="/dashboard" element={<Dashboard projects={projects} onNew={() => navigate('/wizard')} onDelete={handleDeleteProject} onToggleTask={handleToggleWoopTask} onBack={() => navigate('/lab')} />} />
+          <Route path="/dashboard" element={<Dashboard projects={projects} onToggleTask={handleToggleWoopTask} onDelete={handleDeleteProject} />} />
           <Route path="/wizard" element={<WoopWizard onCancel={() => navigate('/dashboard')} onSave={handleSaveWoop} />} />
           <Route path="/ideas" element={<IdeaManager ideas={ideas} projects={projects} onSave={(i) => { setIdeas([i, ...ideas]); if (dbReady && session) syncToCloud('ideas', {...i, managerId: session.teamId}); }} onBack={() => navigate('/lab')} />} />
           <Route path="/synergy" element={<TeamSynergy session={session} onBack={() => navigate('/lab')} />} />

@@ -33,7 +33,8 @@ const ExpertiseIcons = {
   Tech: () => (
     <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
       <rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M12 9V6M12 18V15M9 12H6M18 12H15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M12 9V6M12 18V15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M9 12H6M18 12H15" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
     </svg>
   ),
   Coaching: () => (
@@ -97,35 +98,32 @@ const toolCatalog: Record<string, { label: string, icon: React.ReactNode, view: 
   feedback360: { label: "משוב 360", icon: <Icons.Feedback />, view: "feedback360" }
 };
 
-// Logo positioned perfectly
 export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> = ({ size = 'lg', dark = true }) => {
-  const mainFontSizes = {
-    sm: 'text-2xl md:text-3xl',
-    md: 'text-4xl md:text-5xl',
-    lg: 'text-6xl md:text-8xl'
+  const containerWidths = {
+    sm: 'w-48 md:w-56',
+    md: 'w-64 md:w-80',
+    lg: 'w-80 md:w-[450px]'
   };
-  const subFontSizes = {
-    sm: 'text-[7px] md:text-[8px]',
-    md: 'text-[10px] md:text-[12px]',
-    lg: 'text-[12px] md:text-[16px]'
-  };
-  const dotSizes = {
-    sm: 'w-1.5 h-1.5',
-    md: 'w-2.5 h-2.5',
-    lg: 'w-4 h-4 md:w-6 md:h-6'
-  };
-  const color = dark ? 'text-brand-dark' : 'text-white';
   
+  // High-end UI adjustment: If on dark background, we can use a filter to make the logo look premium white.
+  const filterStyle = dark ? 'none' : 'invert(1) brightness(2)';
+
   return (
-    <div className={`flex flex-col items-center justify-center select-none font-black uppercase tracking-tighter leading-[0.82] ${color} w-full`} dir="ltr">
-      <div className={mainFontSizes[size]}>GILAD</div>
-      <div className={`${mainFontSizes[size]} flex items-end gap-1 md:gap-2`}>
-        KILON
-        <div className={`${dotSizes[size]} rounded-full bg-brand-accent mb-[0.12em]`}></div>
-      </div>
-      <div className={`${subFontSizes[size]} tracking-[0.35em] mt-2 md:mt-3 font-bold opacity-60 whitespace-nowrap text-center`}>
-        MANAGEMENT CONSULTING
-      </div>
+    <div className={`flex items-center justify-center select-none ${containerWidths[size]}`} dir="ltr">
+      <img 
+        src="./logo.png" 
+        alt="Gilad Kilon Management Consulting" 
+        className="max-w-full h-auto object-contain block"
+        style={{ filter: filterStyle }}
+        onError={(e) => {
+          // Silent fallback to text if logo.png is missing from root
+          e.currentTarget.style.display = 'none';
+          const fallback = document.createElement('div');
+          fallback.className = "text-brand-navy font-black italic tracking-tighter text-xl whitespace-nowrap";
+          fallback.innerHTML = 'GILAD KILON <span class="text-brand-accent">CONSULTING</span>';
+          e.currentTarget.parentElement?.appendChild(fallback);
+        }}
+      />
     </div>
   );
 };
@@ -169,7 +167,6 @@ const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNo
   </div>
 );
 
-// Strategic Lab Navigator (Updated to Tool Mapper)
 const StrategicSandbox: React.FC<{ onNavigateToTool: (view: string) => void }> = ({ onNavigateToTool }) => {
   const [input, setInput] = useState('');
   const [recommendation, setRecommendation] = useState<{ explanation: string, toolIds: string[] } | null>(null);
@@ -301,7 +298,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
     { title: 'פיתוח מנהיגות ומנהלים', desc: 'חיזוק יכולות המנהל ביום-יום הארגוני. עבודה משותפת על תוצאות עסקיות ואנושיות.', icon: <ExpertiseIcons.Leadership />, color: 'bg-brand-navy', impact: 'Growth' },
     { title: 'ליווי הנהלות וארגונים', desc: 'גיבוש צוות ההנהלה ליחידה מסונכרנת אחת. קביעת כללי משחק שעובדים בשטח.', icon: <ExpertiseIcons.Board />, color: 'bg-brand-accent', impact: 'Alignment' },
     { title: 'ייעוץ ארגוני מערכתי', desc: 'ליווי שינויים עמוקים והתאמת הארגון למציאות משתנה ולנסיבות השטח.', icon: <ExpertiseIcons.Organization />, color: 'bg-brand-gold', impact: 'Strategy' },
-    { title: 'בניית שותפויות וממשקים', desc: 'בניית ממשקי עבודה חזקים על בסיס מודל חמשת התנאים ואמון הדדי.', icon: <ExpertiseIcons.Partnership />, color: 'bg-brand-sage', impact: 'Trust' },
+    { title: 'הקמת שותפויות וממשקים', desc: 'בניית ממשקי עבודה חזקים על בסיס מודל חמשת התנאים ואמון הדדי.', icon: <ExpertiseIcons.Partnership />, color: 'bg-brand-sage', impact: 'Trust' },
     { title: 'ניהול בעידן הטכנולוגי', desc: 'הטמעת כלי עבודה מתקדמים כחלק אינטגרלי מהניהול - לפנות זמן לאנשים.', icon: <ExpertiseIcons.Tech />, color: 'bg-brand-dark', impact: 'Efficiency' },
     { title: 'ייעוץ אישי (Coaching)', desc: 'ליווי אישי ודיסקרטי בצמתים קריטיים וחיזוק התפקוד הניהולי.', icon: <ExpertiseIcons.Coaching />, color: 'bg-brand-accent', impact: 'Leadership' }
   ];
@@ -337,9 +334,9 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </section>
 
       <section className="w-full max-w-7xl mx-auto px-6 relative z-10 pt-10 md:pt-20 space-y-12">
-        <div className="text-center space-y-6 animate-fadeIn">
+        <div className="text-center space-y-6 animate-fadeIn flex flex-col items-center">
           <BrandLogo size="lg" />
-          <div className="space-y-4">
+          <div className="space-y-4 mt-8">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-kern leading-none tracking-tighter uppercase italic text-brand-navy">
               Simple <span className="text-brand-gold">Deep</span> Real
             </h1>
