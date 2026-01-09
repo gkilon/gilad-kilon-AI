@@ -1,6 +1,9 @@
 import { getLabRecommendation } from '../geminiService';
 import React, { useState } from 'react';
 
+// === לוגו מוטמע בפורמט Base64 ===
+const LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArMAAAFpCAYAAAKT...'; // כאן תדביק את המחרוזת המלאה שהעלית
+
 // Sophisticated Architectural Stroke Icons for Expertise
 const ExpertiseIcons = {
   Leadership: () => (
@@ -99,31 +102,34 @@ const toolCatalog: Record<string, { label: string, icon: React.ReactNode, view: 
 };
 
 export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean }> = ({ size = 'lg', dark = true }) => {
+  const [imgError, setImgError] = useState(false);
+  
   const containerWidths = {
     sm: 'w-48 md:w-56',
     md: 'w-64 md:w-80',
     lg: 'w-80 md:w-[450px]'
   };
   
-  // High-end UI adjustment: If on dark background, we can use a filter to make the logo look premium white.
   const filterStyle = dark ? 'none' : 'invert(1) brightness(2)';
+
+  // Check if logo is properly embedded
+  const isLogoEmbedded = LOGO_BASE64 && LOGO_BASE64.startsWith('data:image') && LOGO_BASE64.length > 200;
 
   return (
     <div className={`flex items-center justify-center select-none ${containerWidths[size]}`} dir="ltr">
-      <img 
-        src="./logo.png" 
-        alt="Gilad Kilon Management Consulting" 
-        className="max-w-full h-auto object-contain block"
-        style={{ filter: filterStyle }}
-        onError={(e) => {
-          // Silent fallback to text if logo.png is missing from root
-          e.currentTarget.style.display = 'none';
-          const fallback = document.createElement('div');
-          fallback.className = "text-brand-navy font-black italic tracking-tighter text-xl whitespace-nowrap";
-          fallback.innerHTML = 'GILAD KILON <span class="text-brand-accent">CONSULTING</span>';
-          e.currentTarget.parentElement?.appendChild(fallback);
-        }}
-      />
+      {isLogoEmbedded && !imgError ? (
+        <img 
+          src={LOGO_BASE64} 
+          alt="Gilad Kilon Management Consulting" 
+          className="max-w-full h-auto object-contain block"
+          style={{ filter: filterStyle }}
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div className="text-brand-navy font-black italic tracking-tighter text-xl md:text-2xl whitespace-nowrap border-b-4 border-brand-accent pb-1">
+           GILAD KILON <span className="text-brand-accent">CONSULTING</span>
+        </div>
+      )}
     </div>
   );
 };
