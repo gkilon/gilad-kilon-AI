@@ -141,6 +141,32 @@ const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           </div>
         </section>
 
+        {/* Transparent Logos */}
+        <section className="space-y-8">
+          <h2 className="text-2xl font-black text-brand-accent uppercase tracking-widest border-r-4 border-brand-accent pr-4">5. לוגו שקוף (Transparent Logos)</h2>
+          <div className="grid md:grid-cols-2 gap-10">
+            {/* Transparent Black */}
+            <div className="studio-card p-4 bg-white border-brand-dark shadow-md">
+              <div className="bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWCEAvjyORQMqGQAFnAVd8Gf9MwAAAAASUVORK5CYII=')] bg-repeat border border-brand-dark/10 rounded-sm overflow-hidden">
+                <div id="logo-transparent-dark" className="flex items-center justify-center p-20">
+                  <BrandLogo size="md" dark={true} />
+                </div>
+              </div>
+              <DownloadBar elementId="logo-transparent-dark" fileName="GiladKilon_Logo_Transparent_Black" />
+            </div>
+
+            {/* Transparent White */}
+            <div className="studio-card p-4 bg-white border-brand-dark shadow-md">
+              <div className="bg-brand-dark border border-brand-dark/10 rounded-sm overflow-hidden">
+                <div id="logo-transparent-white" className="flex items-center justify-center p-20">
+                  <BrandLogo size="md" dark={false} />
+                </div>
+              </div>
+              <DownloadBar elementId="logo-transparent-white" fileName="GiladKilon_Logo_Transparent_White" />
+            </div>
+          </div>
+        </section>
+
       </div>
 
       <div className="mt-32 p-16 border-4 border-brand-dark text-center space-y-4 bg-white no-print">
