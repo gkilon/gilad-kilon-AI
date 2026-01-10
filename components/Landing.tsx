@@ -310,7 +310,13 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             <span className="text-[10px] font-mono text-brand-muted uppercase tracking-widest block text-right">Est. 2018</span>
           </div>
 
-          <div className="space-y-12 max-w-5xl mx-auto animate-fadeIn">
+          <div className="space-y-8 max-w-5xl mx-auto animate-fadeIn flex flex-col items-center">
+
+            {/* Central Brand Identity */}
+            <div className="mb-4">
+              <BrandLogo size="md" dark={true} className="items-center" />
+            </div>
+
             <h1 className="text-6xl md:text-8xl lg:text-[110px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none" dir="ltr">
               SIMPLE. <br className="md:hidden" />
               <span className="text-brand-muted">DEEP.</span> <br className="md:hidden" />
