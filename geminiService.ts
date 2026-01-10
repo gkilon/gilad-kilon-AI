@@ -1,51 +1,119 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { WoopStep, WoopData, AiFeedback, CommStyleResult, ProjectChange, TowsAnalysis, Task, Article } from "./types";
+import { WoopStep, WoopData, AiFeedback, ProjectChange, TowsAnalysis } from "./types.ts";
 
-const getSystemInstruction = () => {
-  return `
-אתה "המנווט של המעבדה" עבור גלעד קילון. 
-תפקידך הבלעדי: לנתח את מצוקת המשתמש ולהמליץ על הכלים הנכונים במעבדה (The Lab) שבהם תתבצע העבודה מולו.
+/**
+ * Gets strategic feedback for a specific step in the WOOP model.
+ * Uses gemini-3-pro-preview for advanced strategic reasoning.
+ */
+export const getWoopFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const stepValue = currentData[step.toLowerCase() as keyof WoopData] || "";
+  
+  const prompt = `אתה סוכן AI מומחה לייעוץ ארגוני המשתמש במודל ה-WOOP (Wish, Outcome, Obstacle, Plan).
+  המטרה שלך היא לעזור למשתמש לזקק את המחשבות שלו ולהפוך אותן לתוכנית פעולה עוצמתית.
+  
+  נתח את שלב ה-${step} של המשתמש.
+  הקלט של המשתמש: "${stepValue}"
+  הקשר מלא: ${JSON.stringify(currentData)}
+  
+  החזר תגובה במבנה JSON הכולל:
+  1. score: ציון עומק מחשבתי (1-100).
+  2. analysis: ניתוח קצר ומקצועי בעברית של מה שהמשתמש כתב.
+  3. refinedText: הצעה לניסוח מלוטש ומדויק יותר של הקלט.
+  4. clarifyingQuestion: שאלה אחת מעוררת מחשבה שתעזור לו להעמיק עוד יותר.
+  5. isReady: האם השלב הזה מבושל מספיק? (boolean).`;
 
-כלים זמינים (Tool IDs):
-- dashboard: ניהול שינוי WOOP (מתאים לסלילת אסטרטגיה ומהלכי שינוי)
-- executive: פורום הנהלה TOWS (מתאים לחוסר סנכרון בהנהלה, אסטרטגיה)
-- synergy: דופק צוותי Pulse (מתאים לממשקי עבודה, סנכרון צוותי)
-- tasks: ניהול משימות (ביצוע שוטף)
-- ideas: מעבדת רעיונות (תיעוד מחשבות)
-- communication: DNA תקשורת (פיתוח ניהולי, ממשקים)
-- feedback360: משוב 360 (פיתוח ניהולי אישי)
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
+      contents: prompt,
+      config: {
+        thinkingConfig: { thinkingBudget: 4000 },
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            score: { type: Type.NUMBER },
+            analysis: { type: Type.STRING },
+            refinedText: { type: Type.STRING },
+            clarifyingQuestion: { type: Type.STRING },
+            isReady: { type: Type.BOOLEAN }
+          },
+          required: ["score", "analysis", "refinedText", "clarifyingQuestion", "isReady"]
+        }
+      }
+    });
 
-חוקים:
-1. אל תיתן עצות ניהוליות מילוליות.
-2. החזר תמיד לפחות 2 כלים רלוונטיים.
-3. כתוב הסבר קצרצר (משפט אחד) למה הכלים האלו הם הדרך לפתרון במעבדה.
-`;
+    return JSON.parse(response.text || "{}");
+  } catch (error) {
+    console.error("Gemini API Error (getWoopFeedback):", error);
+    throw error;
+  }
 };
 
-// Use gemini-3-flash-preview for basic recommendation logic
+/**
+ * Generates actionable tasks based on a completed WOOP model.
+ */
+export const generateTasksFromWoop = async (woop: WoopData): Promise<string[]> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const prompt = `בהתבסס על מודל ה-WOOP שהושלם (משאלה: ${woop.wish}, תוצאה רצויה: ${woop.outcome}, מכשול: ${woop.obstacle}, תוכנית: ${woop.plan}), גזור 5 משימות אופרטיביות קונקרטיות וקצרות בעברית.
+  החזר רק מערך JSON של מחרוזות.`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING }
+        }
+      }
+    });
+    return JSON.parse(response.text || "[]");
+  } catch (error) {
+    console.error("Gemini API Error (generateTasksFromWoop):", error);
+    return ["להתחיל ביישום התוכנית", "מעקב אחר התקדמות"];
+  }
+};
+
+/**
+ * Recommends tools based on a user's strategic challenge.
+ */
 export const getLabRecommendation = async (userInput: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: `המשתמש אומר: "${userInput}". איזה כלים מהמעבדה יפתרו לו את זה?`,
-    config: {
-      systemInstruction: getSystemInstruction(),
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          explanation: { type: Type.STRING },
-          recommendedToolIds: { 
-            type: Type.ARRAY, 
-            items: { type: Type.STRING } 
-          }
-        },
-        required: ["explanation", "recommendedToolIds"]
-      }
-    }
-  });
+  const prompt = `אתה "המנווט של המעבדה" עבור גלעד קילון. 
+  תפקידך הבלעדי: לנתח את מצוקת המשתמש ולהמליץ על הכלים הנכונים במעבדה (The Lab) שבהם תתבצע העבודה מולו.
   
+  הכלים הקיימים:
+  - dashboard: ניהול שינוי WOOP
+  - executive: פורום הנהלה TOWS
+  - synergy: דופק צוותי Pulse
+  - tasks: ניהול משימות
+  - ideas: מעבדת רעיונות
+  - communication: DNA תקשורת
+  - feedback360: משוב 360
+  
+  המשתמש אומר: "${userInput}". איזה כלים מהמעבדה יפתרו לו את זה?
+  החזר JSON עם: explanation (משפט אחד בעברית), recommendedToolIds (מערך של לפחות 2 מזהי כלים).`;
+
   try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            explanation: { type: Type.STRING },
+            recommendedToolIds: { type: Type.ARRAY, items: { type: Type.STRING } }
+          },
+          required: ["explanation", "recommendedToolIds"]
+        }
+      }
+    });
     return JSON.parse(response.text || '{}');
   } catch (e) {
     return {
@@ -55,7 +123,9 @@ export const getLabRecommendation = async (userInput: string) => {
   }
 };
 
-// Use gemini-3-flash-preview for team pulse analysis
+/**
+ * Generates an executive insight based on team synergy metrics.
+ */
 export const getSynergyInsight = async (metrics: any, vibes: string[]) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const metricsSummary = Object.entries(metrics)
@@ -63,147 +133,125 @@ export const getSynergyInsight = async (metrics: any, vibes: string[]) => {
     .map(([key, val]) => `${key}: ${val}/6`)
     .join(', ');
 
-  const prompt = `נתח את מצב הצוות: ${metricsSummary}. תגובות: ${vibes.join('\n')}. תן תובנה אסטרטגית אחת והמלצה אחת פשוטה.`;
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: prompt,
-    config: { systemInstruction: "Simple. Deep. Real." }
-  });
-  return response.text || "לא הצלחתי לגבש תובנה.";
+  const prompt = `נתח את מצב הצוות: ${metricsSummary}. תגובות הצוות: ${vibes.join('\n')}. 
+  תן תובנה אסטרטגית אחת והמלצה אחת פשוטה בעברית. סיגנון: Simple. Deep. Real.`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
+      contents: prompt,
+      config: { thinkingConfig: { thinkingBudget: 2000 } }
+    });
+    return response.text || "לא הצלחתי לגבש תובנה.";
+  } catch (e) {
+    return "שגיאה בניתוח הנתונים.";
+  }
 };
 
-// Use gemini-3-flash-preview for operative task breakdown
+/**
+ * Deconstructs a task into subtasks and provides managerial insights.
+ */
 export const analyzeTaskMission = async (taskText: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: `נתח את המשימה: "${taskText}". פרק אותה לתת-משימות וספק טיפ ניהולי קצר.`,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          subtasks: { type: Type.ARRAY, items: { type: Type.STRING } },
-          priority: { type: Type.STRING, enum: ['low', 'medium', 'high'] },
-          managerTip: { type: Type.STRING },
-          quickWin: { type: Type.STRING }
-        },
-        required: ["subtasks", "priority", "managerTip", "quickWin"]
+  const prompt = `נתח את המשימה: "${taskText}". פרק אותה לתת-משימות וספק טיפ ניהולי קצר.`;
+  
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            subtasks: { type: Type.ARRAY, items: { type: Type.STRING } },
+            priority: { type: Type.STRING, enum: ['low', 'medium', 'high'] },
+            managerTip: { type: Type.STRING },
+            quickWin: { type: Type.STRING }
+          },
+          required: ["subtasks", "priority", "managerTip", "quickWin"]
+        }
       }
-    }
-  });
-  return JSON.parse(response.text || '{}');
+    });
+    return JSON.parse(response.text || '{}');
+  } catch (e) {
+    return { subtasks: [], priority: 'medium', managerTip: 'בצע בנחישות.', quickWin: 'התחל עכשיו.' };
+  }
 };
 
-// Use gemini-3-pro-preview for complex TOWS strategic analysis
+/**
+ * Analyzes a TOWS matrix to generate strategic options.
+ */
 export const analyzeTowsStrategy = async (tows: Partial<TowsAnalysis>) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const prompt = `בצע ניתוח TOWS עבור: ${tows.title}. 
+  const prompt = `בצע ניתוח TOWS אסטרטגי עבור: ${tows.title}. 
   נתונים: 
   חוזקות: ${tows.strengths?.join(', ')}
   חולשות: ${tows.weaknesses?.join(', ')}
   הזדמנויות: ${tows.opportunities?.join(', ')}
-  איומים: ${tows.threats?.join(', ')}`;
+  איומים: ${tows.threats?.join(', ')}
+  
+  החזר ניתוח אסטרטגי עמוק בעברית במבנה JSON.`;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-pro-preview',
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          strategiesSO: { type: Type.ARRAY, items: { type: Type.STRING } },
-          strategiesST: { type: Type.ARRAY, items: { type: Type.STRING } },
-          strategiesWO: { type: Type.ARRAY, items: { type: Type.STRING } },
-          strategiesWT: { type: Type.ARRAY, items: { type: Type.STRING } },
-          executiveSummary: { type: Type.STRING }
-        },
-        required: ["strategiesSO", "strategiesST", "strategiesWO", "strategiesWT", "executiveSummary"]
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
+      contents: prompt,
+      config: {
+        thinkingConfig: { thinkingBudget: 8000 },
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            strategiesSO: { type: Type.ARRAY, items: { type: Type.STRING } },
+            strategiesST: { type: Type.ARRAY, items: { type: Type.STRING } },
+            strategiesWO: { type: Type.ARRAY, items: { type: Type.STRING } },
+            strategiesWT: { type: Type.ARRAY, items: { type: Type.STRING } },
+            executiveSummary: { type: Type.STRING }
+          },
+          required: ["strategiesSO", "strategiesST", "strategiesWO", "strategiesWT", "executiveSummary"]
+        }
       }
-    }
-  });
-  return JSON.parse(response.text || '{}');
+    });
+    return JSON.parse(response.text || '{}');
+  } catch (e) {
+    throw e;
+  }
 };
 
-// Use gemini-3-pro-preview for advanced WOOP feedback with context
-export const getCollaborativeFeedback = async (step: WoopStep, currentData: Partial<WoopData>): Promise<AiFeedback> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const stepValue = currentData[step.toLowerCase() as keyof WoopData] || "";
-  const prompt = `נתח את שלב ה-${step} במודל ה-WOOP של המשתמש. 
-  מה שכתב המשתמש לשלב הזה: "${stepValue}". 
-  הקשר של כלל הנתונים שנאספו עד כה: ${JSON.stringify(currentData)}.
-  ספק משוב אסטרטגי, ציון מוכנות, ניסוח משופר ושאלה מבהירה.`;
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-pro-preview',
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          score: { type: Type.NUMBER },
-          analysis: { type: Type.STRING },
-          refinedText: { type: Type.STRING },
-          clarifyingQuestion: { type: Type.STRING },
-          isReady: { type: Type.BOOLEAN }
-        },
-        required: ["score", "analysis", "refinedText", "clarifyingQuestion", "isReady"]
-      }
-    }
-  });
-  return JSON.parse(response.text || '{}');
-};
-
-// Use gemini-3-flash-preview for generating tasks from WOOP
-export const suggestTasksForWoop = async (woop: WoopData): Promise<string[]> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const prompt = `בהתבסס על ה-WOOP הבא: 
-  משאלה: ${woop.wish}
-  תוצאה: ${woop.outcome}
-  מכשול: ${woop.obstacle}
-  תוכנית: ${woop.plan}
-  הצע 3-5 משימות קונקרטיות לביצוע.`;
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: { type: Type.ARRAY, items: { type: Type.STRING } }
-    }
-  });
-  return JSON.parse(response.text || "[]");
-};
-
-// Use gemini-3-flash-preview for idea contextual matching
+/**
+ * Processes a creative idea and maps it to existing projects.
+ */
 export const processIdea = async (content: string, projects: ProjectChange[], isAudio: boolean = false) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const projectContext = projects.map(p => ({ id: p.id, title: p.title }));
   const prompt = `נתח את הרעיון הבא (${isAudio ? 'קולי' : 'טקסט'}): "${content}". 
   נסה לקשר אותו לאחד מהפרויקטים הקיימים: ${JSON.stringify(projectContext)}.
-  החזר ניתוח מלא כולל כותרת, קטגוריה וצעדים הבאים.`;
+  החזר ניתוח מלא כולל כותרת, קטגוריה וצעדים הבאים בעברית.`;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          title: { type: Type.STRING },
-          category: { type: Type.STRING },
-          summary: { type: Type.STRING },
-          nextSteps: { type: Type.ARRAY, items: { type: Type.STRING } },
-          priority: { type: Type.STRING },
-          matchedProjectId: { type: Type.STRING },
-          matchingExplanation: { type: Type.STRING }
-        },
-        required: ["title", "category", "summary", "nextSteps", "priority"]
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING },
+            category: { type: Type.STRING },
+            summary: { type: Type.STRING },
+            nextSteps: { type: Type.ARRAY, items: { type: Type.STRING } },
+            priority: { type: Type.STRING },
+            matchedProjectId: { type: Type.STRING },
+            matchingExplanation: { type: Type.STRING }
+          },
+          required: ["title", "category", "summary", "nextSteps", "priority"]
+        }
       }
-    }
-  });
-  return JSON.parse(response.text || '{}');
+    });
+    return JSON.parse(response.text || '{}');
+  } catch (e) {
+    return { title: 'רעיון חדש', category: 'כללי', summary: content, nextSteps: [], priority: 'medium' };
+  }
 };

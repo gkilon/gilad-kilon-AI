@@ -1,6 +1,6 @@
 
+
 export enum WoopStep {
-  CONTEXT = 'CONTEXT',
   WISH = 'WISH',
   OUTCOME = 'OUTCOME',
   OBSTACLE = 'OBSTACLE',
@@ -8,7 +8,6 @@ export enum WoopStep {
 }
 
 export interface WoopData {
-  context: string;
   wish: string;
   outcome: string;
   obstacle: string;
@@ -20,82 +19,79 @@ export interface AiFeedback {
   analysis: string;
   refinedText: string;
   clarifyingQuestion: string;
-  isReady: boolean;
 }
 
 export interface Task {
   id: string;
   text: string;
   completed: boolean;
-  priority?: 'low' | 'medium' | 'high';
   createdAt: number;
+  // Added priority to fix TaskHub errors
+  priority?: 'low' | 'medium' | 'high';
 }
 
-export interface ProjectChange {
+// Updated WoopProject to include managerId and match its usage in App.tsx
+export interface WoopProject {
   id: string;
   title: string;
-  createdAt: number;
-  woop: WoopData;
+  data: WoopData;
   tasks: Task[];
   readinessScore: number;
+  createdAt: number;
+  managerId: string;
 }
 
-export interface IdeaEntry {
-  id: string;
-  date: number;
-  rawContent: string;
-  type: 'text' | 'voice';
-  analysis?: {
-    title: string;
-    category: string;
-    summary: string;
-    nextSteps: string[];
-    priority: 'low' | 'medium' | 'high';
-    matchedProjectId?: string;
-    matchingExplanation?: string;
-  };
-}
+// Added missing ViewType
+export type ViewType = 'home' | 'about' | 'clients' | 'articles' | 'lab' | 'dashboard' | 'executive' | 'synergy' | 'ideas' | 'communication' | 'feedback360' | 'tasks' | 'login' | 'admin' | 'article_detail';
 
-export interface TeamSynergyPulse {
-  id?: string;
+// Added missing UserSession
+export interface UserSession {
   teamId: string;
-  timestamp: number;
-  vibe: string;
-  // Dynamic metrics: key is metric ID, value is 1-6
-  [key: string]: any; 
+  isManager: boolean;
+  isAdmin?: boolean;
 }
 
+// Added missing TowsAnalysis
 export interface TowsAnalysis {
   id: string;
   title: string;
+  timestamp: number;
+  managerId: string;
   strengths: string[];
   weaknesses: string[];
   opportunities: string[];
   threats: string[];
-  timestamp: number;
-  managerId: string;
-  analysis?: {
+  analysis: {
     strategiesSO: string[];
-    strategiesST: string[];
     strategiesWO: string[];
+    strategiesST: string[];
     strategiesWT: string[];
     executiveSummary: string;
   };
 }
 
-export interface CommStyleResult {
-  style: string;
-  characteristics: string[];
-  strengths: string[];
-  growthAreas: string[];
-  howToCommunicateWithMe: string;
+// Added missing IdeaEntry
+export interface IdeaEntry {
+  id: string;
+  date: number;
+  rawContent: string;
+  type: 'voice' | 'text';
+  analysis: {
+    title: string;
+    summary: string;
+    matchedProjectId?: string;
+    matchingExplanation?: string;
+    nextSteps: string[];
+  };
 }
 
-export interface UserSession {
-  isManager: boolean;
-  teamId: string;
+// Added missing ProjectChange
+export interface ProjectChange {
+  id: string;
+  title: string;
 }
 
+// Added missing Article
 export interface Article {
   id: string;
   title: string;
@@ -106,28 +102,26 @@ export interface Article {
   content?: string;
 }
 
+// Added missing ClientLogo
 export interface ClientLogo {
   id: string;
   name: string;
   url: string;
 }
 
+// Added missing Collaboration
 export interface Collaboration {
   id: string;
   name: string;
   logoUrl: string;
-  description?: string;
+  description: string;
   link?: string;
 }
 
-export interface SystemConfig {
-  masterCode: string;
-  feedback360Url: string;
-  communicationDnaUrl: string;
-  metrics: { key: string; label: string; icon: string; }[];
-  articles: Article[];
-  clients: ClientLogo[];
-  collaborations: Collaboration[];
+// Added missing TeamSynergyPulse
+export interface TeamSynergyPulse {
+  [key: string]: any;
+  teamId: string;
+  timestamp: number;
+  vibe: string;
 }
-
-export type ViewType = 'home' | 'lab' | 'dashboard' | 'wizard' | 'ideas' | 'synergy' | 'executive' | 'tasks' | 'about' | 'clients' | 'partners' | 'login' | 'communication' | 'feedback360' | 'admin' | 'articles' | 'article_detail' | 'brand_assets';

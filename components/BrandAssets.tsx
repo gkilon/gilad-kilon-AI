@@ -8,11 +8,11 @@ const DownloadBar: React.FC<{ elementId: string; fileName: string }> = ({ elemen
     const element = document.getElementById(elementId);
     if (!element) return;
     try {
-      const canvas = await html2canvas(element, { 
-        backgroundColor: null, 
-        scale: 3, 
+      const canvas = await html2canvas(element, {
+        backgroundColor: null,
+        scale: 3,
         logging: false,
-        useCORS: true 
+        useCORS: true
       });
       const link = document.createElement('a');
       link.download = `${fileName}.png`;
@@ -31,14 +31,14 @@ const DownloadBar: React.FC<{ elementId: string; fileName: string }> = ({ elemen
 
   return (
     <div className="flex gap-4 mt-6 border-t border-brand-dark/5 pt-4 no-print" dir="ltr">
-      <button 
+      <button
         onClick={downloadImage}
         className="flex-1 bg-brand-dark text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-2"
       >
         <span>PNG IMAGE</span>
         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
       </button>
-      <button 
+      <button
         onClick={downloadPdf}
         className="flex-1 border-2 border-brand-dark text-brand-dark py-3 font-black text-[10px] uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all flex items-center justify-center gap-2"
       >
@@ -52,7 +52,7 @@ const DownloadBar: React.FC<{ elementId: string; fileName: string }> = ({ elemen
 const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   return (
     <div className="max-w-6xl mx-auto py-20 px-6 animate-fadeIn text-right" dir="rtl">
-      
+
       <div className="flex justify-between items-center mb-16 border-b-4 border-brand-dark pb-8 no-print">
         <div className="space-y-2">
           <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter">נכסי מותג.</h1>
@@ -62,24 +62,24 @@ const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       </div>
 
       <div className="grid gap-20">
-        
+
         {/* LinkedIn Banner Section */}
         <section className="space-y-8">
           <h2 className="text-2xl font-black text-brand-accent uppercase tracking-widest border-r-4 border-brand-accent pr-4">1. באנר ללינקדאין (LinkedIn Banner)</h2>
           <div className="studio-card p-4 bg-white border-brand-dark shadow-[12px_12px_0px_#1a1a1a]">
-            <div 
+            <div
               id="asset-linkedin-new"
               className="relative w-full aspect-[1584/396] bg-brand-dark flex flex-col items-center justify-center overflow-hidden"
               dir="ltr"
             >
               <div className="absolute inset-0 opacity-10 bg-grid"></div>
               <div className="z-10 scale-[1.6] md:scale-[2.4]">
-                 <BrandLogo size="md" dark={false} />
+                <BrandLogo size="md" dark={false} />
               </div>
               <div className="absolute bottom-6 left-0 right-0 text-center">
-                 <span className="text-[10px] md:text-sm font-black text-brand-accent uppercase tracking-[0.5em] opacity-80">
-                   SIMPLE • DEEP • REAL
-                 </span>
+                <span className="text-[10px] md:text-sm font-black text-brand-accent uppercase tracking-[0.5em] opacity-80">
+                  SIMPLE • DEEP • REAL
+                </span>
               </div>
             </div>
             <DownloadBar elementId="asset-linkedin-new" fileName="GiladKilon_LinkedIn_Banner" />
@@ -116,7 +116,7 @@ const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <p className="text-2xl font-black tracking-tighter">GILAD KILON</p>
                 <div className="space-y-1 text-sm font-bold opacity-70 mt-2">
                   <p>052-6417512 | gilad@kilon.org</p>
-                  <p className="text-brand-accent font-black">Simple. Deep. Real.</p>
+                  <p className="text-brand-accent font-black">www.kilon-consulting.com</p>
                 </div>
               </div>
             </div>
@@ -130,11 +130,11 @@ const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <div className="studio-card p-12 bg-white border-brand-dark shadow-sm">
             <div id="asset-letterhead-final" className="p-10 bg-white border border-brand-dark/5">
               <div className="flex justify-start mb-24" dir="ltr">
-                 <BrandLogo size="sm" />
+                <BrandLogo size="sm" />
               </div>
               <div className="border-t-2 border-brand-dark/10 pt-10 space-y-4 opacity-5 no-print">
-                 <div className="h-4 w-3/4 bg-brand-dark"></div>
-                 <div className="h-4 w-1/2 bg-brand-dark"></div>
+                <div className="h-4 w-3/4 bg-brand-dark"></div>
+                <div className="h-4 w-1/2 bg-brand-dark"></div>
               </div>
             </div>
             <DownloadBar elementId="asset-letterhead-final" fileName="GiladKilon_Letterhead_Logo" />
@@ -144,9 +144,9 @@ const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       </div>
 
       <div className="mt-32 p-16 border-4 border-brand-dark text-center space-y-4 bg-white no-print">
-         <p className="text-xl font-black italic">"דיוק ויזואלי הוא חלק בלתי נפרד מדיוק אסטרטגי."</p>
-         <div className="h-px w-20 bg-brand-accent mx-auto"></div>
-         <p className="text-sm text-brand-muted font-bold uppercase tracking-widest">GK STRATEGIC ASSETS v2.1</p>
+        <p className="text-xl font-black italic">"דיוק ויזואלי הוא חלק בלתי נפרד מדיוק אסטרטגי."</p>
+        <div className="h-px w-20 bg-brand-accent mx-auto"></div>
+        <p className="text-sm text-brand-muted font-bold uppercase tracking-widest">GK STRATEGIC ASSETS v2.1</p>
       </div>
     </div>
   );
