@@ -1,6 +1,7 @@
 
-import { SmartSearch } from './SmartSearch';
+import { SmartSearch, SmartSearchDark } from './SmartSearch';
 import React from 'react';
+
 
 // === לוגו מוטמע בפורמט Base64 ===
 const LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArMAAAFpCAYAAAKT...';
@@ -280,9 +281,27 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           </div>
         </section>
 
-        {/* Smart Search Interaction */}
-        <section className="bg-brand-beige border-t border-brand-dark/5">
-          <SmartSearch />
+        {/* ===== SMART SEARCH — Primary Feature ===== */}
+        <section className="relative bg-brand-dark overflow-hidden">
+          {/* Background texture */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.06] pointer-events-none" style={{backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)'}}></div>
+
+          {/* Accent glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-brand-touch to-transparent opacity-60"></div>
+
+          <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 md:py-32 text-center">
+            <span className="inline-block text-[10px] font-bold text-brand-touch uppercase tracking-[0.35em] mb-6">AI Solution Architect</span>
+            <h2 className="text-4xl md:text-6xl font-black text-white leading-[0.95] tracking-tighter mb-6">
+              מה האתגר<br />
+              <span className="text-brand-muted font-light">שלך עכשיו?</span>
+            </h2>
+            <p className="text-white/50 font-light text-lg mb-12 max-w-xl mx-auto">תאר במילים שלך — ואגזור לך את הפתרון המדויק</p>
+
+            {/* Inline SmartSearch with dark theme */}
+            <div className="max-w-2xl mx-auto">
+              <SmartSearchDark />
+            </div>
+          </div>
         </section>
 
         {/* Footer */}
