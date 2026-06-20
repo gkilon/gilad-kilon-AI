@@ -1,0 +1,264 @@
+import { Handler } from "@netlify/functions";
+import Groq from "groq-sdk";
+
+// Initialize Groq client
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY || process.env.API_KEY, // fallback to API_KEY if needed
+});
+
+// Simple in-memory rate limiter
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 20;
+const ipRequestCounts = new Map<string, { count: number; timestamp: number }>();
+
+const checkRateLimit = (ip: string): boolean => {
+  const now = Date.now();
+  const record = ipRequestCounts.get(ip);
+
+  if (!record || now - record.timestamp > RATE_LIMIT_WINDOW_MS) {
+    ipRequestCounts.set(ip, { count: 1, timestamp: now });
+    return true;
+  }
+
+  if (record.count >= MAX_REQUESTS_PER_WINDOW) {
+    return false;
+  }
+
+  record.count += 1;
+  return true;
+};
+
+// System Prompt for Smart Search based on methods.doc
+const SMART_SEARCH_SYSTEM_PROMPT = `
+אתה יועץ ארגוני דיגיטלי (AI). המטרה שלך היא להמליץ למשתמש על אחד מהפתרונות (הכלים/תהליכים) שאנחנו מציעים, על סמך מה שהוא מחפש.
+התהליכים המרכזיים שלנו מבוססים על בניית צוותי הנהלה וניהול שותפויות:
+1. בניית צוות הנהלה ("Team Building"): תהליך של יומיים הכולל תרגיל "ציר זמן" לחקר העבר, תרגיל "ארצות" לבניית אמפתיה, הגדרת תמונת הצלחה לעתיד, זיהוי "אבנים גדולות", הגדרת תפקידים, בניית נורמות וסבב פידבק.
+2. פיתוח שותפויות וממשקים ("Partnerships"): תהליך הכולל קבוצות מיקוד, סדנת צוות ניהולי ליישור קו על תפיסת שותפויות, הגדרת מדדים ויעדים, בניית מנגנונים לשגרות עבודה, וליווי צוותי עבודה לשיפור שותפויות.
+
+כלים דיגיטליים במעבדה (The Lab):
+- dashboard: לניהול שינוי (WOOP)
+- executive: לפורום הנהלה (TOWS)
+- synergy: לדופק צוותי (Pulse)
+- tasks: לניהול משימות
+- ideas: למעבדת רעיונות
+- communication: לתקשורת פנים-ארגונית (DNA)
+- feedback360: למשוב והערכה
+
+על סמך בקשת המשתמש, החזר אובייקט JSON הכולל:
+- "recommendedTool": שם הכלי או התהליך המומלץ ביותר.
+- "reasoning": הסבר קצר (בעברית) למה זה מתאים לו.
+- "structure": פירוט קצר של המבנה או השלבים של הפתרון המוצע.
+`;
+
+export const handler: Handler = async (event, context) => {
+  // CORS Headers
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 200, headers, body: "" };
+  }
+
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, headers, body: "Method Not Allowed" };
+  }
+
+  // Rate Limiting
+  const clientIp = event.headers["x-nf-client-connection-ip"] || "unknown";
+  if (!checkRateLimit(clientIp)) {
+    return {
+      statusCode: 429,
+      headers,
+      body: JSON.stringify({ error: "Too Many Requests" }),
+    };
+  }
+
+  try {
+    const body = JSON.parse(event.body || "{}");
+    const { action, payload } = body;
+
+    let responseData: any = {};
+
+    switch (action) {
+      case "getWoopFeedback": {
+        const { step, currentData } = payload;
+        const stepValue = currentData[step.toLowerCase()] || "";
+        const prompt = `אתה סוכן AI מומחה לייעוץ ארגוני המשתמש במודל ה-WOOP.
+נתח את שלב ה-${step} של המשתמש.
+הקלט: "${stepValue}"
+הקשר: ${JSON.stringify(currentData)}
+
+החזר JSON (חובה להקפיד שזה JSON חוקי) הכולל:
+{
+  "score": מספר (1-100),
+  "analysis": "ניתוח קצר ומקצועי בעברית",
+  "refinedText": "הצעה לניסוח מלוטש",
+  "clarifyingQuestion": "שאלה אחת מעוררת מחשבה",
+  "isReady": boolean
+}`;
+        
+        const completion = await groq.chat.completions.create({
+          messages: [{ role: "user", content: prompt }],
+          model: "llama-3.3-70b-versatile",
+          response_format: { type: "json_object" },
+          temperature: 0.5,
+        });
+        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        break;
+      }
+
+      case "generateTasksFromWoop": {
+        const { woop } = payload;
+        const prompt = `בהתבסס על ה-WOOP (משאלה: ${woop.wish}, תוצאה: ${woop.outcome}, מכשול: ${woop.obstacle}, תוכנית: ${woop.plan}), גזור 5 משימות אופרטיביות קונקרטיות וקצרות בעברית.
+החזר JSON עם מפתח "tasks" המכיל מערך של מחרוזות.`;
+        
+        const completion = await groq.chat.completions.create({
+          messages: [{ role: "user", content: prompt }],
+          model: "llama-3.3-70b-versatile",
+          response_format: { type: "json_object" },
+          temperature: 0.5,
+        });
+        const parsed = JSON.parse(completion.choices[0].message.content || '{"tasks":[]}');
+        responseData = parsed.tasks || [];
+        break;
+      }
+
+      case "getLabRecommendation": {
+        const { userInput } = payload;
+        const prompt = `המטרה: לנתח את מצוקת המשתמש ולהמליץ על כלים ב-The Lab.
+המשתמש: "${userInput}"
+כלים: dashboard, executive, synergy, tasks, ideas, communication, feedback360
+החזר JSON:
+{
+  "explanation": "משפט אחד בעברית",
+  "recommendedToolIds": ["tool1", "tool2"]
+}`;
+        const completion = await groq.chat.completions.create({
+          messages: [{ role: "user", content: prompt }],
+          model: "llama-3.1-8b-instant",
+          response_format: { type: "json_object" },
+        });
+        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        break;
+      }
+
+      case "getSynergyInsight": {
+        const { metrics, vibes } = payload;
+        const metricsSummary = Object.entries(metrics)
+          .filter(([key]) => key !== 'count')
+          .map(([key, val]) => `${key}: ${val}/6`)
+          .join(', ');
+        const prompt = `נתח את מצב הצוות: ${metricsSummary}. תגובות: ${vibes.join('\n')}. תן תובנה אסטרטגית והמלצה אחת פשוטה בעברית. סיגנון: Simple. Deep. Real.`;
+        
+        const completion = await groq.chat.completions.create({
+          messages: [{ role: "user", content: prompt }],
+          model: "llama-3.3-70b-versatile",
+        });
+        responseData = completion.choices[0].message.content;
+        break;
+      }
+
+      case "analyzeTaskMission": {
+        const { taskText } = payload;
+        const prompt = `נתח את המשימה: "${taskText}". פרק לתת-משימות וספק טיפ ניהולי.
+החזר JSON:
+{
+  "subtasks": ["m1", "m2"],
+  "priority": "low" או "medium" או "high",
+  "managerTip": "טיפ ניהולי קצר",
+  "quickWin": "התחל עכשיו"
+}`;
+        const completion = await groq.chat.completions.create({
+          messages: [{ role: "user", content: prompt }],
+          model: "llama-3.1-8b-instant",
+          response_format: { type: "json_object" },
+        });
+        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        break;
+      }
+
+      case "analyzeTowsStrategy": {
+        const { tows } = payload;
+        const prompt = `בצע ניתוח TOWS אסטרטגי עבור: ${tows.title}.
+חוזקות: ${tows.strengths?.join(', ')}
+חולשות: ${tows.weaknesses?.join(', ')}
+הזדמנויות: ${tows.opportunities?.join(', ')}
+איומים: ${tows.threats?.join(', ')}
+החזר JSON:
+{
+  "strategiesSO": ["s1", "s2"],
+  "strategiesST": ["s1", "s2"],
+  "strategiesWO": ["s1", "s2"],
+  "strategiesWT": ["s1", "s2"],
+  "executiveSummary": "תקציר מנהלים אסטרטגי בעברית"
+}`;
+        const completion = await groq.chat.completions.create({
+          messages: [{ role: "user", content: prompt }],
+          model: "llama-3.3-70b-versatile",
+          response_format: { type: "json_object" },
+        });
+        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        break;
+      }
+
+      case "processIdea": {
+        const { content, projects, isAudio } = payload;
+        const projectContext = projects.map((p: any) => ({ id: p.id, title: p.title }));
+        const prompt = `נתח רעיון (${isAudio ? 'קולי' : 'טקסט'}): "${content}". 
+פרויקטים קיימים: ${JSON.stringify(projectContext)}.
+החזר JSON:
+{
+  "title": "כותרת קצרה",
+  "category": "קטגוריה",
+  "summary": "תקציר",
+  "nextSteps": ["c1", "c2"],
+  "priority": "high",
+  "matchedProjectId": "id or null",
+  "matchingExplanation": "הסבר ההתאמה או למה לא נמצאה"
+}`;
+        const completion = await groq.chat.completions.create({
+          messages: [{ role: "user", content: prompt }],
+          model: "llama-3.1-8b-instant",
+          response_format: { type: "json_object" },
+        });
+        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        break;
+      }
+
+      case "searchSolutions": {
+        const { query } = payload;
+        const completion = await groq.chat.completions.create({
+          messages: [
+            { role: "system", content: SMART_SEARCH_SYSTEM_PROMPT },
+            { role: "user", content: query }
+          ],
+          model: "llama-3.3-70b-versatile",
+          response_format: { type: "json_object" },
+          temperature: 0.5,
+        });
+        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        break;
+      }
+
+      default:
+        return { statusCode: 400, headers, body: JSON.stringify({ error: "Unknown action" }) };
+    }
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(responseData),
+    };
+
+  } catch (error: any) {
+    console.error("Function Error:", error);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+};
