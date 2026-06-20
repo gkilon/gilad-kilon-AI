@@ -1,11 +1,6 @@
 import { Handler } from "@netlify/functions";
 import Groq from "groq-sdk";
 
-// Initialize Groq client
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY || process.env.API_KEY, // fallback to API_KEY if needed
-});
-
 // Simple in-memory rate limiter
 const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 20;
@@ -50,6 +45,16 @@ const SMART_SEARCH_SYSTEM_PROMPT = `
 - "structure": פירוט קצר של המבנה או השלבים של הפתרון המוצע.
 `;
 
+let groqInstance: Groq | null = null;
+const getGroq = () => {
+  if (!groqInstance) {
+    groqInstance = new Groq({
+      apiKey: process.env.GROQ_API_KEY || process.env.API_KEY || "missing_key", // fallback so it doesn't crash on load
+    });
+  }
+  return groqInstance;
+};
+
 export const handler: Handler = async (event, context) => {
   // CORS Headers
   const headers = {
@@ -79,6 +84,7 @@ export const handler: Handler = async (event, context) => {
   try {
     const body = JSON.parse(event.body || "{}");
     const { action, payload } = body;
+    const groq = getGroq();
 
     let responseData: any = {};
 

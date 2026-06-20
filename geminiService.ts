@@ -15,9 +15,19 @@ const callServerlessApi = async (action: string, payload: any) => {
     if (!response.ok) {
       if (response.status === 429) {
         console.warn("Rate limit exceeded");
-        // Could throw a specific error, but we'll let it pass to catch
       }
-      throw new Error(`API Error: ${response.statusText}`);
+      let errorText = response.statusText || "Unknown Error";
+      try {
+        const errorBody = await response.json();
+        if (errorBody && errorBody.error) errorText = errorBody.error;
+      } catch (e) {
+        // Fallback to text if JSON parsing fails
+        try {
+          const textBody = await response.text();
+          if (textBody) errorText = textBody;
+        } catch (e2) {}
+      }
+      throw new Error(`API Error: ${errorText}`);
     }
 
     return await response.json();
