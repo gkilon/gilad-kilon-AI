@@ -100,7 +100,16 @@ export const SmartSearch: React.FC = () => {
 
             <div className="bg-white border border-brand-dark/10 p-6 shadow-sm">
               <span className="text-[10px] uppercase tracking-widest text-brand-touch font-bold block mb-2">מבנה הפתרון והשלבים (איך זה יעבוד):</span>
-              <p className="text-brand-dark/80 font-light leading-relaxed whitespace-pre-line">{result.structure}</p>
+              <p className="text-brand-dark/80 font-light leading-relaxed whitespace-pre-line">
+                {typeof result.structure === 'string' 
+                  ? result.structure 
+                  : Array.isArray(result.structure) 
+                    ? result.structure.join('\n') 
+                    : typeof result.structure === 'object' 
+                      ? Object.entries(result.structure).map(([k, v]) => `${k}: ${v}`).join('\n')
+                      : String(result.structure)
+                }
+              </p>
             </div>
           </div>
         )}
