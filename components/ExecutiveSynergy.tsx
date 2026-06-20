@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { TowsAnalysis, UserSession } from '../types';
 import { analyzeTowsStrategy } from '../geminiService';
-import { syncToCloud, fetchFromCloud } from '../firebase';
+import { syncToCloud, fetchFromCloud } from '../storage';
 
 const ExecutiveSynergy: React.FC<{ session: UserSession | null, onBack?: () => void }> = ({ session, onBack }) => {
   const [history, setHistory] = useState<TowsAnalysis[]>([]);

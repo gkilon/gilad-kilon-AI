@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { getSystemConfig } from '../firebase';
+import { getSystemConfig } from '../storage';
 
 const Feedback360: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [isLoading, setIsLoading] = useState(true);

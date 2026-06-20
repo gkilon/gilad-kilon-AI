@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { WoopProject, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types.ts';
-import { fetchFromCloud, isFirebaseReady, getSystemConfig, syncToCloud, deleteFromCloud } from './firebase.ts';
+import { fetchFromCloud, getSystemConfig, syncToCloud, deleteFromCloud } from './storage';
 import Dashboard from './components/Dashboard.tsx';
 import WoopWizard from './components/WoopWizard.tsx';
 import Header from './components/Header.tsx';
@@ -56,8 +56,7 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const dbReady = isFirebaseReady();
-
+  
   // Helper for manual navigation
   const handleNavigate = (view: ViewType) => {
     navigate(`/${view}`);
@@ -79,14 +78,14 @@ const App: React.FC = () => {
     
     if (session) {
       localStorage.setItem('gk_session', JSON.stringify(session));
-      if (dbReady) loadAllData();
+      loadAllData();
     } else {
       localStorage.removeItem('gk_session');
     }
-  }, [session, dbReady, location.pathname]);
+  }, [session, location.pathname]);
 
   const loadAllData = async () => {
-    if (!session || !dbReady) return;
+    if (!session) return;
     setLoading(true);
     try {
       const [p, i, t] = await Promise.all([
@@ -121,14 +120,14 @@ const App: React.FC = () => {
     };
     
     setProjects([newProject, ...projects]);
-    if (dbReady) await syncToCloud('projects', newProject);
+    await syncToCloud('projects', newProject);
     navigate('/dashboard');
   };
 
   const handleDeleteProject = async (id: string) => {
     if (!window.confirm("למחוק את מהלך השינוי?")) return;
     setProjects(projects.filter(p => p.id !== id));
-    if (dbReady) await deleteFromCloud('projects', id);
+    await deleteFromCloud('projects', id);
   };
 
   const handleToggleWoopTask = async (projectId: string, taskId: string) => {
@@ -165,10 +164,10 @@ const App: React.FC = () => {
           <Route path="/lab" element={<TheLab onEnterTool={handleNavigate} onBack={() => navigate('/home')} isLoggedIn={!!session} />} />
           <Route path="/dashboard" element={<Dashboard projects={projects} onToggleTask={handleToggleWoopTask} onDelete={handleDeleteProject} />} />
           <Route path="/wizard" element={<WoopWizard onCancel={() => navigate('/dashboard')} onSave={handleSaveWoop} />} />
-          <Route path="/ideas" element={<IdeaManager ideas={ideas} projects={projects} onSave={(i) => { setIdeas([i, ...ideas]); if (dbReady && session) syncToCloud('ideas', {...i, managerId: session.teamId}); }} onBack={() => navigate('/lab')} />} />
+          <Route path="/ideas" element={<IdeaManager ideas={ideas} projects={projects} onSave={(i) => { setIdeas([i, ...ideas]); if (session) syncToCloud('ideas', {...i, managerId: session.teamId}); }} onBack={() => navigate('/lab')} />} />
           <Route path="/synergy" element={<TeamSynergy session={session} onBack={() => navigate('/lab')} />} />
           <Route path="/executive" element={<ExecutiveSynergy session={session} onBack={() => navigate('/lab')} />} />
-          <Route path="/tasks" element={<TaskHub tasks={generalTasks} onUpdate={(t) => { setGeneralTasks(t); if (session && dbReady) syncToCloud('general_tasks', {id: 'main_list', managerId: session.teamId, tasks: t}); }} onBack={() => navigate('/lab')} />} />
+          <Route path="/tasks" element={<TaskHub tasks={generalTasks} onUpdate={(t) => { setGeneralTasks(t); if (session) syncToCloud('general_tasks', {id: 'main_list', managerId: session.teamId, tasks: t}); }} onBack={() => navigate('/lab')} />} />
           <Route path="/feedback360" element={<Feedback360 onBack={() => navigate('/lab')} />} />
           <Route path="/communication" element={<CommunicationDNA onBack={() => navigate('/lab')} />} />
           <Route path="/about" element={<About />} />

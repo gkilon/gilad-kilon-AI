@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { BrandLogo } from './Landing';
-import { createWorkspace, loginToWorkspace, isFirebaseReady, getSystemConfig } from '../firebase';
+import { createWorkspace, loginToWorkspace, getSystemConfig } from '../storage';
 
 interface LoginProps {
   onLogin: (teamId: string, isManager: boolean, isAdmin?: boolean) => void;
@@ -18,8 +18,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
   const [error, setError] = useState('');
   const [masterCode, setMasterCode] = useState('GILAD2025');
 
-  const dbReady = isFirebaseReady();
-
+  
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlTeamId = params.get('teamId');

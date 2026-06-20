@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { getSystemConfig } from '../firebase';
+import { getSystemConfig } from '../storage';
 import { ClientLogo, Collaboration } from '../types';
 
 const ClientsPage: React.FC = () => {

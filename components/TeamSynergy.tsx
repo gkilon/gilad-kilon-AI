@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { TeamSynergyPulse, UserSession } from '../types';
-import { saveTeamPulse, getTeamPulses, getSystemConfig, DEFAULT_METRICS } from '../firebase';
+import { saveTeamPulse, getTeamPulses, getSystemConfig, DEFAULT_METRICS } from '../storage';
 import { getSynergyInsight } from '../geminiService';
 
 const TrendLine: React.FC<{ data: TeamSynergyPulse[], metric: string, color: string }> = ({ data, metric, color }) => {
