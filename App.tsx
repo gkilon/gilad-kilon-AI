@@ -140,7 +140,7 @@ const App: React.FC = () => {
     });
     setProjects(newProjects);
     const updated = newProjects.find(p => p.id === projectId);
-    if (dbReady && updated) await syncToCloud('projects', updated);
+    if (updated) await syncToCloud('projects', updated);
   };
 
   if (loading) return <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען נתונים...</div>;
