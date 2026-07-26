@@ -1,6 +1,6 @@
 import { WoopStep, WoopData, AiFeedback, ProjectChange, TowsAnalysis } from "./types.ts";
 
-const API_ENDPOINT = "/.netlify/functions/secure-proxy";
+const API_ENDPOINT = "/.netlify/functions/api";
 
 const callServerlessApi = async (action: string, payload: any) => {
   try {
