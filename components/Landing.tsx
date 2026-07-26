@@ -491,9 +491,9 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </FadeIn>
 
             <h1 className="text-6xl md:text-8xl lg:text-[90px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none text-center" dir="ltr">
-              <TextReveal text="SIMPLE." as="span" className="block" delay={0.2} />
-              <TextReveal text="DEEP." as="span" className="block text-brand-muted" delay={0.5} />
-              <TextReveal text="REAL." as="span" className="block" delay={0.8} />
+              <TextReveal text="SIMPLE." as="span" className="block bg-gradient-to-r from-brand-dark to-brand-accent bg-clip-text text-transparent" delay={0.2} />
+              <TextReveal text="DEEP." as="span" className="block bg-gradient-to-r from-brand-accent to-brand-touch bg-clip-text text-transparent" delay={0.5} />
+              <TextReveal text="REAL." as="span" className="block bg-gradient-to-r from-brand-touch to-brand-gold bg-clip-text text-transparent" delay={0.8} />
             </h1>
 
             <motion.div
@@ -516,7 +516,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               <div className="flex flex-col md:flex-row gap-6 justify-center items-center pt-8">
                 <motion.button
                   onClick={() => onEnterTool('lab')}
-                  className="px-10 py-4 bg-brand-dark text-white min-w-[220px] text-sm font-bold uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-xl hover:shadow-2xl hover:shadow-brand-accent/20"
+                  className="px-10 py-4 bg-gradient-to-r from-brand-accent to-brand-touch text-white min-w-[220px] text-sm font-bold uppercase tracking-[0.2em] hover:from-brand-touch hover:to-brand-gold transition-all shadow-xl hover:shadow-2xl hover:shadow-brand-accent/30"
                   whileHover={{ scale: 1.05, y: -3 }}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -524,7 +524,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
                 </motion.button>
                 <motion.a
                   href="#expertise"
-                  className="px-10 py-4 border-2 border-brand-dark/30 text-brand-dark min-w-[220px] text-sm font-bold uppercase tracking-[0.2em] hover:border-brand-dark hover:bg-white/80 transition-all backdrop-blur-md text-center"
+                  className="px-10 py-4 border-2 border-brand-accent/30 text-brand-accent min-w-[220px] text-sm font-bold uppercase tracking-[0.2em] hover:border-brand-accent hover:bg-brand-accent/10 transition-all backdrop-blur-md text-center"
                   whileHover={{ scale: 1.05, y: -3 }}
                   whileTap={{ scale: 0.97 }}
                 >

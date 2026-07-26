@@ -7,9 +7,12 @@ const About: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-beige" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-brand-beige via-white to-brand-beige" dir="rtl">
       {/* Background Grid */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-[0.4] pointer-events-none z-0"></div>
+      <div className="fixed inset-0 bg-grid-pattern opacity-[0.3] pointer-events-none z-0"></div>
+      
+      {/* Subtle gradient overlay */}
+      <div className="fixed inset-0 bg-gradient-to-br from-brand-accent/5 via-transparent to-brand-gold/5 pointer-events-none z-0"></div>
 
       <div className="relative z-10 max-w-5xl mx-auto py-24 px-6 space-y-24 pb-48 text-right">
 
@@ -17,7 +20,7 @@ const About: React.FC = () => {
         <section className="text-center space-y-8 animate-fadeIn">
           <div className="inline-block border-b-2 border-brand-accent pb-4">
             <span className="text-[10px] font-bold text-brand-muted uppercase tracking-[0.4em] block mb-2">About The Architect</span>
-            <h1 className="text-5xl md:text-7xl font-black text-brand-dark tracking-tighter leading-none">
+            <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-brand-accent to-brand-touch bg-clip-text text-transparent tracking-tighter leading-none">
               קצת עליי.
             </h1>
           </div>
@@ -39,7 +42,7 @@ const About: React.FC = () => {
 
             <button
               onClick={handleDownload}
-              className="w-full mt-6 py-4 border border-brand-dark/20 text-brand-dark text-xs font-bold uppercase tracking-[0.2em] hover:bg-brand-dark hover:text-white transition-all flex items-center justify-center gap-3"
+              className="w-full mt-6 py-4 border border-brand-accent/30 text-brand-accent text-xs font-bold uppercase tracking-[0.2em] hover:bg-brand-accent hover:text-white transition-all flex items-center justify-center gap-3"
             >
               <span>הורדת פרופיל PDF</span>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,7 +63,7 @@ const About: React.FC = () => {
               <p>
                 הריצה בשדות באופן קבוע היא מנוע הצמיחה האישי שלי, ואני חובב ספורט מושבע – גם כשזה דורש ממני מאמץ בשטח וגם כשזה קורה על הכורסה מול המסך.
               </p>
-              <p className="text-3xl font-black text-brand-dark pt-4">
+              <p className="text-3xl font-black bg-gradient-to-r from-brand-accent to-brand-touch bg-clip-text text-transparent pt-4">
                 אני לא ספק שירות אלא שותף לדרך.
               </p>
               <p>

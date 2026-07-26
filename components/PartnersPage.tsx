@@ -18,8 +18,8 @@ const PartnersPage: React.FC = () => {
     <div className="max-w-6xl mx-auto py-24 animate-fadeIn space-y-24 pb-48 text-right px-6" dir="rtl">
       
       <section className="text-center space-y-8">
-        <div className="inline-block border-2 border-brand-dark p-8 shadow-[8px_8px_0px_#1a1a1a] bg-white">
-          <h1 className="text-5xl md:text-8xl font-black text-brand-dark tracking-tighter italic uppercase leading-none">
+        <div className="inline-block border-2 border-brand-accent p-8 shadow-[8px_8px_0px_#1a1a1a] bg-white">
+          <h1 className="text-5xl md:text-8xl font-black bg-gradient-to-r from-brand-accent to-brand-gold bg-clip-text text-transparent tracking-tighter italic uppercase leading-none">
             שיתופי פעולה.
           </h1>
         </div>

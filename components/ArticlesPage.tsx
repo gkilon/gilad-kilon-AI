@@ -8,15 +8,18 @@ interface ArticlesPageProps {
 
 const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, onSelectArticle }) => {
   return (
-    <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-brand-beige via-white to-brand-beige text-brand-dark" dir="rtl">
       {/* Background Grid */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-[0.4] pointer-events-none z-0"></div>
+      <div className="fixed inset-0 bg-grid-pattern opacity-[0.3] pointer-events-none z-0"></div>
+      
+      {/* Subtle gradient overlay */}
+      <div className="fixed inset-0 bg-gradient-to-br from-brand-sage/5 via-transparent to-brand-accent/5 pointer-events-none z-0"></div>
 
       <div className="relative z-10 max-w-6xl mx-auto py-24 px-6 space-y-32 pb-48 text-right">
         <section className="text-center space-y-8 animate-fadeIn">
           <div className="inline-block border-b-2 border-brand-accent pb-4">
             <span className="text-[10px] font-bold text-brand-muted uppercase tracking-[0.4em] block mb-2">Knowledge Base</span>
-            <h1 className="text-5xl md:text-8xl font-black text-brand-dark tracking-tighter italic uppercase leading-none">
+            <h1 className="text-5xl md:text-8xl font-black bg-gradient-to-r from-brand-sage to-brand-accent bg-clip-text text-transparent tracking-tighter italic uppercase leading-none">
               חומרים מקצועיים.
             </h1>
           </div>

@@ -17,9 +17,12 @@ const ClientsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-brand-beige via-white to-brand-beige text-brand-dark" dir="rtl">
       {/* Background Grid */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-[0.4] pointer-events-none z-0"></div>
+      <div className="fixed inset-0 bg-grid-pattern opacity-[0.3] pointer-events-none z-0"></div>
+      
+      {/* Subtle gradient overlay */}
+      <div className="fixed inset-0 bg-gradient-to-br from-brand-gold/5 via-transparent to-brand-accent/5 pointer-events-none z-0"></div>
 
       <div className="relative z-10 max-w-6xl mx-auto py-24 px-6 space-y-32 pb-48 text-right">
 
@@ -27,7 +30,7 @@ const ClientsPage: React.FC = () => {
         <section className="text-center space-y-8 animate-fadeIn">
           <div className="inline-block border-b-2 border-brand-accent pb-4">
             <span className="text-[10px] font-bold text-brand-muted uppercase tracking-[0.4em] block mb-2">Ecosystem</span>
-            <h1 className="text-5xl md:text-8xl font-black text-brand-dark tracking-tighter italic uppercase leading-none">
+            <h1 className="text-5xl md:text-8xl font-black bg-gradient-to-r from-brand-accent to-brand-gold bg-clip-text text-transparent tracking-tighter italic uppercase leading-none">
               לקוחות ושותפים.
             </h1>
           </div>
@@ -43,7 +46,7 @@ const ClientsPage: React.FC = () => {
             <div className="h-px w-full bg-brand-dark/10"></div>
           </div>
 
-          <div className="bg-white border border-brand-dark/5 p-12 md:p-20">
+          <div className="bg-white/80 backdrop-blur-sm border border-brand-accent/20 p-12 md:p-20 shadow-lg shadow-brand-accent/10">
             {loading ? (
               <div className="flex justify-center items-center h-40">
                 <div className="w-8 h-8 border-4 border-brand-dark/10 border-t-brand-dark rounded-full animate-spin"></div>
@@ -76,7 +79,7 @@ const ClientsPage: React.FC = () => {
             <div className="h-px w-full bg-brand-dark/10"></div>
           </div>
 
-          <div className="grid gap-px bg-brand-dark/10 border border-brand-dark/10 md:grid-cols-2 shadow-sm overflow-hidden">
+          <div className="grid gap-px bg-brand-accent/20 border border-brand-accent/30 md:grid-cols-2 shadow-lg shadow-brand-accent/10 overflow-hidden">
             {loading ? (
               <div className="col-span-full flex justify-center py-20 bg-white">
                 <div className="w-10 h-10 border-4 border-brand-dark/10 border-t-brand-dark rounded-full animate-spin"></div>

@@ -55,8 +55,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
       <motion.header
         className={`px-6 sticky top-0 z-[1000] backdrop-blur-md border-b w-full ${
           isScrolled
-            ? 'py-2 bg-brand-beige/98 border-brand-dark/10 shadow-sm'
-            : 'py-4 bg-brand-beige/95 border-brand-dark/5'
+            ? 'py-2 bg-gradient-to-r from-brand-beige/95 via-white/90 to-brand-beige/95 border-brand-accent/20 shadow-sm'
+            : 'py-4 bg-gradient-to-r from-brand-beige/90 via-white/85 to-brand-beige/90 border-brand-accent/10'
         }`}
         animate={{ paddingTop: isScrolled ? 8 : 16, paddingBottom: isScrolled ? 8 : 16 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -96,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
 
             <motion.button
               onClick={() => handleNav('lab')}
-              className={`px-6 py-3 text-[11px] font-bold uppercase tracking-[0.15em] transition-all flex items-center gap-3 border-2 ${isLabView ? 'bg-brand-accent text-white border-brand-accent shadow-lg shadow-brand-accent/30' : 'bg-brand-dark text-white border-brand-dark hover:bg-brand-accent hover:border-brand-accent shadow-lg'} rounded-lg`}
+              className={`px-6 py-3 text-[11px] font-bold uppercase tracking-[0.15em] transition-all flex items-center gap-3 border-2 ${isLabView ? 'bg-gradient-to-r from-brand-accent to-brand-touch text-white border-brand-accent shadow-lg shadow-brand-accent/30' : 'bg-gradient-to-r from-brand-dark to-brand-navy text-white border-brand-dark hover:from-brand-accent hover:to-brand-touch hover:border-brand-accent shadow-lg'} rounded-lg`}
               whileHover={{ y: -3, scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
                 )}
                 <motion.button
                   onClick={onLogout}
-                  className="text-[10px] font-bold text-brand-muted hover:text-red-500 uppercase tracking-widest transition-colors"
+                  className="text-[10px] font-bold text-brand-muted hover:text-brand-accent uppercase tracking-widest transition-colors"
                   whileHover={{ y: -1 }}
                   whileTap={{ y: 0 }}
                   transition={{ duration: 0.2 }}
@@ -165,7 +165,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             ) : (
               <motion.button
                 onClick={() => handleNav('login')}
-                className="hidden lg:block px-5 py-2 border border-brand-dark text-brand-dark text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-brand-dark hover:text-white transition-all"
+                className="hidden lg:block px-5 py-2 border border-brand-accent text-brand-accent text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-brand-accent hover:text-white transition-all"
                 whileHover={{ y: -2, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
