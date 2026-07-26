@@ -6,14 +6,34 @@ interface ArticleDetailProps {
   onBack: () => void;
 }
 
-const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
+  const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
+  const handleShare = async () => {
+    const shareData = {
+      title: article.title,
+      text: article.subtitle || article.content?.substring(0, 100) || 'מאמר מקצועי מאת גלעד קילון',
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Share failed:', err);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      alert('הקישור הועתק ללוח!');
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
     
     // Update meta tags for article sharing
     const updateMetaTags = () => {
       // Update title
-      document.title = `${article.title} | גלעד קילון`;
+      document.title = article.title;
       
       // Update or create meta description
       let metaDescription = document.querySelector('meta[name="description"]');
@@ -97,7 +117,15 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
         <header className="space-y-8 mb-16 border-b-2 border-brand-dark pb-12">
           <div className="flex justify-between items-center">
             <span className="text-xs font-black text-brand-accent uppercase tracking-[0.3em]">{article.category}</span>
-            <span className="text-xs font-black text-brand-muted uppercase tracking-[0.3em]">{article.date}</span>
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-4 py-2 bg-brand-accent text-white text-xs font-black uppercase tracking-widest hover:bg-brand-touch transition-all rounded-md"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              <span>שתף מאמר</span>
+            </button>
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-brand-dark italic tracking-tighter leading-none">
             {article.title}
