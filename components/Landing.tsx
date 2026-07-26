@@ -272,15 +272,140 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       {/* Cursor Trail Effect */}
       <CursorTrail />
 
+      {/* Continuous Growth Animation */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Growing organic shapes - continuous expansion */}
+        <motion.div
+          className="absolute bottom-[10%] left-[15%] border-4 border-brand-accent/30 rounded-full"
+          style={{ width: 300, height: 300 }}
+          animate={{
+            scale: [1, 2.5, 1],
+            opacity: [0.2, 0.6, 0.2],
+            rotate: [0, 180, 360]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        
+        <motion.div
+          className="absolute bottom-[15%] left-[20%] border-3 border-brand-touch/30 rounded-full"
+          style={{ width: 200, height: 200 }}
+          animate={{
+            scale: [0.8, 2.2, 0.8],
+            opacity: [0.15, 0.5, 0.15],
+            rotate: [0, -120, -240]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        
+        <motion.div
+          className="absolute bottom-[20%] left-[25%] border-2 border-brand-gold/30 rounded-full"
+          style={{ width: 150, height: 150 }}
+          animate={{
+            scale: [0.6, 2, 0.6],
+            opacity: [0.1, 0.45, 0.1],
+            rotate: [0, 90, 180]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        
+        {/* New circles that appear and grow */}
+        <motion.div
+          className="absolute bottom-[25%] right-[15%] border-2 border-brand-accent/25 rounded-full"
+          style={{ width: 100, height: 100 }}
+          animate={{
+            scale: [0, 1.8, 0],
+            opacity: [0, 0.4, 0]
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
+        <motion.div
+          className="absolute bottom-[30%] right-[25%] border-2 border-brand-touch/25 rounded-full"
+          style={{ width: 80, height: 80 }}
+          animate={{
+            scale: [0, 1.6, 0],
+            opacity: [0, 0.35, 0]
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+        />
+        
+        {/* Right-top animated square */}
+        <motion.div
+          className="absolute top-[10%] right-[10%] border-2 border-brand-accent/30"
+          style={{ width: 80, height: 80 }}
+          animate={{
+            scale: [1, 1.5, 1],
+            rotate: [0, 45, 90, 135, 180],
+            opacity: [0.2, 0.5, 0.3, 0.5, 0.2]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        
+        {/* Connecting lines that grow outward */}
+        <motion.div
+          className="absolute top-[30%] left-[30%] h-[1px] bg-brand-dark/10"
+          animate={{
+            width: [0, 400, 0],
+            opacity: [0, 0.3, 0]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute top-[40%] right-[30%] h-[1px] bg-brand-dark/10"
+          animate={{
+            width: [0, 300, 0],
+            opacity: [0, 0.25, 0]
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        />
+        <motion.div
+          className="absolute top-[50%] left-[25%] h-[1px] bg-brand-dark/10"
+          animate={{
+            width: [0, 350, 0],
+            opacity: [0, 0.28, 0]
+          }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
+        
+        {/* Small dots that move upward continuously */}
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-3 h-3 bg-brand-accent/40 rounded-full"
+            style={{
+              left: `${15 + i * 7}%`,
+              bottom: '5%',
+            }}
+            animate={{
+              y: [0, -100 - (i * 20), 0],
+              opacity: [0, 0.6, 0],
+              scale: [0.5, 1.2, 0.5]
+            }}
+            transition={{
+              duration: 6 + i * 0.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: i * 0.5
+            }}
+          />
+        ))}
+        
+        {/* Gentle gradient overlay */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-t from-brand-beige via-transparent to-brand-beige"
+          animate={{ opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+
       {/* Background Grid — breathing pulse */}
       <motion.div
-        className="fixed inset-0 bg-grid-pattern pointer-events-none z-0"
+        className="fixed inset-0 bg-grid-pattern pointer-events-none z-[1]"
         animate={{ opacity: [0.25, 0.42, 0.25] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       {/* Floating color orbs — hero ambient */}
-      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none z-[2] overflow-hidden">
         <ColorOrbs variant="light" />
       </div>
 
