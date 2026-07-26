@@ -22,6 +22,9 @@ interface ArticleDetailProps {
     
     // Update meta tags for article sharing
     const updateMetaTags = () => {
+      // Get the current URL
+      const currentUrl = window.location.href;
+      
       // Update title
       document.title = article.title;
       
@@ -34,6 +37,15 @@ interface ArticleDetailProps {
       }
       const description = article.subtitle || article.content?.substring(0, 160) || 'מאמר מקצועי מאת גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים';
       metaDescription.setAttribute('content', description);
+      
+      // Update or create canonical URL
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+      }
+      canonical.setAttribute('href', currentUrl);
       
       // Update Open Graph tags
       const updateOgTag = (property: string, content: string) => {
@@ -48,7 +60,7 @@ interface ArticleDetailProps {
       
       updateOgTag('og:title', article.title);
       updateOgTag('og:description', description);
-      updateOgTag('og:url', window.location.href);
+      updateOgTag('og:url', currentUrl);
       updateOgTag('og:image', 'https://kilon.org/profile.jpg');
       updateOgTag('og:type', 'article');
       
@@ -67,6 +79,7 @@ interface ArticleDetailProps {
       updateTwitterTag('twitter:description', description);
       updateTwitterTag('twitter:image', 'https://kilon.org/profile.jpg');
       updateTwitterTag('twitter:card', 'summary_large_image');
+      updateTwitterTag('twitter:url', currentUrl);
     };
     
     updateMetaTags();
@@ -79,6 +92,12 @@ interface ArticleDetailProps {
       const metaDescription = document.querySelector('meta[name="description"]');
       if (metaDescription) {
         metaDescription.setAttribute('content', originalDescription);
+      }
+      
+      // Reset canonical URL
+      const canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) {
+        canonical.setAttribute('href', 'https://kilon-consulting.com/');
       }
       
       // Reset OG tags
