@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { BrandLogo } from './Landing';
-import { createWorkspace, loginToWorkspace, getSystemConfig } from '../storage';
+import { createWorkspace, loginToWorkspace, getSystemConfig, isFirebaseReady } from '../firebase';
 
 interface LoginProps {
   onLogin: (teamId: string, isManager: boolean, isAdmin?: boolean) => void;
@@ -28,10 +28,10 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
       setIsUnlocked(true);
     }
 
-    if (dbReady) {
+    if (isFirebaseReady()) {
       getSystemConfig().then(config => setMasterCode(config.masterCode));
     }
-  }, [dbReady]);
+  }, []);
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();

@@ -6,6 +6,7 @@ const CommunicationDNA: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [dnaUrl, setDnaUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [iframeError, setIframeError] = useState(false);
   
   useEffect(() => {
     getSystemConfig().then(config => {
@@ -13,13 +14,24 @@ const CommunicationDNA: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
         setDnaUrl(config.communicationDnaUrl);
       } else {
         // Fallback to the specific URL provided
-        setDnaUrl("https://hilarious-kashata-9aafa2.netlify.app/");
+        setDnaUrl("https://communication.kilon-consulting.com/");
       }
     }).catch(err => {
       console.error("Config load failed, using fallback URL");
-      setDnaUrl("https://hilarious-kashata-9aafa2.netlify.app/");
+      setDnaUrl("https://communication.kilon-consulting.com/");
     });
   }, []);
+
+  const handleIframeError = () => {
+    setIframeError(true);
+    setIsLoading(false);
+  };
+
+  const openInNewTab = () => {
+    if (dnaUrl) {
+      window.open(dnaUrl, '_blank');
+    }
+  };
 
   return (
     <div className="flex flex-col h-[calc(100vh-80px)] animate-fadeIn">
@@ -34,15 +46,24 @@ const CommunicationDNA: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
           </div>
         </div>
 
-        {onBack && (
+        <div className="flex items-center gap-3">
           <button 
-            onClick={onBack} 
-            className="flex items-center gap-3 bg-brand-beige border-2 border-brand-dark px-6 py-2 text-brand-dark font-black text-xs uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all shadow-[4px_4px_0px_#1a1a1a] active:translate-x-0.5 active:translate-y-0.5"
+            onClick={openInNewTab}
+            className="flex items-center gap-2 bg-brand-accent border-2 border-brand-accent px-4 py-2 text-white font-black text-xs uppercase tracking-widest hover:bg-brand-dark hover:border-brand-dark transition-all shadow-[4px_4px_0px_#1a1a1a] active:translate-x-0.5 active:translate-y-0.5"
           >
-            <span>חזרה למעבדה</span>
-            <span className="text-lg">←</span>
+            <span>פתח בטאב חדש</span>
+            <span className="text-lg">↗</span>
           </button>
-        )}
+          {onBack && (
+            <button 
+              onClick={onBack} 
+              className="flex items-center gap-3 bg-brand-beige border-2 border-brand-dark px-6 py-2 text-brand-dark font-black text-xs uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all shadow-[4px_4px_0px_#1a1a1a] active:translate-x-0.5 active:translate-y-0.5"
+            >
+              <span>חזרה למעבדה</span>
+              <span className="text-lg">←</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* אזור האבחון המוטמע - המחיצה */}
@@ -70,13 +91,29 @@ const CommunicationDNA: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
             {onBack && <button onClick={onBack} className="mt-8 px-10 py-4 bg-brand-dark text-white font-black">חזרה</button>}
           </div>
         )}
+
+        {iframeError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-30 p-10 text-center">
+            <div className="text-6xl mb-6">🔗</div>
+            <h3 className="text-3xl font-black text-brand-dark mb-4">אי אפשר לטעון במסך המוטמע</h3>
+            <p className="text-brand-muted max-w-md font-bold italic mb-6">האתר חוסם טעינה ב-iframe. לחץ על הכפתור למטה לפתיחה בטאב חדש.</p>
+            <button 
+              onClick={openInNewTab}
+              className="mt-4 px-10 py-4 bg-brand-accent text-white font-black hover:bg-brand-dark transition-all"
+            >
+              פתח בטאב חדש
+            </button>
+            {onBack && <button onClick={onBack} className="mt-4 px-10 py-4 bg-brand-beige border-2 border-brand-dark text-brand-dark font-black">חזרה</button>}
+          </div>
+        )}
         
-        {dnaUrl && !error && (
+        {dnaUrl && !error && !iframeError && (
           <iframe 
             src={dnaUrl}
-            className="w-full h-full border-none shadow-inner"
+            className="w-full h-full border-none"
             title="Communication DNA Diagnostic"
             onLoad={() => setIsLoading(false)}
+            onError={handleIframeError}
             allow="camera;microphone;geolocation"
           />
         )}

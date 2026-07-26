@@ -9,6 +9,74 @@ interface ArticleDetailProps {
 const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Update meta tags for article sharing
+    const updateMetaTags = () => {
+      // Update title
+      document.title = `${article.title} | גלעד קילון`;
+      
+      // Update or create meta description
+      let metaDescription = document.querySelector('meta[name="description"]');
+      if (!metaDescription) {
+        metaDescription = document.createElement('meta');
+        metaDescription.setAttribute('name', 'description');
+        document.head.appendChild(metaDescription);
+      }
+      const description = article.subtitle || article.content?.substring(0, 160) || 'מאמר מקצועי מאת גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים';
+      metaDescription.setAttribute('content', description);
+      
+      // Update Open Graph tags
+      const updateOgTag = (property: string, content: string) => {
+        let tag = document.querySelector(`meta[property="${property}"]`);
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute('property', property);
+          document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+      };
+      
+      updateOgTag('og:title', article.title);
+      updateOgTag('og:description', description);
+      updateOgTag('og:url', `${window.location.origin}/article_detail/${article.id}`);
+      
+      // Update Twitter card tags
+      const updateTwitterTag = (name: string, content: string) => {
+        let tag = document.querySelector(`meta[name="${name}"]`);
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute('name', name);
+          document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+      };
+      
+      updateTwitterTag('twitter:title', article.title);
+      updateTwitterTag('twitter:description', description);
+    };
+    
+    updateMetaTags();
+    
+    // Cleanup function to restore original meta tags when leaving
+    return () => {
+      document.title = 'גלעד קילון | ייעוץ ארגוני, פיתוח מנהלים וצוותי הנהלה';
+      
+      const originalDescription = 'גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים. מומחה בליווי צוותי הנהלה, פיתוח צוותים, עבודת ממשקים ובניית שותפויות לשיפור התקשורת הבין-אישית והצמיחה העסקית.';
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', originalDescription);
+      }
+      
+      // Reset OG tags
+      const resetOgTag = (property: string, content: string) => {
+        const tag = document.querySelector(`meta[property="${property}"]`);
+        if (tag) tag.setAttribute('content', content);
+      };
+      
+      resetOgTag('og:title', 'גלעד קילון | ייעוץ ארגוני, פיתוח מנהלים וצוותי הנהלה');
+      resetOgTag('og:description', originalDescription);
+      resetOgTag('og:url', 'https://kilon-consulting.com/');
+    };
   }, [article]);
 
   return (

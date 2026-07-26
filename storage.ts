@@ -24,7 +24,7 @@ const getSystemConfig = async () => {
   const defaultConfig = { 
     masterCode: "GILAD2025", 
     feedback360Url: "https://ubiquitous-nougat-41808d.netlify.app/",
-    communicationDnaUrl: "https://hilarious-kashata-9aafa2.netlify.app/",
+    communicationDnaUrl: "https://communication.kilon-consulting.com/",
     metrics: DEFAULT_METRICS,
     articles: [],
     clients: [],

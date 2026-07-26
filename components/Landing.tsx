@@ -1,6 +1,14 @@
 
 import { SmartSearch, SmartSearchDark } from './SmartSearch';
 import React from 'react';
+import { motion } from 'framer-motion';
+import { TextReveal } from './motion/TextReveal';
+import { FadeIn } from './motion/FadeIn';
+import { StaggerContainer, StaggerItem } from './motion/StaggerContainer';
+import { ColorOrbs } from './motion/ColorOrbs';
+import { CursorTrail } from './motion/CursorTrail';
+import { motionTokens } from '../motion/config';
+import { CARD_ACCENTS } from '../motion/colors';
 
 
 // === לוגו מוטמע בפורמט Base64 ===
@@ -141,28 +149,73 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean, cl
   );
 };
 
-export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNode, index: number, impactTag: string }> = ({ title, desc, icon, index, impactTag }) => (
-  <div className="arch-card p-8 md:p-10 flex flex-col justify-between h-full group relative overflow-hidden">
-    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-dark/0 via-brand-dark/0 to-brand-dark/0 group-hover:via-brand-touch/50 group-hover:to-brand-touch/0 transition-all duration-700"></div>
+export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNode, index: number, impactTag: string }> = ({ title, desc, icon, index, impactTag }) => {
+  const accent = CARD_ACCENTS[index % CARD_ACCENTS.length];
 
-    <div className="flex justify-between items-start mb-8">
-      <div className="text-brand-dark/80 w-8 h-8 group-hover:text-brand-touch transition-colors duration-300">
+  return (
+  <motion.div
+    className={`arch-card p-8 md:p-10 flex flex-col justify-between h-full group relative overflow-hidden ${accent.glow}`}
+    whileHover={{
+      y: -12,
+      scale: 1.03,
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+      transition: { duration: 0.4, ease: motionTokens.easing.sharp },
+    }}
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.6, ease: motionTokens.easing.sharp }}
+  >
+    <motion.div
+      className={`absolute top-0 right-0 w-1.5 h-0 ${accent.bar} group-hover:h-full`}
+      transition={{ duration: 0.5, ease: motionTokens.easing.sharp }}
+    />
+    <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-transparent to-transparent group-hover:via-current ${accent.text} transition-all duration-700 opacity-80`} />
+    
+    {/* Premium gradient overlay on hover */}
+    <motion.div 
+      className={`absolute inset-0 bg-gradient-to-br ${accent.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+      initial={false}
+    />
+    
+    {/* Radial glow effect */}
+    <motion.div 
+      className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
+      style={{ 
+        background: `radial-gradient(circle at 50% 0%, ${accent.text.replace('text-', '')}20 0%, transparent 60%)` 
+      }}
+      initial={false}
+    />
+
+    <div className="flex justify-between items-start mb-8 relative z-10">
+      <motion.div
+        className={`w-12 h-12 ${accent.text} opacity-90 group-hover:opacity-100 transition-all duration-300 bg-gradient-to-br from-white to-gray-50 rounded-lg shadow-sm`}
+        whileHover={{ rotate: [0, -15, 15, 0], scale: 1.15 }}
+        transition={{ duration: 0.5 }}
+      >
         {icon}
-      </div>
-      <span className="text-xs font-mono text-brand-touch/60 font-bold">{(index + 1).toString().padStart(2, '0')}</span>
+      </motion.div>
+      <span className={`text-sm font-mono font-bold ${accent.text} opacity-70 group-hover:opacity-100 transition-opacity duration-300 bg-white/50 px-2 py-1 rounded`}>{(index + 1).toString().padStart(2, '0')}</span>
     </div>
 
-    <div className="space-y-4 text-right">
-      <h4 className="text-xl font-bold text-brand-dark tracking-tight group-hover:text-brand-touch transition-colors duration-300">{title}</h4>
-      <p className="text-sm text-brand-muted leading-relaxed font-light">{desc}</p>
+    <div className="space-y-4 text-right relative z-10">
+      <h4 className={`text-2xl font-bold text-brand-dark tracking-tight transition-colors duration-300 ${accent.titleHover}`}>{title}</h4>
+      <p className="text-sm text-brand-muted leading-relaxed font-light group-hover:text-brand-dark/80 transition-colors duration-300">{desc}</p>
     </div>
 
-    <div className="mt-8 pt-6 border-t border-brand-dark/5 flex justify-between items-center opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-      <span className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">{impactTag}</span>
-      <span className="text-brand-dark transform group-hover:translate-x-[-4px] transition-transform duration-300">→</span>
+    <div className="mt-8 pt-6 border-t border-brand-dark/10 flex justify-between items-center opacity-70 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
+      <span className={`text-[11px] uppercase tracking-widest font-bold px-3 py-1.5 border ${accent.tag} group-hover:scale-105 transition-transform duration-300 rounded-sm shadow-sm`}>{impactTag}</span>
+      <motion.span
+        className={`${accent.text} opacity-0 group-hover:opacity-100 text-xl`}
+        animate={{ x: [0, -10, 0] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        →
+      </motion.span>
     </div>
-  </div>
-);
+  </motion.div>
+  );
+};
 
 export const ToolEntry: React.FC<{
   title: string,
@@ -170,20 +223,35 @@ export const ToolEntry: React.FC<{
   icon: React.ReactNode,
   onClick: () => void
 }> = ({ title, desc, icon, onClick }) => (
-  <button
+  <motion.button
     onClick={onClick}
-    className="flex flex-col items-start w-full text-right border border-brand-dark/10 p-8 hover:border-brand-accent hover:shadow-lg transition-all group bg-white h-full relative overflow-hidden"
+    className="flex flex-col items-start w-full text-right border-2 border-brand-dark/10 p-8 hover:border-brand-accent hover:shadow-2xl transition-all group bg-white h-full relative overflow-hidden"
+    whileHover={{ y: -6, scale: 1.02 }}
+    whileTap={{ scale: 0.97 }}
+    transition={{ duration: 0.3, ease: motionTokens.easing.sharp }}
   >
-    <div className="absolute top-0 right-0 w-0 h-1 bg-brand-accent group-hover:w-full transition-all duration-500"></div>
-    <div className="flex items-center justify-between w-full mb-6">
-      <div className="w-10 h-10 text-brand-muted group-hover:text-brand-accent transition-colors p-1.5 border border-brand-dark/5 rounded-sm">
+    <div className="absolute top-0 right-0 w-0 h-1.5 bg-gradient-to-l from-brand-accent to-brand-touch group-hover:w-full transition-all duration-500"></div>
+    <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/10 via-transparent to-brand-touch/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(96, 125, 139, 0.15) 0%, transparent 70%)' }}></div>
+    
+    <div className="flex items-center justify-between w-full mb-6 relative z-10">
+      <motion.div 
+        className="w-12 h-12 text-brand-muted group-hover:text-brand-accent transition-colors p-2 border border-brand-dark/10 rounded-lg bg-gradient-to-br from-white to-gray-50 shadow-sm group-hover:shadow-md"
+        whileHover={{ rotate: [0, -10, 10, 0], scale: 1.15 }}
+        transition={{ duration: 0.4 }}
+      >
         {icon}
-      </div>
-      <span className="text-brand-dark/50 group-hover:text-brand-accent transform group-hover:-translate-x-1 transition-all">←</span>
+      </motion.div>
+      <motion.span 
+        className="text-brand-dark/50 group-hover:text-brand-accent transition-all text-xl"
+        whileHover={{ x: -6 }}
+      >
+        ←
+      </motion.span>
     </div>
-    <h3 className="text-xl font-bold text-brand-dark mb-3 group-hover:text-brand-accent transition-colors">{title}</h3>
-    <p className="text-sm text-brand-muted font-light leading-relaxed">{desc}</p>
-  </button>
+    <h3 className="text-xl font-bold text-brand-dark mb-3 group-hover:text-brand-accent transition-colors relative z-10">{title}</h3>
+    <p className="text-sm text-brand-muted font-light leading-relaxed group-hover:text-brand-dark/80 transition-colors relative z-10">{desc}</p>
+  </motion.button>
 );
 
 interface LandingProps { onEnterTool: (view: string) => void; }
@@ -201,8 +269,20 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   return (
     <div className="min-h-screen flex flex-col bg-brand-beige text-brand-dark font-sans" dir="rtl">
 
-      {/* Background Grid */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-[0.4] pointer-events-none z-0"></div>
+      {/* Cursor Trail Effect */}
+      <CursorTrail />
+
+      {/* Background Grid — breathing pulse */}
+      <motion.div
+        className="fixed inset-0 bg-grid-pattern pointer-events-none z-0"
+        animate={{ opacity: [0.25, 0.42, 0.25] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Floating color orbs — hero ambient */}
+      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+        <ColorOrbs variant="light" />
+      </div>
 
       {/* Sidebar Decoration (Desktop) */}
       <div className="hidden xl:flex fixed left-12 top-0 bottom-0 flex-col justify-center items-center z-50 pointer-events-none opacity-60">
@@ -214,70 +294,189 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       <main className="flex-1 relative z-10">
 
         {/* Hero Section */}
-        <section className="min-h-[90vh] flex flex-col justify-center items-center text-center px-6 relative">
+        <section className="min-h-[90vh] flex flex-col justify-center items-center text-center px-6 relative overflow-hidden">
+          {/* Dramatic gradient background overlay */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-b from-brand-touch/5 via-transparent to-brand-accent/5 opacity-60"
+            animate={{ 
+              backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
+              opacity: [0.4, 0.7, 0.4]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ backgroundSize: '200% 200%' }}
+          />
+          
+          {/* Decorative floating lines - enhanced */}
+          <motion.div
+            className="absolute top-1/4 left-[5%] w-24 h-0.5 bg-gradient-to-r from-transparent via-brand-touch to-transparent hidden lg:block"
+            animate={{ scaleX: [0.3, 1, 0.3], opacity: [0.2, 0.8, 0.2], x: [0, 20, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute bottom-1/3 right-[8%] w-32 h-0.5 bg-gradient-to-r from-transparent via-brand-gold to-transparent hidden lg:block"
+            animate={{ scaleX: [1, 0.3, 1], opacity: [0.3, 0.9, 0.3], x: [0, -30, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          />
+          <motion.div
+            className="absolute top-[20%] right-[12%] w-4 h-4 border-2 border-brand-accent hidden md:block rounded-sm"
+            animate={{ rotate: [0, 90, 180, 270, 360], scale: [1, 1.3, 1], borderColor: ['#607d8b', '#f26522', '#c5a065', '#607d8b'] }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+          />
+          
+          {/* Additional floating elements */}
+          <motion.div
+            className="absolute top-[35%] left-[15%] w-2 h-2 bg-brand-touch/40 rounded-full hidden lg:block"
+            animate={{ y: [0, -20, 0], opacity: [0.3, 0.8, 0.3] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute bottom-[25%] right-[20%] w-3 h-3 bg-brand-gold/30 rounded-full hidden lg:block"
+            animate={{ y: [0, 25, 0], opacity: [0.2, 0.7, 0.2] }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+          />
+
           <div className="absolute top-10 right-10 hidden sm:block">
-            <span className="text-[10px] font-mono text-brand-muted uppercase tracking-widest block text-right">Consulting API</span>
-            <span className="text-[10px] font-mono text-brand-muted uppercase tracking-widest block text-right">Est. 2018</span>
+            <motion.div
+              className="text-right"
+              animate={{ opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              <motion.span
+                className="text-[10px] font-mono text-brand-touch uppercase tracking-widest block"
+                animate={{ letterSpacing: ['0.3em', '0.35em', '0.3em'] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                Consulting API
+              </motion.span>
+              <span className="text-[10px] font-mono text-brand-muted uppercase tracking-widest block">Est. 2018</span>
+            </motion.div>
           </div>
 
-          <div className="space-y-8 max-w-5xl mx-auto animate-fadeIn flex flex-col items-center">
+          <div className="space-y-8 max-w-5xl mx-auto flex flex-col items-center relative z-10">
 
             {/* Central Brand Identity */}
-            <div className="mb-4">
-              <BrandLogo size="md" dark={true} className="items-center" />
-            </div>
+            <FadeIn delay={0.1}>
+              <motion.div 
+                className="mb-4"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <BrandLogo size="md" dark={true} className="items-center" />
+              </motion.div>
+            </FadeIn>
 
-            <h1 className="text-6xl md:text-8xl lg:text-[80px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none" dir="ltr">
-              SIMPLE. <br className="md:hidden" />
-              <span className="text-brand-muted">DEEP.</span> <br className="md:hidden" />
-              REAL.
+            <h1 className="text-6xl md:text-8xl lg:text-[90px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none text-center" dir="ltr">
+              <TextReveal text="SIMPLE." as="span" className="block" delay={0.2} />
+              <TextReveal text="DEEP." as="span" className="block text-brand-muted" delay={0.5} />
+              <TextReveal text="REAL." as="span" className="block" delay={0.8} />
             </h1>
 
-            <div className="h-px w-24 bg-brand-touch mx-auto"></div>
+            <motion.div
+              className="h-0.5 bg-gradient-to-r from-transparent via-brand-touch to-transparent mx-auto"
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 120, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1.1, ease: motionTokens.easing.sharp }}
+            />
 
-            <div dir="rtl">
-              <p className="text-xl md:text-2xl font-light text-brand-dark/80 max-w-2xl mx-auto leading-relaxed">
-                שותף לדרך שרץ איתך למרחקים ארוכים. <br className="hidden md:block" />
-                <span className="font-bold text-brand-dark">מייצר בהירות, שקט ושליטה בתוך הרעש הארגוני.</span>
-              </p>
-            </div>
+            <FadeIn delay={1.2} className="w-full" direction="none">
+              <div dir="rtl">
+                <p className="text-xl md:text-2xl font-light text-brand-dark/80 max-w-2xl mx-auto leading-relaxed">
+                  שותף לדרך שרץ איתך למרחקים ארוכים. <br className="hidden md:block" />
+                  <span className="font-bold text-brand-dark">מייצר בהירות, שקט ושליטה בתוך הרעש הארגוני.</span>
+                </p>
+              </div>
+            </FadeIn>
 
-            <div className="flex flex-col md:flex-row gap-6 justify-center items-center pt-8">
-              <button
-                onClick={() => onEnterTool('lab')}
-                className="px-8 py-4 bg-brand-dark text-white min-w-[200px] text-sm font-bold uppercase tracking-[0.2em] hover:bg-brand-accent transition-colors shadow-xl"
-              >
-                Open Workspace
-              </button>
-              <a
-                href="#expertise"
-                className="px-8 py-4 border border-brand-dark/20 text-brand-dark min-w-[200px] text-sm font-bold uppercase tracking-[0.2em] hover:border-brand-dark transition-colors bg-white/50 backdrop-blur-sm"
-              >
-                Discover Methodology
-              </a>
-            </div>
+            <FadeIn delay={1.4} className="w-full" direction="none">
+              <div className="flex flex-col md:flex-row gap-6 justify-center items-center pt-8">
+                <motion.button
+                  onClick={() => onEnterTool('lab')}
+                  className="px-10 py-4 bg-brand-dark text-white min-w-[220px] text-sm font-bold uppercase tracking-[0.2em] hover:bg-brand-accent transition-all shadow-xl hover:shadow-2xl hover:shadow-brand-accent/20"
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  Open Workspace
+                </motion.button>
+                <motion.a
+                  href="#expertise"
+                  className="px-10 py-4 border-2 border-brand-dark/30 text-brand-dark min-w-[220px] text-sm font-bold uppercase tracking-[0.2em] hover:border-brand-dark hover:bg-white/80 transition-all backdrop-blur-md text-center"
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  Discover Methodology
+                </motion.a>
+              </div>
+            </FadeIn>
+
+            {/* Scroll indicator */}
+            <motion.div
+              className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, y: [0, 12, 0] }}
+              transition={{
+                opacity: { delay: 2, duration: 0.6 },
+                y: { delay: 2, duration: 2, repeat: Infinity, ease: 'easeInOut' },
+              }}
+            >
+              <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-brand-muted">Scroll</span>
+              <div className="w-px h-10 bg-gradient-to-b from-brand-touch to-transparent" />
+            </motion.div>
           </div>
         </section>
 
         {/* Expertise Grid */}
         <section id="expertise" className="py-32 px-6 border-t border-brand-dark/5 bg-white/40 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-20 text-right">
+            <motion.div 
+              className="flex flex-col md:flex-row justify-between items-end mb-20 text-right w-full"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: motionTokens.easing.sharp }}
+            >
               <div className="max-w-xl">
-                <span className="text-[9px] font-bold text-brand-accent uppercase tracking-[0.25em] block mb-4">Our Expertise</span>
+                <motion.span 
+                  className="text-[9px] font-bold text-brand-accent uppercase tracking-[0.25em] block mb-4"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  Our Expertise
+                </motion.span>
                 <h2 className="text-4xl md:text-5xl font-black text-brand-dark tracking-tight leading-tight">
                   בניית תשתיות עומק<br />
                   <span className="text-brand-muted">לצמיחה עסקית.</span>
                 </h2>
               </div>
-              <div className="hidden md:block w-32 h-px bg-brand-dark/10 mb-4"></div>
-            </div>
+              <motion.div 
+                className="hidden md:block w-32 h-px bg-brand-dark/10 mb-4"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              />
+            </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-dark/10 border border-brand-dark/10 shadow-sm overflow-hidden">
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-dark/10 border border-brand-dark/10 shadow-sm overflow-hidden"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5 }}
+            >
               {expertiseData.map((item, idx) => (
-                <ExpertiseCard key={idx} index={idx} title={item.title} desc={item.desc} icon={item.icon} impactTag={item.impact} />
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: idx * 0.08, ease: motionTokens.easing.sharp }}
+                >
+                  <ExpertiseCard index={idx} title={item.title} desc={item.desc} icon={item.icon} impactTag={item.impact} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -290,17 +489,25 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-brand-touch to-transparent opacity-60"></div>
 
           <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 md:py-32 text-center">
-            <span className="inline-block text-[10px] font-bold text-brand-touch uppercase tracking-[0.35em] mb-6">AI Solution Architect</span>
-            <h2 className="text-4xl md:text-6xl font-black text-white leading-[0.95] tracking-tighter mb-6">
-              מה האתגר<br />
-              <span className="text-brand-muted font-light">שלך עכשיו?</span>
-            </h2>
-            <p className="text-white/50 font-light text-lg mb-12 max-w-xl mx-auto">תאר במילים שלך — ואגזור לך את הפתרון המדויק</p>
+            <FadeIn direction="none">
+              <span className="inline-block text-[10px] font-bold text-brand-touch uppercase tracking-[0.35em] mb-6">AI Solution Architect</span>
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <h2 className="text-4xl md:text-6xl font-black text-white leading-[0.95] tracking-tighter mb-6">
+                מה האתגר<br />
+                <span className="text-brand-muted font-light">שלך עכשיו?</span>
+              </h2>
+            </FadeIn>
+            <FadeIn delay={0.2} direction="none">
+              <p className="text-white/50 font-light text-lg mb-12 max-w-xl mx-auto">תאר במילים שלך — ואגזור לך את הפתרון המדויק</p>
+            </FadeIn>
 
             {/* Inline SmartSearch with dark theme */}
-            <div className="max-w-2xl mx-auto">
-              <SmartSearchDark />
-            </div>
+            <FadeIn delay={0.3} direction="none">
+              <div className="max-w-2xl mx-auto">
+                <SmartSearchDark />
+              </div>
+            </FadeIn>
           </div>
         </section>
 
