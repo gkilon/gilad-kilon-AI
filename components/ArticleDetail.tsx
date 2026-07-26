@@ -38,7 +38,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
       
       updateOgTag('og:title', article.title);
       updateOgTag('og:description', description);
-      updateOgTag('og:url', `${window.location.origin}/article_detail/${article.id}`);
+      updateOgTag('og:url', window.location.href);
+      updateOgTag('og:image', 'https://kilon.org/profile.jpg');
+      updateOgTag('og:type', 'article');
       
       // Update Twitter card tags
       const updateTwitterTag = (name: string, content: string) => {
@@ -53,6 +55,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
       
       updateTwitterTag('twitter:title', article.title);
       updateTwitterTag('twitter:description', description);
+      updateTwitterTag('twitter:image', 'https://kilon.org/profile.jpg');
+      updateTwitterTag('twitter:card', 'summary_large_image');
     };
     
     updateMetaTags();
