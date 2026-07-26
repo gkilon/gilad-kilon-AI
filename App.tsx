@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { WoopProject, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types.ts';
 import { fetchFromCloud, getSystemConfig, syncToCloud, deleteFromCloud } from './storage';
 import Dashboard from './components/Dashboard.tsx';
@@ -156,8 +157,16 @@ const App: React.FC = () => {
         session={session} 
         onLogout={() => { setSession(null); navigate('/home'); }} 
       />
-      <main className={`w-full mx-auto`}>
-        <Routes>
+      <main className="w-full mx-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          >
+        <Routes location={location}>
           <Route path="/" element={<Landing onEnterTool={handleNavigate} />} />
           <Route path="/home" element={<Landing onEnterTool={handleNavigate} />} />
           <Route path="/login" element={<Login onLogin={(tid, isM, isA) => { setSession({teamId: tid, isManager: isM}); if (isA) navigate('/admin'); else navigate('/home'); }} />} />
@@ -178,6 +187,8 @@ const App: React.FC = () => {
           <Route path="/article_detail/:articleId" element={selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => navigate('/articles')} /> : <Navigate to="/articles" />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
+          </motion.div>
+        </AnimatePresence>
       </main>
       {!isFullScreenPartition && <FloatingWhatsApp />}
     </div>

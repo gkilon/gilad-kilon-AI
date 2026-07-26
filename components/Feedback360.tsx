@@ -6,6 +6,7 @@ const Feedback360: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [feedbackUrl, setFeedbackUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [iframeError, setIframeError] = useState(false);
   
   useEffect(() => {
     getSystemConfig().then(config => {
@@ -21,6 +22,17 @@ const Feedback360: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
       setFeedbackUrl("https://ubiquitous-nougat-41808d.netlify.app/");
     });
   }, []);
+
+  const handleIframeError = () => {
+    setIframeError(true);
+    setIsLoading(false);
+  };
+
+  const openInNewTab = () => {
+    if (feedbackUrl) {
+      window.open(feedbackUrl, '_blank');
+    }
+  };
 
   return (
     <div className="flex flex-col h-[calc(100vh-80px)] animate-fadeIn">
@@ -66,13 +78,29 @@ const Feedback360: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
             {onBack && <button onClick={onBack} className="mt-8 px-10 py-4 bg-brand-dark text-white font-black">חזרה</button>}
           </div>
         )}
+
+        {iframeError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-30 p-10 text-center">
+            <div className="text-6xl mb-6">🔗</div>
+            <h3 className="text-3xl font-black text-brand-dark mb-4">אי אפשר לטעון במסך המוטמע</h3>
+            <p className="text-brand-muted max-w-md font-bold italic mb-6">האתר חוסם טעינה ב-iframe. לחץ על הכפתור למטה לפתיחה בטאב חדש.</p>
+            <button 
+              onClick={openInNewTab}
+              className="mt-4 px-10 py-4 bg-brand-accent text-white font-black hover:bg-brand-dark transition-all"
+            >
+              פתח בטאב חדש
+            </button>
+            {onBack && <button onClick={onBack} className="mt-4 px-10 py-4 bg-brand-beige border-2 border-brand-dark text-brand-dark font-black">חזרה</button>}
+          </div>
+        )}
         
-        {feedbackUrl && !error && (
+        {feedbackUrl && !error && !iframeError && (
           <iframe 
             src={feedbackUrl}
             className="w-full h-full border-none"
             title="Gilad Kilon 360 Questionnaire"
             onLoad={() => setIsLoading(false)}
+            onError={handleIframeError}
             allow="camera;microphone;geolocation"
           />
         )}

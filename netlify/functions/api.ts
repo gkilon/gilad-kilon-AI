@@ -1,25 +1,72 @@
 import { Handler } from "@netlify/functions";
 import Groq from "groq-sdk";
 
-// Simple in-memory rate limiter
+// Enhanced rate limiter with sliding window
 const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 20;
-const ipRequestCounts = new Map<string, { count: number; timestamp: number }>();
+const ipRequestCounts = new Map<string, { count: number; timestamp: number; requests: number[] }>();
 
 const checkRateLimit = (ip: string): boolean => {
   const now = Date.now();
   const record = ipRequestCounts.get(ip);
 
   if (!record || now - record.timestamp > RATE_LIMIT_WINDOW_MS) {
-    ipRequestCounts.set(ip, { count: 1, timestamp: now });
+    ipRequestCounts.set(ip, { count: 1, timestamp: now, requests: [now] });
     return true;
   }
 
-  if (record.count >= MAX_REQUESTS_PER_WINDOW) {
+  // Sliding window: remove requests outside the window
+  record.requests = record.requests.filter((time: number) => now - time < RATE_LIMIT_WINDOW_MS);
+  
+  if (record.requests.length >= MAX_REQUESTS_PER_WINDOW) {
     return false;
   }
 
-  record.count += 1;
+  record.requests.push(now);
+  record.count = record.requests.length;
+  return true;
+};
+
+// Input validation and sanitization
+const validateInput = (action: string, payload: any): { valid: boolean; error?: string } => {
+  if (!action || typeof action !== 'string') {
+    return { valid: false, error: 'Invalid action' };
+  }
+
+  const allowedActions = [
+    'getWoopFeedback', 'generateTasksFromWoop', 'getLabRecommendation',
+    'getSynergyInsight', 'analyzeTaskMission', 'analyzeTowsStrategy',
+    'processIdea', 'searchSolutions'
+  ];
+
+  if (!allowedActions.includes(action)) {
+    return { valid: false, error: 'Unauthorized action' };
+  }
+
+  if (!payload || typeof payload !== 'object') {
+    return { valid: false, error: 'Invalid payload' };
+  }
+
+  // Sanitize string inputs to prevent injection attacks
+  const sanitizeString = (str: string): string => {
+    if (typeof str !== 'string') return '';
+    return str.trim().slice(0, 10000); // Limit length
+  };
+
+  // Sanitize payload based on action
+  if (payload.userInput) payload.userInput = sanitizeString(payload.userInput);
+  if (payload.taskText) payload.taskText = sanitizeString(payload.taskText);
+  if (payload.query) payload.query = sanitizeString(payload.query);
+
+  return { valid: true };
+};
+
+// API Key validation
+const validateApiKey = (): boolean => {
+  const apiKey = process.env.GROQ_API_KEY || process.env.API_KEY;
+  if (!apiKey || apiKey === 'missing_key' || apiKey.length < 10) {
+    return false;
+  }
   return true;
 };
 
@@ -56,11 +103,14 @@ const getGroq = () => {
 };
 
 export const handler: Handler = async (event, context) => {
-  // CORS Headers
+  // CORS Headers with stricter security
   const headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*", // Consider restricting to specific domains in production
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block",
   };
 
   if (event.httpMethod === "OPTIONS") {
@@ -71,8 +121,17 @@ export const handler: Handler = async (event, context) => {
     return { statusCode: 405, headers, body: "Method Not Allowed" };
   }
 
+  // API Key validation
+  if (!validateApiKey()) {
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: "Server configuration error" }),
+    };
+  }
+
   // Rate Limiting
-  const clientIp = event.headers["x-nf-client-connection-ip"] || "unknown";
+  const clientIp = event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"] || "unknown";
   if (!checkRateLimit(clientIp)) {
     return {
       statusCode: 429,
@@ -84,6 +143,17 @@ export const handler: Handler = async (event, context) => {
   try {
     const body = JSON.parse(event.body || "{}");
     const { action, payload } = body;
+
+    // Input validation
+    const validation = validateInput(action, payload);
+    if (!validation.valid) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: validation.error || "Invalid request" }),
+      };
+    }
+
     const groq = getGroq();
 
     let responseData: any = {};
@@ -261,10 +331,14 @@ export const handler: Handler = async (event, context) => {
 
   } catch (error: any) {
     console.error("Function Error:", error);
+    // Don't expose detailed error messages in production
+    const errorMessage = process.env.NODE_ENV === 'production' 
+      ? "Internal server error" 
+      : error.message;
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ error: errorMessage }),
     };
   }
 };

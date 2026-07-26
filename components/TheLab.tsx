@@ -1,5 +1,7 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ToolEntry, Icons } from './Landing';
+import { FadeIn } from './motion/FadeIn';
 
 interface TheLabProps {
   onEnterTool: (view: string) => void;
@@ -16,50 +18,85 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
       <div className="relative z-10 pt-20 pb-40 px-6 max-w-7xl mx-auto">
 
         {onBack && (
-          <div className="mb-8 text-right">
-            <button
-              onClick={onBack}
-              className="flex items-center gap-2 text-brand-muted font-bold text-xs uppercase tracking-widest hover:text-brand-dark transition-all group mr-auto md:mr-0"
-            >
-              <span>חזרה לעמוד הראשי</span>
-              <span className="text-xl group-hover:translate-x-1 transition-transform">←</span>
-            </button>
-          </div>
+          <FadeIn delay={0.1}>
+            <div className="mb-8 text-right">
+              <motion.button
+                onClick={onBack}
+                className="flex items-center gap-2 text-brand-muted font-bold text-xs uppercase tracking-widest hover:text-brand-dark transition-all group mr-auto md:mr-0"
+                whileHover={{ x: -4 }}
+              >
+                <span>חזרה לעמוד הראשי</span>
+                <span className="text-xl group-hover:translate-x-1 transition-transform">←</span>
+              </motion.button>
+            </div>
+          </FadeIn>
         )}
 
         {/* 1. Header */}
-        <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20 border-b border-brand-dark/10 pb-12">
-          <div className="space-y-4 text-right">
-            <span className="text-[11px] font-bold text-brand-accent uppercase tracking-[0.4em]">PROFESSIONAL WORKSPACE</span>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-brand-dark">המעבדה<span className="text-brand-accent">.</span></h1>
+        <FadeIn delay={0.2}>
+          <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20 border-b border-brand-dark/10 pb-12">
+            <div className="space-y-4 text-right">
+              <motion.span 
+                className="text-[11px] font-bold text-brand-accent uppercase tracking-[0.4em] block"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                PROFESSIONAL WORKSPACE
+              </motion.span>
+              <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-brand-dark">המעבדה<span className="text-brand-accent">.</span></h1>
+            </div>
+            <motion.div 
+              className="bg-brand-dark text-white px-8 py-3 text-[10px] font-bold uppercase tracking-[0.2em] mb-2 flex items-center gap-3 shadow-lg"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <motion.div 
+                className={`w-2 h-2 rounded-full ${isLoggedIn ? 'bg-green-500' : 'bg-brand-gold animate-pulse'}`}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              ></motion.div>
+              {isLoggedIn ? 'CONSULTING ACCESS' : 'STRATEGIC PREVIEW'}
+            </motion.div>
           </div>
-          <div className="bg-brand-dark text-white px-8 py-3 text-[10px] font-bold uppercase tracking-[0.2em] mb-2 flex items-center gap-3">
-            <div className={`w-2 h-2 rounded-full ${isLoggedIn ? 'bg-green-500' : 'bg-brand-gold animate-pulse'}`}></div>
-            {isLoggedIn ? 'CONSULTING ACCESS' : 'STRATEGIC PREVIEW'}
-          </div>
-        </div>
+        </FadeIn>
 
         {/* 2. Professional Explanation */}
-        <section className="mb-24 text-right animate-fadeIn">
+        <FadeIn delay={0.3} className="mb-24 text-right">
           <div className="max-w-4xl mr-0 space-y-8">
             <h2 className="text-3xl md:text-5xl font-light text-brand-dark tracking-tight leading-tight">
               המרחב שבו אסטרטגיה ניהולית <strong className="font-black">פוגשת בינה מלאכותית.</strong>
             </h2>
             <div className="flex gap-8">
-              <div className="w-1 bg-brand-accent/30 self-stretch"></div>
+              <motion.div 
+                className="w-1 bg-brand-accent/30 self-stretch"
+                initial={{ height: 0 }}
+                animate={{ height: '100%' }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              ></motion.div>
               <p className="text-xl text-brand-muted font-light leading-relaxed max-w-2xl">
                 פיתחתי את הכלים האלו כדי לעזור לנו לזקק את העיקר בתוך הרעש הארגוני במהלך העבודה המשותפת.
                 כל כלי כאן הוא זיקוק של עשרות שנים בשטח, המונגש דרך יכולות AI מתקדמות כדי לפנות זמן למה שחשוב באמת: האנשים והתוצאות.
               </p>
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* 3. Marketing Disclaimer (Guest Only) */}
         {!isLoggedIn && (
-          <section className="mb-24 animate-fadeIn">
-            <div className="bg-white border border-brand-dark/10 p-10 md:p-14 relative overflow-hidden group hover:border-brand-accent/50 transition-colors duration-500">
-              <div className="absolute top-0 right-0 w-2 h-full bg-brand-dark/5 group-hover:bg-brand-accent/20 transition-all"></div>
+          <FadeIn delay={0.4} className="mb-24">
+            <motion.div 
+              className="bg-white border border-brand-dark/10 p-10 md:p-14 relative overflow-hidden group hover:border-brand-accent/50 transition-colors duration-500 shadow-sm hover:shadow-xl"
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div 
+                className="absolute top-0 right-0 w-2 h-full bg-brand-dark/5 group-hover:bg-brand-accent/20 transition-all"
+                initial={{ height: 0 }}
+                whileInView={{ height: '100%' }}
+                viewport={{ once: true }}
+              ></motion.div>
 
               <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12 text-right">
                 <div className="flex-1 space-y-6">
@@ -79,21 +116,34 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
                 </div>
 
                 <div className="shrink-0 w-full lg:w-auto">
-                  <button
+                  <motion.button
                     onClick={() => onEnterTool('login')}
-                    className="w-full lg:w-auto bg-brand-dark text-white px-10 py-5 font-bold text-sm uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-4 group-hover:shadow-lg"
+                    className="w-full lg:w-auto bg-brand-dark text-white px-10 py-5 font-bold text-sm uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-4 shadow-lg hover:shadow-xl"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     <span>התחברות לגישה מלאה</span>
-                    <span>→</span>
-                  </button>
+                    <motion.span 
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      →
+                    </motion.span>
+                  </motion.button>
                 </div>
               </div>
-            </div>
-          </section>
+            </motion.div>
+          </FadeIn>
         )}
 
         {/* 4. Tool Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-dark/5 border border-brand-dark/5 shadow-sm overflow-hidden">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-dark/5 border border-brand-dark/5 shadow-sm overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <ToolEntry
             title="ניהול שינוי (WOOP)"
             desc="להפוך רצונות לתוכנית עבודה אמיתית. ה-AI עוזר לנו לדייק את המכשולים ואת הצעדים הבאים."
@@ -136,15 +186,20 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
             icon={<Icons.Feedback />}
             onClick={() => onEnterTool('feedback360')}
           />
-        </div>
+        </motion.div>
 
-        <div className="mt-24 text-center space-y-4">
+        <motion.div 
+          className="mt-24 text-center space-y-4"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
           <div className="h-px w-24 bg-brand-dark/10 mx-auto"></div>
           <p className="text-xl text-brand-dark font-light italic tracking-tight leading-relaxed max-w-2xl mx-auto">
             "הכלים האלה לא מחליפים את החשיבה שלך, הם עוזרים לה לקרות מהר יותר וטוב יותר."
           </p>
           <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-muted/50 block pt-4">GK STRATEGIC LABORATORY v2.1</span>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
