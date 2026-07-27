@@ -38,7 +38,6 @@ export const TextReveal: React.FC<TextRevealProps> = ({
             delay: delay + index * 0.1,
             ease: motionTokens.easing.sharp,
           }}
-          whileHover={{ scale: 1.04, transition: { duration: 0.2 } }}
         >
           {word}
         </motion.span>
