@@ -2,30 +2,46 @@ import { Handler } from '@netlify/functions';
 
 export const handler: Handler = async (event, context) => {
   // Extract article ID from the path
-  // The path will be like /article_detail/abc123
+  // The path will be like /article_detail/abc123 or /article_detail/abc123?fbclid=...
   const path = event.path;
   const pathParts = path.split('/');
-  const articleId = pathParts[pathParts.length - 1];
+  const articleId = pathParts[pathParts.length - 1].split('?')[0]; // Remove query string if present
 
   // For article pages, try to fetch article data from Firebase
   let articleTitle = 'מאמר מקצועי';
   let articleDescription = 'מאמר מקצועי מאת גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים';
   
+  console.log('Fetching article data for ID:', articleId);
+  
   try {
     // Try to fetch from Firebase using the REST API
     const firebaseResponse = await fetch(`https://firestore.googleapis.com/v1/projects/kilon-consulting/databases/(default)/documents/system/config`);
+    console.log('Firebase response status:', firebaseResponse.status);
+    
     if (firebaseResponse.ok) {
       const data = await firebaseResponse.json();
+      console.log('Firebase data received:', JSON.stringify(data).substring(0, 500));
+      
       if (data.fields && data.fields.articles && data.fields.articles.arrayValue) {
         const articles = data.fields.articles.arrayValue.values || [];
+        console.log('Articles found:', articles.length);
+        console.log('Article IDs:', articles.map((a: any) => a.mapValue.fields.id.stringValue));
+        
         const article = articles.find((a: any) => a.mapValue.fields.id.stringValue === articleId);
+        console.log('Found article:', article ? 'Yes' : 'No');
+        
         if (article && article.mapValue.fields) {
           articleTitle = article.mapValue.fields.title.stringValue || articleTitle;
           articleDescription = article.mapValue.fields.subtitle?.stringValue || 
                                article.mapValue.fields.content?.stringValue?.substring(0, 160) || 
                                articleDescription;
+          console.log('Article title set to:', articleTitle);
         }
+      } else {
+        console.log('No articles field in Firebase data');
       }
+    } else {
+      console.log('Firebase fetch failed with status:', firebaseResponse.status);
     }
   } catch (error) {
     console.log('Failed to fetch article data:', error);
