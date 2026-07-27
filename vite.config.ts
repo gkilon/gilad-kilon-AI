@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => {
   // Use any cast to satisfy TypeScript when accessing Node process methods in Vite config
   const env = loadEnv(mode, (process as any).cwd(), '');
   return {
-    base: './',
+    base: '/',
     plugins: [react()],
     define: {
       'process.env.API_KEY': JSON.stringify(env.API_KEY || process.env.API_KEY)
