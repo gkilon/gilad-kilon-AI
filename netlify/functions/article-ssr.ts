@@ -1,7 +1,75 @@
 import { Handler } from '@netlify/functions';
 
 export const handler: Handler = async (event, context) => {
-  // Extract article ID from the path
+  // Check if the request is from a social media bot
+  const userAgent = event.headers['user-agent'] || event.headers['User-Agent'] || '';
+  const isBot = /facebookexternalhit|WhatsApp|LinkedInBot|Twitterbot|Slackbot|Googlebot|Bingbot|TelegramBot/i.test(userAgent);
+
+  // If not a bot, redirect to index.html to load the SPA normally
+  if (!isBot) {
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+      },
+      body: `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-dark': '#0a0a0a',
+                        'brand-beige': '#f8f6f1',
+                        'brand-accent': '#4a6fa5',
+                        'brand-muted': '#6b7280',
+                        'brand-gold': '#b8956e',
+                        'brand-sage': '#8fa38f',
+                        'brand-navy': '#1a222e',
+                        'brand-paper': '#ffffff',
+                        'brand-touch': '#e55d2b',
+                    },
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Assistant', sans-serif; background: #f4f3ef; color: #111111; margin: 0; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="importmap">
+{
+  "imports": {
+    "firebase/": "https://esm.sh/firebase@^12.7.0/",
+    "html2canvas": "https://esm.sh/html2canvas@^1.4.1",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.11.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "vite": "https://esm.sh/vite@^7.3.0"
+  }
+}
+</script>
+    <script type="module" src="./index.tsx"></script>
+</body>
+</html>`,
+    };
+  }
+
+  // For bots, extract article ID from the path
   // The path will be like /article_detail/abc123 or /article_detail/abc123?fbclid=...
   const path = event.path;
   const pathParts = path.split('/');
