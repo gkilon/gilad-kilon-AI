@@ -20,6 +20,10 @@ interface ArticleDetailProps {
   useEffect(() => {
     window.scrollTo(0, 0);
     
+    // Debug: log article data
+    console.log('Article data:', article);
+    console.log('Current URL:', window.location.href);
+    
     // Update meta tags for article sharing
     const updateMetaTags = () => {
       // Get the current URL
@@ -27,6 +31,7 @@ interface ArticleDetailProps {
       
       // Update title
       document.title = article.title;
+      console.log('Updated title to:', article.title);
       
       // Update or create meta description
       let metaDescription = document.querySelector('meta[name="description"]');
@@ -37,6 +42,7 @@ interface ArticleDetailProps {
       }
       const description = article.subtitle || article.content?.substring(0, 160) || 'מאמר מקצועי מאת גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים';
       metaDescription.setAttribute('content', description);
+      console.log('Updated description to:', description);
       
       // Update or create canonical URL
       let canonical = document.querySelector('link[rel="canonical"]');
@@ -46,6 +52,7 @@ interface ArticleDetailProps {
         document.head.appendChild(canonical);
       }
       canonical.setAttribute('href', currentUrl);
+      console.log('Updated canonical to:', currentUrl);
       
       // Update Open Graph tags
       const updateOgTag = (property: string, content: string) => {
@@ -56,6 +63,7 @@ interface ArticleDetailProps {
           document.head.appendChild(tag);
         }
         tag.setAttribute('content', content);
+        console.log(`Updated ${property} to:`, content);
       };
       
       updateOgTag('og:title', article.title);
@@ -73,6 +81,7 @@ interface ArticleDetailProps {
           document.head.appendChild(tag);
         }
         tag.setAttribute('content', content);
+        console.log(`Updated twitter:${name} to:`, content);
       };
       
       updateTwitterTag('twitter:title', article.title);
