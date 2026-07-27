@@ -4,6 +4,14 @@
   status = 301
   force = true
 
+# Route article_detail requests from social media bots to SSR function
+[[redirects]]
+  from = "/article_detail/*"
+  to = "/.netlify/functions/article-ssr/:splat"
+  status = 200
+  force = true
+  conditions = {User-Agent = ["*facebookexternalhit*", "*WhatsApp*", "*LinkedInBot*", "*Twitterbot*", "*Slackbot*", "*Googlebot*", "*Bingbot*", "*TelegramBot*"]}
+
 [[headers]]
   for = "/*"
   [headers.values]
