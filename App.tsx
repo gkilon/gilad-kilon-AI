@@ -70,22 +70,28 @@ const App: React.FC = () => {
       const fetchedArticles = config.articles || [];
       setArticles(fetchedArticles);
       setIsConfigLoading(false);
+    });
+  }, []);
 
-      // Deep linking for articles
+  useEffect(() => {
+    // Deep linking for articles
+    if (articles.length > 0) {
       const pathParts = location.pathname.split('/');
       if (pathParts[1] === 'article_detail' && pathParts[2]) {
-        const found = fetchedArticles.find((a: Article) => a.id === pathParts[2]);
+        const found = articles.find((a: Article) => a.id === pathParts[2]);
         if (found) setSelectedArticle(found);
       }
-    });
-    
+    }
+  }, [location.pathname, articles]);
+
+  useEffect(() => {
     if (session) {
       localStorage.setItem('gk_session', JSON.stringify(session));
       loadAllData();
     } else {
       localStorage.removeItem('gk_session');
     }
-  }, [session, location.pathname]);
+  }, [session]);
 
   const loadAllData = async () => {
     if (!session) return;
