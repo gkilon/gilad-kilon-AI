@@ -51,6 +51,7 @@ const App: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isConfigLoading, setIsConfigLoading] = useState(true);
   
   const [session, setSession] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('gk_session');
@@ -68,6 +69,7 @@ const App: React.FC = () => {
     getSystemConfig().then(config => {
       const fetchedArticles = config.articles || [];
       setArticles(fetchedArticles);
+      setIsConfigLoading(false);
 
       // Deep linking for articles
       const pathParts = location.pathname.split('/');
@@ -184,7 +186,7 @@ const App: React.FC = () => {
           <Route path="/admin" element={<AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} />} />
           <Route path="/brand_assets" element={<BrandAssets onBack={() => navigate('/admin')} />} />
           <Route path="/articles" element={<ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); navigate(`/article_detail/${a.id}`); }} />} />
-          <Route path="/article_detail/:articleId" element={selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => navigate('/articles')} /> : <Navigate to="/articles" />} />
+          <Route path="/article_detail/:articleId" element={isConfigLoading ? <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען...</div> : selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => navigate('/articles')} /> : <Navigate to="/articles" />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
           </motion.div>
