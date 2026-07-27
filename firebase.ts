@@ -30,8 +30,7 @@ const isFirebaseReady = () => !!db;
 
 const normalizeId = (id: string) => id ? id.trim().toLowerCase() : "";
 
-const getLocal = (key: string) => JSON.parse(localStorage.getItem(`gk_mock_${key}`) || "[]");
-const setLocal = (key: string, data: any) => localStorage.setItem(`gk_mock_${key}`, JSON.stringify(data));
+// Removed localStorage fallback - using Firebase only
 
 const DEFAULT_METRICS = [
   { key: 'ownership', label: 'Ownership על היעדים', icon: '🎯' },
@@ -54,8 +53,7 @@ const getSystemConfig = async () => {
   };
 
   if (!db) {
-    const local = localStorage.getItem('gk_mock_system_config');
-    if (local) return { ...defaultConfig, ...JSON.parse(local) };
+    console.error('Firebase not configured');
     return defaultConfig;
   }
 
@@ -78,7 +76,7 @@ const getSystemConfig = async () => {
 
 const updateSystemConfig = async (config: any) => {
   if (!db) {
-    localStorage.setItem('gk_mock_system_config', JSON.stringify(config));
+    console.error('Firebase not configured');
     return;
   }
   await setDoc(doc(db, "system", "config"), config, { merge: true });
@@ -87,10 +85,8 @@ const updateSystemConfig = async (config: any) => {
 const createWorkspace = async (teamId: string, password: string) => {
   const tid = normalizeId(teamId);
   if (!db) {
-    const workspaces = getLocal('workspaces');
-    if (workspaces.find((w: any) => w.id === tid)) return { success: false, error: "מרחב כבר קיים" };
-    setLocal('workspaces', [...workspaces, { id: tid, password, createdAt: Date.now() }]);
-    return { success: true };
+    console.error('Firebase not configured');
+    return { success: false, error: "Firebase not configured" };
   }
   const docRef = doc(db, "workspaces", tid);
   const existing = await getDoc(docRef);
@@ -102,10 +98,8 @@ const createWorkspace = async (teamId: string, password: string) => {
 const loginToWorkspace = async (teamId: string, password: string) => {
   const tid = normalizeId(teamId);
   if (!db) {
-    const workspaces = getLocal('workspaces');
-    const ws = workspaces.find((w: any) => w.id === tid && w.password === password);
-    if (ws) return { success: true };
-    return { success: false, error: "פרטים שגויים" };
+    console.error('Firebase not configured');
+    return { success: false, error: "Firebase not configured" };
   }
   const docRef = doc(db, "workspaces", tid);
   const snap = await getDoc(docRef);
@@ -116,8 +110,8 @@ const loginToWorkspace = async (teamId: string, password: string) => {
 const checkWorkspaceExists = async (teamId: string) => {
   const tid = normalizeId(teamId);
   if (!db) {
-    const workspaces = getLocal('workspaces');
-    return workspaces.some((w: any) => w.id === tid);
+    console.error('Firebase not configured');
+    return false;
   }
   const snap = await getDoc(doc(db, "workspaces", tid));
   return snap.exists();
@@ -125,13 +119,7 @@ const checkWorkspaceExists = async (teamId: string) => {
 
 const syncToCloud = async (collectionName: string, data: any) => {
   if (!db) {
-    const list = getLocal(collectionName);
-    const id = data.id || Math.random().toString(36).substr(2, 9);
-    const index = list.findIndex((item: any) => item.id === id);
-    const newItem = { ...data, id, updatedAt: Date.now() };
-    if (index > -1) list[index] = newItem;
-    else list.push(newItem);
-    setLocal(collectionName, list);
+    console.error('Firebase not configured');
     return;
   }
   const id = data.id || Math.random().toString(36).substr(2, 9);
@@ -141,8 +129,8 @@ const syncToCloud = async (collectionName: string, data: any) => {
 const fetchFromCloud = async (collectionName: string, managerId: string) => {
   const mid = normalizeId(managerId);
   if (!db) {
-    const list = getLocal(collectionName);
-    return list.filter((item: any) => normalizeId(item.managerId) === mid);
+    console.error('Firebase not configured');
+    return [];
   }
   const q = query(collection(db, collectionName), where("managerId", "==", mid));
   const snap = await getDocs(q);
@@ -151,8 +139,7 @@ const fetchFromCloud = async (collectionName: string, managerId: string) => {
 
 const deleteFromCloud = async (collectionName: string, id: string) => {
   if (!db) {
-    const list = getLocal(collectionName);
-    setLocal(collectionName, list.filter((item: any) => item.id !== id));
+    console.error('Firebase not configured');
     return;
   }
   await deleteDoc(doc(db, collectionName, id));
@@ -161,10 +148,8 @@ const deleteFromCloud = async (collectionName: string, id: string) => {
 const saveTeamPulse = async (teamId: string, data: any) => {
   const tid = normalizeId(teamId);
   if (!db) {
-    const pulses = getLocal('team_pulses');
-    pulses.push({ teamId: tid, ...data, timestamp: Date.now() });
-    setLocal('team_pulses', pulses);
-    return true;
+    console.error('Firebase not configured');
+    return false;
   }
   await addDoc(collection(db, "team_pulses"), { teamId: tid, ...data, timestamp: Date.now() });
   return true;
@@ -173,8 +158,8 @@ const saveTeamPulse = async (teamId: string, data: any) => {
 const getTeamPulses = async (teamId: string) => {
   const tid = normalizeId(teamId);
   if (!db) {
-    const pulses = getLocal('team_pulses');
-    return pulses.filter((p: any) => normalizeId(p.teamId) === tid).sort((a: any, b: any) => b.timestamp - a.timestamp);
+    console.error('Firebase not configured');
+    return [];
   }
   const q = query(collection(db, "team_pulses"), where("teamId", "==", tid));
   const snap = await getDocs(q);

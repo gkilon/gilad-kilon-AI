@@ -15,7 +15,7 @@ export const handler: Handler = async (event, context) => {
   
   try {
     // Try to fetch from Firebase using the REST API
-    const firebaseResponse = await fetch(`https://firestore.googleapis.com/v1/projects/kilon-consulting/databases/(default)/documents/system/config`);
+    const firebaseResponse = await fetch(`https://firestore.googleapis.com/v1/projects/gilad-kilon-ai-site/databases/(default)/documents/system/config`);
     console.log('Firebase response status:', firebaseResponse.status);
     
     if (firebaseResponse.ok) {

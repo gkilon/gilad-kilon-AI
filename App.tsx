@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { WoopProject, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types.ts';
-import { fetchFromCloud, getSystemConfig, syncToCloud, deleteFromCloud } from './storage';
+import { fetchFromCloud, getSystemConfig, syncToCloud, deleteFromCloud } from './firebase';
 import Dashboard from './components/Dashboard.tsx';
 import WoopWizard from './components/WoopWizard.tsx';
 import Header from './components/Header.tsx';

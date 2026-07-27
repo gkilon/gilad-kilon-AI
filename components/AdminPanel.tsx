@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { getSystemConfig, updateSystemConfig } from '../storage';
+import { getSystemConfig, updateSystemConfig } from '../firebase';
 import { Article, ClientLogo, Collaboration } from '../types';
 
 const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = ({ onBack, onGoToAssets }) => {

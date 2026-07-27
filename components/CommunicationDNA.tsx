@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { getSystemConfig } from '../storage';
+import { getSystemConfig } from '../firebase';
 
 const CommunicationDNA: React.FC<{ onBack?: () => void }> = ({ onBack }) => {
   const [isLoading, setIsLoading] = useState(true);
