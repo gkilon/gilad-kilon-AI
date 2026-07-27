@@ -13,7 +13,17 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: 'esnext',
-      outDir: 'dist'
+      outDir: 'dist',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'firebase-vendor': ['firebase/app', 'firebase/firestore'],
+            'motion-vendor': ['framer-motion'],
+            'canvas-vendor': ['html2canvas']
+          }
+        }
+      },
+      chunkSizeWarningLimit: 1000
     }
   };
 });
