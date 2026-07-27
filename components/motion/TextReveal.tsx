@@ -31,11 +31,11 @@ export const TextReveal: React.FC<TextRevealProps> = ({
         <motion.span
           key={`${word}-${index}`}
           className={`inline-block mr-[0.25em] last:mr-0 ${accentClass || ''}`}
-          initial={{ opacity: 0, y: 48, filter: 'blur(10px)', rotateX: 40 }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)', rotateX: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{
-            duration: motionTokens.duration.slow,
-            delay: delay + index * motionTokens.stagger,
+            duration: 0.6,
+            delay: delay + index * 0.1,
             ease: motionTokens.easing.sharp,
           }}
           whileHover={{ scale: 1.04, transition: { duration: 0.2 } }}

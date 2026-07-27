@@ -490,7 +490,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               </motion.div>
             </FadeIn>
 
-            <h1 className="text-6xl md:text-8xl lg:text-[90px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none text-center" dir="ltr">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-[90px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none text-center" dir="ltr">
               <TextReveal text="SIMPLE." as="span" className="block bg-gradient-to-r from-brand-dark to-brand-accent bg-clip-text text-transparent" delay={0.2} />
               <TextReveal text="DEEP." as="span" className="block bg-gradient-to-r from-brand-accent to-brand-touch bg-clip-text text-transparent" delay={0.5} />
               <TextReveal text="REAL." as="span" className="block bg-gradient-to-r from-brand-touch to-brand-gold bg-clip-text text-transparent" delay={0.8} />

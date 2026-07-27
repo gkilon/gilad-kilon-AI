@@ -146,7 +146,31 @@ const App: React.FC = () => {
     if (updated) await syncToCloud('projects', updated);
   };
 
-  if (loading) return <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען נתונים...</div>;
+  if (loading) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-brand-beige">
+      <motion.div
+        className="flex flex-col items-center gap-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <motion.div
+          className="relative"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        >
+          <div className="w-16 h-16 border-4 border-brand-accent/20 rounded-full"></div>
+          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-brand-accent rounded-full border-t-background"></div>
+        </motion.div>
+        <motion.p
+          className="text-brand-accent font-black text-xl"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          טוען נתונים...
+        </motion.p>
+      </motion.div>
+    </div>
+  );
 
   // Generalized logic for full-screen partitions
   const isFullScreenPartition = location.pathname.includes('feedback360') || location.pathname.includes('communication');

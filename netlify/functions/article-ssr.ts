@@ -1,8 +1,27 @@
 import { Handler } from '@netlify/functions';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+// Read index.html at build time
+const indexHtml = readFileSync(join(__dirname, '../../dist/index.html'), 'utf-8');
 
 export const handler: Handler = async (event, context) => {
-  // This function is only called for social media bots (configured in netlify.toml)
-  // Extract article ID from the path
+  // Check if the request is from a social media bot
+  const userAgent = event.headers['user-agent'] || event.headers['User-Agent'] || '';
+  const isBot = /facebookexternalhit|WhatsApp|LinkedInBot|Twitterbot|Slackbot|Googlebot|Bingbot|TelegramBot/i.test(userAgent);
+
+  // If not a bot, return the SPA HTML (rewrite, not redirect)
+  if (!isBot) {
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+      },
+      body: indexHtml,
+    };
+  }
+
+  // For bots, extract article ID from the path
   // The path will be like /article_detail/abc123 or /article_detail/abc123?fbclid=...
   const path = event.path;
   const pathParts = path.split('/');
