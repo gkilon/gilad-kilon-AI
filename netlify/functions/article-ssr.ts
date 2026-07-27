@@ -1,83 +1,11 @@
 import { Handler } from '@netlify/functions';
 
 export const handler: Handler = async (event, context) => {
+  // Extract article ID from the path
+  // The path will be like /article_detail/abc123
   const path = event.path;
   const pathParts = path.split('/');
   const articleId = pathParts[pathParts.length - 1];
-
-  // Check if this is an article detail page
-  if (!articleId || pathParts[pathParts.length - 2] !== 'article_detail') {
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-      },
-      body: `<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>גלעד קילון | ייעוץ ארגוני, פיתוח מנהלים וצוותי הנהלה</title>
-    <meta name="description" content="גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים. מומחה בליווי צוותי הנהלה, פיתוח צוותים, עבודת ממשקים ובניית שותפויות לשיפור התקשורת הבין-אישית והצמיחה העסקית.">
-    <meta property="og:title" content="גלעד קילון | ייעוץ ארגוני, פיתוח מנהלים וצוותי הנהלה">
-    <meta property="og:description" content="גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים. מומחה בליווי צוותי הנהלה, פיתוח צוותים, עבודת ממשקים ובניית שותפויות לשיפור התקשורת הבין-אישית והצמיחה העסקית.">
-    <meta property="og:url" content="https://kilon-consulting.com/">
-    <meta property="og:image" content="https://kilon.org/profile.jpg">
-    <meta property="og:type" content="website">
-    <meta name="twitter:title" content="גלעד קילון | ייעוץ ארגוני, פיתוח מנהלים וצוותי הנהלה">
-    <meta name="twitter:description" content="גלעד קילון - ייעוץ ארגוני ופיתוח מנהלים. מומחה בליווי צוותי הנהלה, פיתוח צוותים, עבודת ממשקים ובניית שותפויות לשיפור התקשורת הבין-אישית והצמיחה העסקית.">
-    <meta name="twitter:image" content="https://kilon.org/profile.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand-dark': '#0a0a0a',
-                        'brand-beige': '#f8f6f1',
-                        'brand-accent': '#4a6fa5',
-                        'brand-muted': '#6b7280',
-                        'brand-gold': '#b8956e',
-                        'brand-sage': '#8fa38f',
-                        'brand-navy': '#1a222e',
-                        'brand-paper': '#ffffff',
-                        'brand-touch': '#e55d2b',
-                    },
-                    fontFamily: {
-                        sans: ['Assistant', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Assistant', sans-serif; background: #f4f3ef; color: #111111; margin: 0; }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-    <script type="importmap">
-{
-  "imports": {
-    "firebase/": "https://esm.sh/firebase@^12.7.0/",
-    "html2canvas": "https://esm.sh/html2canvas@^1.4.1",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.11.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "vite": "https://esm.sh/vite@^7.3.0"
-  }
-}
-</script>
-    <script type="module" src="./index.tsx"></script>
-</body>
-</html>`,
-    };
-  }
 
   // For article pages, try to fetch article data from Firebase
   let articleTitle = 'מאמר מקצועי';

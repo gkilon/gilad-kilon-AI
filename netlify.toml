@@ -4,13 +4,6 @@
   status = 301
   force = true
 
-# Handle article detail pages with function
-[[redirects]]
-  from = "/article_detail/:id"
-  to = "/.netlify/functions/article-ssr/:id"
-  status = 200
-  force = false
-
 [[headers]]
   for = "/*"
   [headers.values]

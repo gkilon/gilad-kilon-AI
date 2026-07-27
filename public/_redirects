@@ -1,0 +1,5 @@
+# Handle article detail pages with SSR function
+/article_detail/* /.netlify/functions/article-ssr/:splat 200
+
+# SPA fallback - redirect all other routes to index.html
+/* /index.html 200
