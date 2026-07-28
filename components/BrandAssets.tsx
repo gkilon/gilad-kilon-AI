@@ -113,7 +113,7 @@ const BrandAssets: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               <BrandLogo size="md" />
               <div className="h-24 w-px bg-brand-dark/10 hidden md:block"></div>
               <div className="text-left font-medium text-brand-dark">
-                <p className="text-2xl font-black tracking-tighter">GILAD KILON</p>
+                <p className="text-3xl font-black tracking-tighter">GILAD KILON</p>
                 <div className="space-y-1 text-sm font-bold opacity-70 mt-2">
                   <p>052-6417512 | gilad@kilon.org</p>
                   <p className="text-brand-accent font-black">www.kilon-consulting.com</p>
