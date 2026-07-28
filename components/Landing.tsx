@@ -119,9 +119,9 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean, cl
       gap: 'mr-1'
     },
     md: {
-      title: 'text-2xl md:text-3xl',
+      title: 'text-4xl md:text-6xl',
       sub: 'text-[9px] md:text-[10px]',
-      dot: 'text-2xl md:text-3xl',
+      dot: 'text-4xl md:text-6xl',
       gap: 'mr-1.5'
     },
     lg: {
