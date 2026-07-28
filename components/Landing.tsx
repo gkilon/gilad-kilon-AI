@@ -114,21 +114,24 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean, cl
   const config = {
     sm: {
       title: 'text-lg',
-      sub: 'text-[8px]',
+      sub: 'text-[5px]',
       dot: 'text-lg',
-      gap: 'mr-1'
+      gap: 'mr-1.5',
+      tracking: 'tracking-[0.4em]'
     },
     md: {
       title: 'text-4xl md:text-6xl',
       sub: 'text-[10px] md:text-xs',
       dot: 'text-4xl md:text-6xl',
-      gap: 'mr-1.5'
+      gap: 'mr-1.5',
+      tracking: 'tracking-[0.5em]'
     },
     lg: {
       title: 'text-4xl md:text-6xl',
       sub: 'text-xs md:text-sm',
       dot: 'text-4xl md:text-6xl',
-      gap: 'mr-2'
+      gap: 'mr-2',
+      tracking: 'tracking-[0.5em]'
     }
   };
 
@@ -142,7 +145,7 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean, cl
         <span className="font-black tracking-[0.05em]">KILON</span>
         <span className={`font-black text-brand-accent ${current.dot} leading-none ml-0.5`}>.</span>
       </div>
-      <div className={`font-bold uppercase tracking-[0.5em] ${subTextColor} ${current.sub} mt-1.5 w-full transition-colors`}>
+      <div className={`font-bold uppercase ${current.tracking} ${subTextColor} ${current.sub} mt-1.5 transition-colors`}>
         Management Consulting
       </div>
     </div>

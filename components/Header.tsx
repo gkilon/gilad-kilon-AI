@@ -65,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
 
           {/* LEFT: Branding/Logo */}
           <div className="cursor-pointer shrink-0" onClick={() => handleNav('home')}>
-            <BrandLogo size="sm" />
+            <BrandLogo size="sm" className="items-center" />
           </div>
 
           {/* CENTER: Main Navigation */}
