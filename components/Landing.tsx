@@ -114,13 +114,13 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean, cl
   const config = {
     sm: {
       title: 'text-lg',
-      sub: 'text-[7px]',
+      sub: 'text-[8px]',
       dot: 'text-lg',
       gap: 'mr-1'
     },
     md: {
       title: 'text-4xl md:text-6xl',
-      sub: 'text-[9px] md:text-[10px]',
+      sub: 'text-[10px] md:text-xs',
       dot: 'text-4xl md:text-6xl',
       gap: 'mr-1.5'
     },
@@ -142,7 +142,7 @@ export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean, cl
         <span className="font-black tracking-[0.05em]">KILON</span>
         <span className={`font-black text-brand-accent ${current.dot} leading-none ml-0.5`}>.</span>
       </div>
-      <div className={`font-bold uppercase tracking-[0.35em] ${subTextColor} ${current.sub} mt-1.5 w-full transition-colors`}>
+      <div className={`font-bold uppercase tracking-[0.5em] ${subTextColor} ${current.sub} mt-1.5 w-full transition-colors`}>
         Management Consulting
       </div>
     </div>
@@ -490,7 +490,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               </motion.div>
             </FadeIn>
 
-            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-[80px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none text-center" dir="ltr">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-[70px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none text-center" dir="ltr">
               <TextReveal text="SIMPLE." as="span" className="block bg-gradient-to-r from-brand-dark to-brand-accent bg-clip-text text-transparent" delay={0.2} />
               <TextReveal text="DEEP." as="span" className="block bg-gradient-to-r from-brand-accent to-brand-touch bg-clip-text text-transparent" delay={0.5} />
               <TextReveal text="REAL." as="span" className="block bg-gradient-to-r from-brand-touch to-brand-gold bg-clip-text text-transparent" delay={0.8} />
