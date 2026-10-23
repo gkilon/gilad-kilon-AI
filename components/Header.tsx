@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrandLogo } from './Landing';
 import { UserSession, ViewType } from '../types';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onNavigate: (view: ViewType) => void;
@@ -11,7 +12,9 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLogout }) => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [productsMenuOpen, setProductsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const isAdmin = session?.teamId === 'admin';
   const navItems: { id: ViewType; label: string }[] = [
@@ -34,14 +37,21 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
     window.scrollTo(0, 0);
   };
 
-  const handleProducts = () => {
+  const productItems = [
+    { slug: 'obt', label: 'תהליך OBT להתפתחות אישית' },
+    { slug: 'feedback', label: 'משוב שמייצר התפתחות' },
+    { slug: 'communication-styles', label: 'סדנת סגנונות תקשורת' },
+    { slug: 'system-and-relationships', label: 'מערכת ויחסים: סדנת שותפויות' },
+    { slug: 'negotiation-to-partnership', label: 'ממשא ומתן לבניית שותפויות' },
+    { slug: 'obt-capsule', label: 'קפסולת OBT' },
+    { slug: 'system-and-relationships-lecture', label: 'בין מערכת ליחסים' },
+    { slug: 'technology-and-relationships', label: 'כשהטכנולוגיה משתגעת, מישהו צריך להישאר שפוי' }
+  ];
+  const handleProducts = (slug?: string) => {
     setIsMenuOpen(false);
-    if (currentView !== 'home' && currentView !== '') {
-      onNavigate('home');
-      window.setTimeout(() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }), 250);
-    } else {
-      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-    }
+    setProductsMenuOpen(false);
+    navigate(slug ? '/products/' + slug : '/products');
+    window.scrollTo(0, 0);
   };
 
   const isLabView = currentView === 'lab' || ['dashboard', 'executive', 'synergy', 'ideas', 'communication', 'feedback360', 'tasks', 'wizard'].includes(currentView);
@@ -57,7 +67,14 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             className={`${linkClass} ${currentView === item.id ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}>
             {item.label}{currentView === item.id && <span className="block h-0.5 bg-brand-accent mt-1" />}
           </button>)}
-          <button onClick={handleProducts} className={`${linkClass} text-brand-muted hover:text-brand-dark`}>מוצרים וסדנאות</button>
+          <div className="relative" onMouseEnter={() => setProductsMenuOpen(true)} onMouseLeave={() => setProductsMenuOpen(false)}>
+            <button onClick={() => setProductsMenuOpen(v => !v)} aria-expanded={productsMenuOpen} className={`${linkClass} flex items-center gap-2 ${currentView.startsWith('products') ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}>מוצרים וסדנאות <span aria-hidden="true">⌄</span></button>
+            {productsMenuOpen && <div className="absolute top-full right-0 pt-3 w-80 z-[1001]"><div className="bg-white border border-brand-dark/10 shadow-lg py-2">
+              <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
+              <div className="border-t border-brand-dark/10 my-1" />
+              {productItems.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2.5 text-sm hover:bg-brand-beige">{item.label}</button>)}
+            </div></div>}
+          </div>
           <button onClick={() => handleNav('lab')} className={`px-4 py-2 border text-sm font-semibold transition-colors ${isLabView ? 'border-brand-accent text-brand-accent bg-white' : 'border-brand-dark/20 hover:border-brand-dark'}`}>המעבדה</button>
         </nav>
         <div className="flex items-center gap-3">
@@ -78,7 +95,13 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
         </div>
         <nav className="flex-1 flex flex-col items-center justify-center gap-8 px-6">
           {navItems.map(item => <button key={item.id} onClick={() => handleNav(item.id)} className={`text-2xl ${currentView === item.id ? 'font-bold' : 'font-light text-brand-muted'}`}>{item.label}</button>)}
-          <button onClick={handleProducts} className="text-xl font-bold">מוצרים וסדנאות</button>
+          <div className="w-full flex flex-col items-center gap-4">
+            <button onClick={() => setProductsMenuOpen(v => !v)} className="text-xl font-bold" aria-expanded={productsMenuOpen}>מוצרים וסדנאות <span aria-hidden="true">⌄</span></button>
+            {productsMenuOpen && <div className="w-full max-w-sm bg-white border border-brand-dark/10 py-2">
+              <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
+              {productItems.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2.5 text-sm hover:bg-brand-beige">{item.label}</button>)}
+            </div>}
+          </div>
           <button onClick={() => handleNav('lab')} className="text-xl font-bold border border-brand-dark/20 px-6 py-3">המעבדה</button>
           {!session && <button onClick={() => handleNav('login')} className="text-brand-muted">כניסה</button>}
         </nav>
