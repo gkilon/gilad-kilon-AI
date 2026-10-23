@@ -91,16 +91,16 @@ const ToolTeaser: React.FC<ToolTeaserProps> = ({ toolId, onLogin }) => {
   const info = toolInfo[toolId] || toolInfo['dashboard'];
 
   return (
-    <div className="max-w-5xl mx-auto py-20 px-6 animate-fadeIn" dir="rtl">
-      <div className="grid md:grid-cols-2 gap-16 items-center">
+    <div className="max-w-7xl mx-auto py-16 md:py-24 px-6" dir="rtl">
+      <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
         
         <div className="space-y-8 text-right">
-          <div className="inline-block border-2 border-brand-dark px-4 py-1">
-             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-dark">Preview Mode</span>
+          <div className="inline-block bg-brand-sage/25 px-4 py-2">
+             <span className="text-xs font-bold text-brand-accent">Preview Mode</span>
           </div>
           <div className="space-y-4">
-            <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">{info.title}</h2>
-            <p className="text-2xl text-brand-muted font-medium leading-relaxed italic border-r-4 border-brand-accent pr-6">{info.subtitle}</p>
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">{info.title}</h2>
+            <p className="text-xl md:text-2xl text-brand-muted leading-relaxed border-r-4 border-brand-touch pr-6">{info.subtitle}</p>
           </div>
           
           <ul className="space-y-4">
@@ -115,13 +115,13 @@ const ToolTeaser: React.FC<ToolTeaserProps> = ({ toolId, onLogin }) => {
           <div className="pt-8 flex flex-col sm:flex-row gap-4">
             <button 
               onClick={onLogin}
-              className="bg-brand-dark text-white px-12 py-5 font-black text-xl hover:bg-brand-accent transition-all shadow-xl active:scale-95"
+              className="bg-brand-accent text-white px-8 py-4 font-bold text-lg hover:bg-brand-touch transition-colors active:scale-95"
             >
               התחבר לקבלת גישה מלאה
             </button>
             <a 
               href="mailto:gilad@kilon.co.il"
-              className="border-2 border-brand-dark text-brand-dark px-12 py-5 font-black text-xl hover:bg-brand-dark hover:text-white transition-all text-center"
+              className="border border-brand-dark/30 text-brand-dark px-8 py-4 font-bold text-lg hover:bg-brand-dark hover:text-white transition-colors text-center"
             >
               צור קשר לקבלת קוד
             </a>
@@ -129,16 +129,16 @@ const ToolTeaser: React.FC<ToolTeaserProps> = ({ toolId, onLogin }) => {
         </div>
 
         <div className="relative">
-          <div className="aspect-[4/5] bg-brand-beige border-2 border-brand-dark shadow-[20px_20px_0px_#1a1a1a] flex flex-col items-center justify-center p-12 text-center relative overflow-hidden">
+          <div className="aspect-[4/5] bg-brand-dark text-white border border-brand-dark/10 shadow-[12px_12px_0px_#D3A15D] flex flex-col items-center justify-center p-12 text-center relative overflow-hidden">
              <div className="w-40 h-40 opacity-10 absolute -top-10 -left-10 select-none text-brand-dark">{info.icon}</div>
              <div className="relative z-10 space-y-6">
                 <div className="w-24 h-24 mx-auto mb-4 text-brand-dark">{info.icon}</div>
                 <div className="space-y-2">
-                   <p className="text-sm font-black uppercase tracking-widest text-brand-muted">The Professional Experience</p>
-                   <p className="text-xl font-medium text-brand-dark">כדי לראות את הכלי בפעולה ולהתחיל לעבוד על המטרות שלך, יש להיכנס למערכת.</p>
+                   <p className="text-sm font-bold text-brand-gold">The Professional Experience</p>
+                   <p className="text-xl font-medium text-white/80">כדי לראות את הכלי בפעולה ולהתחיל לעבוד על המטרות שלך, יש להיכנס למערכת.</p>
                 </div>
-                <div className="w-16 h-1 bg-brand-accent mx-auto"></div>
-                <p className="text-sm font-bold italic text-brand-muted">"פשטות. עומק. אנושיות."</p>
+                <div className="w-16 h-1 bg-brand-touch mx-auto"></div>
+                <p className="text-sm font-bold text-brand-gold">"פשטות. עומק. אנושיות."</p>
              </div>
           </div>
         </div>
