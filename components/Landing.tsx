@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SmartSearch } from './SmartSearch';
+import { SmartSearchDark } from './SmartSearch';
 
 interface LandingProps {
   onEnterTool: (view: string) => void;
@@ -142,10 +142,10 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </div>
     </section>
 
-    <section className="max-w-7xl mx-auto px-6 py-20 md:py-24">
-      <div className="grid md:grid-cols-2 gap-12 items-start">
-        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה לא עובד אצלכם כרגע?</h2><p className="mt-5 text-lg text-brand-muted leading-relaxed">לא צריך להגיע עם אבחון או עם פתרון. נתחיל ממה שקורה בשטח ונבדוק יחד מה יכול לעזור.</p><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex mt-8 px-7 py-4 bg-brand-accent text-white font-bold hover:bg-brand-dark transition-colors">לתיאום שיחה <Arrow /></a></div>
-        <div className="border border-brand-dark/10 bg-white p-5 md:p-8"><p className="text-xs font-bold tracking-[0.14em] text-brand-muted mb-4">אם נוח לך להתחיל בכתב</p><SmartSearch /></div>
+    <section className="bg-brand-dark text-white">
+      <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 grid md:grid-cols-[0.8fr_1.2fr] gap-10 md:gap-16 items-center">
+        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה לא עובד אצלכם כרגע?</h2><p className="mt-5 text-lg text-white/65 leading-relaxed">לא צריך להגיע עם אבחון או עם פתרון. נתחיל ממה שקורה בשטח ונבדוק יחד מה יכול לעזור.</p><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex mt-8 px-7 py-4 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">לתיאום שיחה <Arrow /></a></div>
+        <div><p className="text-xs font-bold tracking-[0.14em] text-white/45 mb-4">או לתאר את האתגר ולקבל כיוון ראשוני</p><SmartSearchDark /></div>
       </div>
     </section>
     <footer className="border-t border-brand-dark/10 px-6 py-8"><div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between text-sm text-brand-muted"><BrandLogo /><span>גלעד קילון · ייעוץ ארגוני ופיתוח מנהלים</span><a href="mailto:gilad@kilon.co.il" className="hover:text-brand-accent">gilad@kilon.co.il</a></div></footer>
