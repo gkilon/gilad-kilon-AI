@@ -22,6 +22,7 @@ import ClientsPage from './components/ClientsPage.tsx';
 import BrandAssets from './components/BrandAssets.tsx';
 import ArticlesPage from './components/ArticlesPage.tsx';
 import ArticleDetail from './components/ArticleDetail.tsx';
+import ProductsPage from './components/ProductsPage.tsx';
 
 const FloatingWhatsApp: React.FC = () => (
   <a 
@@ -211,6 +212,8 @@ const App: React.FC = () => {
           <Route path="/tasks" element={<TaskHub tasks={generalTasks} onUpdate={(t) => { setGeneralTasks(t); if (session) syncToCloud('general_tasks', {id: 'main_list', managerId: session.teamId, tasks: t}); }} onBack={() => navigate('/lab')} />} />
           <Route path="/feedback360" element={<Feedback360 onBack={() => navigate('/lab')} />} />
           <Route path="/communication" element={<CommunicationDNA onBack={() => navigate('/lab')} />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/products/:slug" element={<ProductsPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/admin" element={<AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} />} />
