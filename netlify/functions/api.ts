@@ -1,6 +1,6 @@
 import type { Handler } from "@netlify/functions";
 
-const MODEL = "gemini-3.5-flash-lite";
+const MODEL = "gemini-3.8-flash";
 const MAX_BODY_BYTES = 20_000;
 const RATE_WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 12;
@@ -101,7 +101,7 @@ async function askGemini(prompt: string, options: { json?: boolean; system?: str
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.length < 20) throw new Error("AI provider is not configured");
 
-  const generationConfig: Record<string, unknown> = { temperature: 0.4, maxOutputTokens: 1200 };
+  const generationConfig: Record<string, unknown> = { maxOutputTokens: 1200, thinkingConfig: { thinkingLevel: "low" } };
   if (options.json !== false) generationConfig.responseMimeType = "application/json";
 
   const response = await fetch(
