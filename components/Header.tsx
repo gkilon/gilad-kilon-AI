@@ -93,11 +93,11 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
         <div className="flex items-center justify-between px-6 py-5 border-b border-brand-dark/10">
           <BrandLogo size="sm" /><button onClick={() => setIsMenuOpen(false)} className="p-2 text-2xl" aria-label="סגירת תפריט">×</button>
         </div>
-        <nav className="flex-1 flex flex-col items-center justify-center gap-8 px-6">
+        <nav className="flex-1 flex flex-col items-center justify-start gap-7 px-6 py-8 overflow-y-auto">
           {navItems.map(item => <button key={item.id} onClick={() => handleNav(item.id)} className={`text-2xl ${currentView === item.id ? 'font-bold' : 'font-light text-brand-muted'}`}>{item.label}</button>)}
           <div className="w-full flex flex-col items-center gap-4">
             <button onClick={() => setProductsMenuOpen(v => !v)} className="text-xl font-bold" aria-expanded={productsMenuOpen}>מוצרים וסדנאות <span aria-hidden="true">⌄</span></button>
-            {productsMenuOpen && <div className="w-full max-w-sm bg-white border border-brand-dark/10 py-2">
+            {productsMenuOpen && <div className="w-full max-w-sm bg-brand-paper border border-brand-dark/10 py-2 max-h-[45vh] overflow-y-auto">
               <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
               {productItems.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2.5 text-sm hover:bg-brand-beige">{item.label}</button>)}
             </div>}
