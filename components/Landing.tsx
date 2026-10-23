@@ -63,11 +63,15 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
     { n: '03', title: 'ממשקים ושותפויות', text: 'לשפר את העבודה בין מנהלים ויחידות, להבהיר אחריות וציפיות ולבנות שותפויות שמקדמות את העבודה.' },
     { n: '04', title: 'שינוי וייעוץ ארגוני', text: 'ללוות ארגונים בתקופות של צמיחה ושינוי, ולחבר בין המבנה והתהליכים לבין מה שאנשים צריכים כדי להצליח.' }
   ];
-  const programs = [
-    { title: 'פיתוח אישי שמגיע עד להתנהגות', tag: 'OBT · IMMUNITY TO CHANGE', text: 'תהליך מובנה שמחבר בין המטרה שרוצים להשיג לבין מה שעוצר אותנו בפועל, ועוזר להתקדם בצעדים מעשיים.', href: 'https://obt-360.kilon-consulting.com/' },
-    { title: 'משוב שמייצר התפתחות', tag: 'פיתוח ארגוני', text: 'חלופה לתהליך הערכת ביצועים שמחזירה לעובד את האחריות להתפתחותו, ומשאירה למנהל ולארגון תפקיד תומך וברור.', href: 'mailto:gilad@kilon.co.il?subject=משוב%20שמייצר%20התפתחות' },
-    { title: 'קוד הצבעים', tag: 'סדנה וכלי אישי', text: 'להבין איך אנשים שונים מתקשרים, מה מניע אותם ואיך להתאים את השיחה בלי לוותר על עצמנו.', href: 'mailto:gilad@kilon.co.il?subject=קוד%20הצבעים' },
-    { title: 'מערכת ויחסים', tag: 'שותפויות ועבודת ממשקים', text: 'לעבוד על שני הדברים יחד: היחסים בין האנשים והמערכת שבה הם צריכים להצליח לעבוד יחד.', href: 'mailto:gilad@kilon.co.il?subject=מערכת%20ויחסים' }
+  const products = [
+    { title: 'תהליך OBT להתפתחות אישית', tag: 'מוצר ייחודי', text: 'תהליך מובנה שמחבר בין מטרה שרוצים להשיג לבין מה שעוצר את השינוי בפועל, ומסייע להפוך תובנות לצעדים מעשיים.', href: 'https://obt.kilon-consulting.com/' },
+    { title: 'משוב שמייצר התפתחות', tag: 'תהליך ייחודי לארגונים', text: 'חלופה לתהליך הערכת ביצועים, שמחזירה לעובד אחריות להתפתחותו ומגדירה תפקיד תומך למנהל ולארגון.', href: 'https://effervescent-gelato-193991.netlify.app/' }
+  ];
+  const workshops = [
+    { title: 'סדנת סגנונות תקשורת', tag: 'סדנה', text: 'להבין את ההבדלים בסגנונות התקשורת, לזהות מה מניע אנשים ולמצוא דרך לעבוד ולדבר טוב יותר יחד.', href: 'mailto:gilad@kilon.co.il?subject=סדנת%20סגנונות%20תקשורת' },
+    { title: 'מערכת ויחסים: סדנת שותפויות', tag: 'סדנה', text: 'לעבוד על היחסים בין האנשים וגם על הממשקים, הציפיות ודרך העבודה שמאפשרים לשותפות להצליח.', href: 'mailto:gilad@kilon.co.il?subject=מערכת%20ויחסים' },
+    { title: 'ממשא ומתן לבניית שותפויות', tag: 'הרצאה או סדנה', text: 'איך לעבור ממשא ומתן שבו כל צד מנסה להשיג את שלו לבניית הסכמות ושותפויות שמחזיקות לאורך זמן.', href: 'mailto:gilad@kilon.co.il?subject=ממשא%20ומתן%20לבניית%20שותפויות' },
+    { title: 'קפסולת OBT', tag: 'חצי יום ממוקד', text: 'טעימה ממוקדת מתהליך OBT: היכרות עם המטרה, זיהוי מה עוצר את השינוי, ויציאה עם כיוון לעבודה אישית.', href: 'mailto:gilad@kilon.co.il?subject=קפסולת%20OBT' }
   ];
 
   return <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
@@ -123,14 +127,30 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </div>
     </section>
 
+    <section className="bg-white border-y border-brand-dark/10">
+      <div className="max-w-7xl mx-auto px-6 py-20 md:py-24">
+        <div className="max-w-3xl mb-10">
+          <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">שני תהליכים שפיתחתי</p>
+          <h2 className="text-3xl md:text-5xl font-black leading-tight">מוצרים ייחודיים לעבודה ארגונית ולהתפתחות.</h2>
+          <p className="text-brand-muted text-lg leading-relaxed mt-5">אלה לא סדנאות מדף. כל אחד מהם מציע דרך אחרת לעבוד עם התפתחות ומשוב בארגון.</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          {products.map((p, i) => <a key={p.title} href={p.href} target="_blank" rel="noopener noreferrer" className="group border border-brand-dark/10 bg-brand-beige p-7 md:p-9 hover:border-brand-accent transition-colors">
+            <p className="text-[11px] font-bold tracking-[0.14em] text-brand-accent mb-5">{p.tag}</p><h3 className="text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{p.title}</h3><p className="text-brand-muted leading-relaxed">{p.text}</p><span className="inline-block mt-6 text-sm font-bold">לפרטים על התהליך <Arrow /></span>
+          </a>)}
+        </div>
+      </div>
+    </section>
+
     <section className="max-w-7xl mx-auto px-6 py-20 md:py-28">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div className="max-w-3xl"><p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">תהליכים וכלים שפיתחתי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">כלים שמתחברים לעבודה בשטח.</h2></div>
-        <p className="text-brand-muted leading-relaxed max-w-md">פיתחתי את הכלים האלה מתוך העבודה עם מנהלים וארגונים. הם נועדו לעזור לאנשים לחשוב, לדבר ולעבוד אחרת, גם אחרי שהמפגש מסתיים.</p>
+      <div className="max-w-3xl mb-12">
+        <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">הרצאות וסדנאות</p>
+        <h2 className="text-3xl md:text-5xl font-black leading-tight">מפגשים ממוקדים סביב אתגרים מהעבודה.</h2>
+        <p className="text-brand-muted text-lg leading-relaxed mt-5">אפשר להזמין כל אחד מהנושאים כהרצאה או כסדנה, בהתאם לקהל ולמטרה.</p>
       </div>
       <div className="grid md:grid-cols-2 gap-4">
-        {programs.map((p, i) => <a key={p.title} href={p.href} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener noreferrer' : undefined} className="group border border-brand-dark/10 bg-white p-7 md:p-9 hover:border-brand-accent transition-colors">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-brand-accent mb-5">{p.tag}</p><div className="flex gap-6 items-start"><span className="text-sm text-brand-muted mt-1">0{i + 1}</span><div><h3 className="text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{p.title}</h3><p className="text-brand-muted leading-relaxed">{p.text}</p><span className="inline-block mt-6 text-sm font-bold">לשיחה על התהליך <Arrow /></span></div></div>
+        {workshops.map((p, i) => <a key={p.title} href={p.href} className="group border border-brand-dark/10 bg-white p-7 md:p-9 hover:border-brand-accent transition-colors">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-brand-accent mb-5">{p.tag}</p><div className="flex gap-6 items-start"><span className="text-sm text-brand-muted mt-1">0{i + 1}</span><div><h3 className="text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{p.title}</h3><p className="text-brand-muted leading-relaxed">{p.text}</p><span className="inline-block mt-6 text-sm font-bold">לפרטים ותיאום <Arrow /></span></div></div>
         </a>)}
       </div>
     </section>
