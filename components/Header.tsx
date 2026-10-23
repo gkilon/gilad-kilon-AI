@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           <button onClick={() => handleNav('lab')} className={`px-4 py-2 border text-sm font-semibold transition-colors ${isLabView ? 'border-brand-accent text-brand-accent bg-white' : 'border-brand-dark/20 hover:border-brand-dark'}`}>כלים מקצועיים</button>
         </nav>
         <div className="flex items-center gap-3">
-          <a href="https://obt.kilon-consulting.com/" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex text-xs font-bold text-brand-accent border border-brand-accent/30 px-3 py-2 hover:bg-brand-accent hover:text-white transition-colors">OBT</a>
+          <a href="https://obt-360.kilon-consulting.com/" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex text-xs font-bold text-brand-accent border border-brand-accent/30 px-3 py-2 hover:bg-brand-accent hover:text-white transition-colors">OBT</a>
           {session ? <div className="flex items-center gap-3">
             {isAdmin && <button onClick={() => handleNav('admin')} className="text-brand-dark" aria-label="ניהול">⚙️</button>}
             <button onClick={onLogout} className="text-xs font-bold text-brand-muted hover:text-brand-dark">יציאה</button>
@@ -69,7 +69,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
         <nav className="flex-1 flex flex-col items-center justify-center gap-8 px-6">
           {navItems.map(item => <button key={item.id} onClick={() => handleNav(item.id)} className={`text-2xl ${currentView === item.id ? 'font-bold' : 'font-light text-brand-muted'}`}>{item.label}</button>)}
           <button onClick={() => handleNav('lab')} className="text-xl font-bold border border-brand-dark/20 px-6 py-3">כלים מקצועיים</button>
-          <a href="https://obt.kilon-consulting.com/" target="_blank" rel="noopener noreferrer" className="text-brand-accent font-bold">תהליך OBT</a>
+          <a href="https://obt-360.kilon-consulting.com/" target="_blank" rel="noopener noreferrer" className="text-brand-accent font-bold">תהליך OBT</a>
           {!session && <button onClick={() => handleNav('login')} className="text-brand-muted">כניסה</button>}
         </nav>
         <div className="px-6 py-8 text-center border-t border-brand-dark/10"><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-block bg-brand-dark text-white px-7 py-3 font-bold">נדבר</a></div>
