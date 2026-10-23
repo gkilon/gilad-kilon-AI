@@ -127,34 +127,6 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </div>
     </section>
 
-    <section id="products" className="bg-white border-y border-brand-dark/10">
-      <div className="max-w-7xl mx-auto px-6 py-20 md:py-24">
-        <div className="max-w-3xl mb-10">
-          <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">שני תהליכים שפיתחתי</p>
-          <h2 className="text-3xl md:text-5xl font-black leading-tight">מוצרים ייחודיים לעבודה ארגונית ולהתפתחות.</h2>
-          <p className="text-brand-muted text-lg leading-relaxed mt-5">אלה לא סדנאות מדף. כל אחד מהם מציע דרך אחרת לעבוד עם התפתחות ומשוב בארגון.</p>
-        </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          {products.map((p, i) => <a key={p.title} href={p.href} target="_blank" rel="noopener noreferrer" className="group border border-brand-dark/10 bg-brand-beige p-7 md:p-9 hover:border-brand-accent transition-colors">
-            <p className="text-[11px] font-bold tracking-[0.14em] text-brand-accent mb-5">{p.tag}</p><h3 className="text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{p.title}</h3><p className="text-brand-muted leading-relaxed">{p.text}</p><span className="inline-flex items-center mt-6 text-sm font-bold underline underline-offset-4">למעבר לדף הנחיתה <Arrow /></span>
-          </a>)}
-        </div>
-      </div>
-    </section>
-
-    <section className="max-w-7xl mx-auto px-6 py-20 md:py-28">
-      <div className="max-w-3xl mb-12">
-        <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">הרצאות וסדנאות</p>
-        <h2 className="text-3xl md:text-5xl font-black leading-tight">מפגשים ממוקדים סביב אתגרים מהעבודה.</h2>
-        <p className="text-brand-muted text-lg leading-relaxed mt-5">אפשר להזמין כל אחד מהנושאים כהרצאה או כסדנה, בהתאם לקהל ולמטרה.</p>
-      </div>
-      <div className="grid md:grid-cols-2 gap-4">
-        {workshops.map((p, i) => <a key={p.title} href={p.href} className="group border border-brand-dark/10 bg-white p-7 md:p-9 hover:border-brand-accent transition-colors">
-          <p className="text-[11px] font-bold tracking-[0.14em] text-brand-accent mb-5">{p.tag}</p><div className="flex gap-6 items-start"><span className="text-sm text-brand-muted mt-1">0{i + 1}</span><div><h3 className="text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{p.title}</h3><p className="text-brand-muted leading-relaxed">{p.text}</p><span className="inline-block mt-6 text-sm font-bold">לפרטים ותיאום <Arrow /></span></div></div>
-        </a>)}
-      </div>
-    </section>
-
     <section className="bg-brand-dark text-white">
       <div className="max-w-7xl mx-auto px-6 py-20 md:py-24 grid md:grid-cols-[1fr_0.8fr] gap-12 items-center">
         <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">קצת עליי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">קודם מבינים מה קורה. אחר כך מחליטים מה עושים.</h2><p className="text-white/70 text-lg leading-relaxed mt-6 max-w-2xl">יותר מעשרים שנה אני עובד עם מנהלים, צוותי הנהלה וארגונים. אני מסתכל על האנשים ועל המערכת שבה הם עובדים, ושואל מה יעזור להם להתפתח, לעבוד יחד ולהגיע לתוצאות. חשוב לי להבין לעומק, לדבר פשוט ולחבר את השיחה למה שקורה בפועל.</p><button onClick={() => onEnterTool('about')} className="mt-8 border border-white/30 px-6 py-3 font-bold hover:bg-white hover:text-brand-dark transition-colors">הסיפור שלי <Arrow /></button></div>
