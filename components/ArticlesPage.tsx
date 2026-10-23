@@ -10,7 +10,7 @@ const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, onSelectArticle }
   return (
     <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-12 md:space-y-16 text-right">
-        <section className="max-w-4xl space-y-6">
+        <section className="max-w-4xl space-y-6 border-r-4 border-brand-touch pr-6 md:pr-8">
           <div>
             <span className="text-xs font-bold text-brand-accent block mb-4">מאמרים ותוכן</span>
             <h1 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">
@@ -32,12 +32,12 @@ const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, onSelectArticle }
               <div
                 key={article.id}
                 onClick={() => onSelectArticle(article)}
-                className="p-6 md:p-8 bg-white border border-brand-dark/10 hover:border-brand-accent flex flex-col h-full cursor-pointer group transition-colors relative overflow-hidden"
+                className="p-6 md:p-8 bg-brand-paper border border-brand-dark/10 hover:border-brand-accent flex flex-col h-full cursor-pointer group transition-colors relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-1 h-0 group-hover:h-full bg-brand-accent transition-all duration-500"></div>
+                <div className="absolute top-0 right-0 w-1 h-0 group-hover:h-full bg-brand-touch transition-all duration-500"></div>
 
                 <div className="flex justify-between items-start mb-8">
-                  <span className="text-xs font-bold text-brand-accent bg-brand-beige px-3 py-1">
+                  <span className="text-xs font-bold text-brand-accent bg-brand-sage/25 px-3 py-1">
                     {article.category}
                   </span>
                   <span className="text-xs text-brand-muted">{article.date}</span>
