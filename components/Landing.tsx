@@ -127,7 +127,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </div>
     </section>
 
-    <section className="bg-white border-y border-brand-dark/10">
+    <section id="products" className="bg-white border-y border-brand-dark/10">
       <div className="max-w-7xl mx-auto px-6 py-20 md:py-24">
         <div className="max-w-3xl mb-10">
           <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">שני תהליכים שפיתחתי</p>
@@ -136,7 +136,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           {products.map((p, i) => <a key={p.title} href={p.href} target="_blank" rel="noopener noreferrer" className="group border border-brand-dark/10 bg-brand-beige p-7 md:p-9 hover:border-brand-accent transition-colors">
-            <p className="text-[11px] font-bold tracking-[0.14em] text-brand-accent mb-5">{p.tag}</p><h3 className="text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{p.title}</h3><p className="text-brand-muted leading-relaxed">{p.text}</p><span className="inline-block mt-6 text-sm font-bold">לפרטים על התהליך <Arrow /></span>
+            <p className="text-[11px] font-bold tracking-[0.14em] text-brand-accent mb-5">{p.tag}</p><h3 className="text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{p.title}</h3><p className="text-brand-muted leading-relaxed">{p.text}</p><span className="inline-flex items-center mt-6 text-sm font-bold underline underline-offset-4">למעבר לדף הנחיתה <Arrow /></span>
           </a>)}
         </div>
       </div>
