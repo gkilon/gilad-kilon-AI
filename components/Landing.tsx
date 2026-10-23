@@ -75,25 +75,46 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   ];
 
   return <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
-    <section className="relative overflow-hidden border-b border-brand-dark/10">
-      <div className="absolute left-[-8rem] top-[-6rem] w-[28rem] h-[28rem] rounded-full border border-brand-accent/15 pointer-events-none" />
-      <div className="absolute left-[-4rem] top-[-2rem] w-[20rem] h-[20rem] rounded-full border border-brand-touch/15 pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 relative">
-        <div className="max-w-4xl">
-          <p className="text-xs md:text-sm font-bold tracking-[0.18em] text-brand-accent mb-7">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה</p>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-light leading-[1.13] tracking-tight max-w-4xl">
-            יועץ ארגוני.
-            <span className="block font-black mt-2">אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.</span>
-          </h1>
-          <p className="text-lg md:text-2xl leading-relaxed text-brand-muted max-w-3xl mt-8">
-            אני גלעד קילון. כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני מנסה להבין מה באמת קורה, לדבר על זה בגובה העיניים ולעזור להפוך הבנה לעבודה אחרת ולתוצאות.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 mt-10">
-            <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-7 py-4 bg-brand-dark text-white font-bold hover:bg-brand-accent transition-colors">נדבר על האתגר שלך <Arrow /></a>
-            <button onClick={() => onEnterTool('about')} className="inline-flex items-center justify-center px-7 py-4 border border-brand-dark/20 font-bold hover:border-brand-dark transition-colors">קצת עליי <Arrow /></button>
+    <section className="relative overflow-hidden bg-brand-dark text-white">
+      <div className="absolute inset-0 opacity-20 pointer-events-none" aria-hidden="true">
+        <div className="absolute -top-32 -left-20 w-[34rem] h-[34rem] rounded-full border border-white/30"></div>
+        <div className="absolute -top-16 left-[-2rem] w-[22rem] h-[22rem] rounded-full border border-brand-gold/70"></div>
+        <div className="absolute bottom-[-8rem] left-[22%] w-[24rem] h-[24rem] rounded-full bg-brand-accent/40 blur-3xl"></div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 py-14 md:py-24 lg:py-28 relative">
+        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-10 lg:gap-20 items-center">
+          <div className="order-2 lg:order-1">
+            <div className="relative min-h-[300px] md:min-h-[420px] overflow-hidden bg-brand-accent/30 border border-white/15 p-7 md:p-10 flex flex-col justify-between">
+              <div className="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-brand-gold/70 top-[-3rem] left-[-3rem]"></div>
+              <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border border-white/30 top-10 left-10"></div>
+              <div className="absolute w-28 h-28 rounded-full bg-brand-touch/90 top-20 left-24 md:left-36"></div>
+              <div className="relative z-10 flex justify-between items-start gap-4">
+                <span className="text-xs md:text-sm tracking-wide text-white/75">אנשים · מערכת · תוצאות</span>
+                <span className="w-3 h-3 rounded-full bg-brand-gold mt-1"></span>
+              </div>
+              <div className="relative z-10 max-w-xs mt-36">
+                <p className="text-2xl md:text-3xl font-bold leading-snug">לראות את התמונה הרחבה, בלי לאבד את האדם שמולה.</p>
+                <div className="w-16 h-1 bg-brand-touch mt-6"></div>
+              </div>
+              <p className="relative z-10 text-xs text-white/60 mt-8">גלעד קילון · ייעוץ ארגוני</p>
+            </div>
           </div>
-          <div className="mt-12 pt-5 border-t border-brand-dark/10 flex flex-wrap gap-x-8 gap-y-3 text-sm text-brand-muted">
-            <span>20+ שנות ניסיון בייעוץ ארגוני</span><span>עבודה עם הנהלות ומנהלים</span><span>עומק מקצועי, בלי לאבד את הפרקטיקה</span>
+          <div className="order-1 lg:order-2 max-w-3xl">
+            <p className="text-xs md:text-sm font-bold tracking-[0.14em] text-brand-gold mb-6">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה</p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-light leading-[1.12] tracking-tight">
+              יועץ ארגוני.
+              <span className="block font-bold mt-3">אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.</span>
+            </h1>
+            <p className="text-lg md:text-xl leading-relaxed text-white/75 max-w-2xl mt-7">
+              אני גלעד קילון. כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני מנסה להבין מה באמת קורה, לדבר על זה בגובה העיניים ולעזור להפוך הבנה לעבודה אחרת ולתוצאות.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 mt-8">
+              <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-7 py-4 bg-brand-touch text-white font-bold hover:bg-brand-gold hover:text-brand-dark transition-colors">נדבר על האתגר שלך <Arrow /></a>
+              <button onClick={() => onEnterTool('about')} className="inline-flex items-center justify-center px-7 py-4 border border-white/30 font-bold hover:bg-white hover:text-brand-dark transition-colors">קצת עליי <Arrow /></button>
+            </div>
+            <div className="mt-10 pt-5 border-t border-white/20 flex flex-wrap gap-x-7 gap-y-3 text-sm text-white/65">
+              <span>20+ שנות ניסיון</span><span>עבודה עם הנהלות ומנהלים</span><span>עומק מקצועי, בגובה העיניים</span>
+            </div>
           </div>
         </div>
       </div>
@@ -113,21 +134,21 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </div>
     </section>
 
-    <section className="bg-white border-y border-brand-dark/10">
+    <section className="bg-brand-paper border-y border-brand-dark/10">
       <div className="max-w-7xl mx-auto px-6 py-20 md:py-24">
         <div className="max-w-3xl mb-12">
           <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איפה אנחנו יכולים לעבוד יחד</p>
           <h2 className="text-3xl md:text-5xl font-black leading-tight">האתגרים משתנים. השאלה היא מה צריך להשתנות כדי להתקדם.</h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {services.map(s => <article key={s.n} className="border border-brand-dark/10 p-6 md:p-7 bg-brand-beige/50">
+          {services.map(s => <article key={s.n} className="border border-brand-dark/10 p-6 md:p-7 bg-brand-paper hover:bg-white hover:border-brand-accent transition-colors">
             <div className="text-xs text-brand-accent font-bold mb-8">{s.n}</div><h3 className="text-xl font-bold mb-4">{s.title}</h3><p className="text-sm md:text-base leading-relaxed text-brand-muted">{s.text}</p>
           </article>)}
         </div>
       </div>
     </section>
 
-    <section className="bg-brand-dark text-white">
+    <section className="bg-brand-accent text-white">
       <div className="max-w-7xl mx-auto px-6 py-20 md:py-24 grid md:grid-cols-[1fr_0.8fr] gap-12 items-center">
         <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">קצת עליי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">קודם מבינים מה קורה. אחר כך מחליטים מה עושים.</h2><p className="text-white/70 text-lg leading-relaxed mt-6 max-w-2xl">יותר מעשרים שנה אני עובד עם מנהלים, צוותי הנהלה וארגונים. אני מסתכל על האנשים ועל המערכת שבה הם עובדים, ושואל מה יעזור להם להתפתח, לעבוד יחד ולהגיע לתוצאות. חשוב לי להבין לעומק, לדבר פשוט ולחבר את השיחה למה שקורה בפועל.</p><button onClick={() => onEnterTool('about')} className="mt-8 border border-white/30 px-6 py-3 font-bold hover:bg-white hover:text-brand-dark transition-colors">הסיפור שלי <Arrow /></button></div>
         <div className="border-r-2 border-brand-touch pr-7 md:pr-10 space-y-5 text-lg leading-relaxed text-white/80"><p>שותף לדרך, לא ספק.</p><p>קשוב למה שקורה, ומוכן לשנות כיוון כשצריך.</p><p>מחבר בין אנשים, תהליכים ותוצאות.</p></div>
