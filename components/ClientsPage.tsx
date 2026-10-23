@@ -21,7 +21,7 @@ const ClientsPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-16 md:space-y-24 text-right">
 
         {/* Hero Section */}
-        <section className="max-w-4xl space-y-6">
+        <section className="max-w-4xl space-y-6 border-r-4 border-brand-touch pr-6 md:pr-8">
           <div>
             <span className="text-xs font-bold text-brand-accent block mb-4">ניסיון מקצועי</span>
             <h1 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">
@@ -40,7 +40,7 @@ const ClientsPage: React.FC = () => {
             
           </div>
 
-          <div className="bg-white border border-brand-dark/10 p-6 md:p-12">
+          <div className="bg-brand-paper border border-brand-dark/10 p-6 md:p-12">
             {loading ? (
               <div className="flex justify-center items-center h-40">
                 <div className="w-8 h-8 border-4 border-brand-dark/10 border-t-brand-dark rounded-full animate-spin"></div>
@@ -69,8 +69,8 @@ const ClientsPage: React.FC = () => {
         {/* Partners Section */}
         <section className="space-y-8">
           <div className="flex items-center gap-6">
-            <h2 className="text-2xl font-black text-brand-dark italic uppercase tracking-widest shrink-0">שותפים מקצועיים</h2>
-            <div className="h-px w-full bg-brand-dark/10"></div>
+            <h2 className="text-2xl md:text-3xl font-bold text-brand-dark shrink-0">שותפים מקצועיים</h2>
+            <div className="h-px w-full bg-brand-gold/60"></div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -80,8 +80,8 @@ const ClientsPage: React.FC = () => {
               </div>
             ) : partners.length > 0 ? (
               partners.map(partner => (
-                <div key={partner.id} className="p-6 md:p-8 bg-white border border-brand-dark/10 flex flex-col md:flex-row gap-6 items-center md:items-start group hover:border-brand-accent transition-colors">
-                  <div className="w-20 h-20 shrink-0 flex items-center justify-center p-3 bg-brand-beige">
+                <div key={partner.id} className="p-6 md:p-8 bg-brand-paper border border-brand-dark/10 flex flex-col md:flex-row gap-6 items-center md:items-start group hover:border-brand-accent transition-colors">
+                  <div className="w-20 h-20 shrink-0 flex items-center justify-center p-3 bg-brand-sage/20">
                     <img src={partner.logoUrl} alt={partner.name} className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-700" />
                   </div>
                   <div className="flex-1 space-y-3 text-center md:text-right">
