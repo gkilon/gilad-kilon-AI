@@ -1,10 +1,13 @@
+[build.environment]
+  NODE_VERSION = "22.23.4"
+
 [[redirects]]
   from = "/360"
   to = "https://ubiquitous-nougat-41808d.netlify.app"
   status = 301
   force = true
 
-# Route all article_detail requests to SSR function (it will check User-Agent internally)
+# Route article detail pages through the SSR function for social previews.
 [[redirects]]
   from = "/article_detail/*"
   to = "/.netlify/functions/article-ssr/:splat"
@@ -21,4 +24,5 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    X-XSS-Protection = "1; mode=block"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"

@@ -1,344 +1,214 @@
-import { Handler } from "@netlify/functions";
-import Groq from "groq-sdk";
+import type { Handler } from "@netlify/functions";
 
-// Enhanced rate limiter with sliding window
-const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 20;
-const ipRequestCounts = new Map<string, { count: number; timestamp: number; requests: number[] }>();
+const MODEL = "gemini-3.8-flash";
+const MAX_BODY_BYTES = 20_000;
+const RATE_WINDOW_MS = 60_000;
+const MAX_REQUESTS_PER_WINDOW = 12;
+const rateLimits = new Map<string, number[]>();
 
-const checkRateLimit = (ip: string): boolean => {
-  const now = Date.now();
-  const record = ipRequestCounts.get(ip);
+const ALLOWED_ORIGINS = new Set([
+  "https://kilon-consulting.com",
+  "https://www.kilon-consulting.com",
+  "http://localhost:5173",
+  "http://localhost:5174",
+]);
 
-  if (!record || now - record.timestamp > RATE_LIMIT_WINDOW_MS) {
-    ipRequestCounts.set(ip, { count: 1, timestamp: now, requests: [now] });
-    return true;
-  }
-
-  // Sliding window: remove requests outside the window
-  record.requests = record.requests.filter((time: number) => now - time < RATE_LIMIT_WINDOW_MS);
-  
-  if (record.requests.length >= MAX_REQUESTS_PER_WINDOW) {
-    return false;
-  }
-
-  record.requests.push(now);
-  record.count = record.requests.length;
-  return true;
+const securityHeaders = {
+  "Content-Type": "application/json; charset=utf-8",
+  "Cache-Control": "no-store",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
 };
 
-// Input validation and sanitization
-const validateInput = (action: string, payload: any): { valid: boolean; error?: string } => {
-  if (!action || typeof action !== 'string') {
-    return { valid: false, error: 'Invalid action' };
-  }
-
-  const allowedActions = [
-    'getWoopFeedback', 'generateTasksFromWoop', 'getLabRecommendation',
-    'getSynergyInsight', 'analyzeTaskMission', 'analyzeTowsStrategy',
-    'processIdea', 'searchSolutions'
-  ];
-
-  if (!allowedActions.includes(action)) {
-    return { valid: false, error: 'Unauthorized action' };
-  }
-
-  if (!payload || typeof payload !== 'object') {
-    return { valid: false, error: 'Invalid payload' };
-  }
-
-  // Sanitize string inputs to prevent injection attacks
-  const sanitizeString = (str: string): string => {
-    if (typeof str !== 'string') return '';
-    return str.trim().slice(0, 10000); // Limit length
-  };
-
-  // Sanitize payload based on action
-  if (payload.userInput) payload.userInput = sanitizeString(payload.userInput);
-  if (payload.taskText) payload.taskText = sanitizeString(payload.taskText);
-  if (payload.query) payload.query = sanitizeString(payload.query);
-
-  return { valid: true };
-};
-
-// API Key validation
-const validateApiKey = (): boolean => {
-  const apiKey = process.env.GROQ_API_KEY || process.env.API_KEY;
-  if (!apiKey || apiKey === 'missing_key' || apiKey.length < 10) {
-    return false;
-  }
-  return true;
-};
-
-// System Prompt for Smart Search based on methods.doc
-const SMART_SEARCH_SYSTEM_PROMPT = `
-אתה יועץ ארגוני דיגיטלי (AI). המטרה שלך היא להמליץ למשתמש על אחד מהפתרונות (הכלים/תהליכים) שאנחנו מציעים, על סמך מה שהוא מחפש.
-התהליכים המרכזיים שלנו מבוססים על בניית צוותי הנהלה וניהול שותפויות:
-1. בניית צוות הנהלה ("Team Building"): תהליך של יומיים הכולל תרגיל "ציר זמן" לחקר העבר, תרגיל "ארצות" לבניית אמפתיה, הגדרת תמונת הצלחה לעתיד, זיהוי "אבנים גדולות", הגדרת תפקידים, בניית נורמות וסבב פידבק.
-2. פיתוח שותפויות וממשקים ("Partnerships"): תהליך הכולל קבוצות מיקוד, סדנת צוות ניהולי ליישור קו על תפיסת שותפויות, הגדרת מדדים ויעדים, בניית מנגנונים לשגרות עבודה, וליווי צוותי עבודה לשיפור שותפויות.
-
-כלים דיגיטליים במעבדה (The Lab):
-- dashboard: לניהול שינוי (WOOP)
-- executive: לפורום הנהלה (TOWS)
-- synergy: לדופק צוותי (Pulse)
-- tasks: לניהול משימות
-- ideas: למעבדת רעיונות
-- communication: לתקשורת פנים-ארגונית (DNA)
-- feedback360: למשוב והערכה
-
-על סמך בקשת המשתמש, החזר אובייקט JSON הכולל:
-- "recommendedTool": שם הכלי או התהליך המומלץ ביותר.
-- "reasoning": הסבר קצר (בעברית) למה זה מתאים לו.
-- "structure": פירוט קצר של המבנה או השלבים של הפתרון המוצע (חובה להחזיר כמחרוזת טקסט יחידה ולא כאובייקט או מערך).
-`;
-
-let groqInstance: Groq | null = null;
-const getGroq = () => {
-  if (!groqInstance) {
-    groqInstance = new Groq({
-      apiKey: process.env.GROQ_API_KEY || process.env.API_KEY || "missing_key", // fallback so it doesn't crash on load
-    });
-  }
-  return groqInstance;
-};
-
-export const handler: Handler = async (event, context) => {
-  // CORS Headers with stricter security
-  const headers = {
-    "Access-Control-Allow-Origin": "*", // Consider restricting to specific domains in production
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+const json = (statusCode: number, body: unknown, origin?: string) => ({
+  statusCode,
+  headers: {
+    ...securityHeaders,
+    ...(origin && ALLOWED_ORIGINS.has(origin)
+      ? { "Access-Control-Allow-Origin": origin, "Vary": "Origin" }
+      : {}),
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "X-XSS-Protection": "1; mode=block",
-  };
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "86400",
+  },
+  body: JSON.stringify(body),
+});
 
+const rateLimitOk = (ip: string) => {
+  const now = Date.now();
+  const recent = (rateLimits.get(ip) || []).filter((time) => now - time < RATE_WINDOW_MS);
+  if (recent.length >= MAX_REQUESTS_PER_WINDOW) {
+    rateLimits.set(ip, recent);
+    return false;
+  }
+  recent.push(now);
+  rateLimits.set(ip, recent);
+  if (rateLimits.size > 2_000) {
+    for (const [key, values] of rateLimits) {
+      if (!values.some((time) => now - time < RATE_WINDOW_MS)) rateLimits.delete(key);
+    }
+  }
+  return true;
+};
+
+const isObject = (value: unknown): value is Record<string, any> =>
+  !!value && typeof value === "object" && !Array.isArray(value);
+
+const boundedString = (value: unknown, max = 4_000): value is string =>
+  typeof value === "string" && value.trim().length > 0 && value.length <= max;
+
+const validate = (action: unknown, payload: unknown): string | null => {
+  if (typeof action !== "string" || !isObject(payload)) return "Invalid request";
+  switch (action) {
+    case "getWoopFeedback":
+      if (!["Wish", "Outcome", "Obstacle", "Plan"].includes(payload.step) ||
+          !isObject(payload.currentData) ||
+          JSON.stringify(payload.currentData).length > 8_000) return "Invalid WOOP data";
+      return null;
+    case "generateTasksFromWoop":
+      return isObject(payload.woop) && JSON.stringify(payload.woop).length <= 8_000 ? null : "Invalid WOOP data";
+    case "getLabRecommendation":
+      return boundedString(payload.userInput, 3_000) ? null : "Invalid user input";
+    case "getSynergyInsight":
+      return isObject(payload.metrics) && Array.isArray(payload.vibes) &&
+        payload.vibes.length <= 40 && payload.vibes.every((v: unknown) => typeof v === "string" && v.length <= 500)
+        ? null : "Invalid team data";
+    case "analyzeTaskMission":
+      return boundedString(payload.taskText, 2_000) ? null : "Invalid task";
+    case "analyzeTowsStrategy":
+      return isObject(payload.tows) && JSON.stringify(payload.tows).length <= 8_000 ? null : "Invalid TOWS data";
+    case "processIdea":
+      return boundedString(payload.content, 4_000) && Array.isArray(payload.projects) &&
+        payload.projects.length <= 100 && payload.projects.every((p: unknown) => isObject(p))
+        ? null : "Invalid idea data";
+    case "searchSolutions":
+      return boundedString(payload.query, 3_000) ? null : "Invalid search query";
+    default:
+      return "Unsupported action";
+  }
+};
+
+const SMART_SEARCH_SYSTEM_PROMPT = `אתה יועץ ארגוני דיגיטלי. המלץ על פתרון על סמך התהליכים שלנו.
+תהליכים מרכזיים:
+1. בניית צוות הנהלה: חקר העבר, אמפתיה, תמונת הצלחה, יעדים, תפקידים, נורמות ופידבק.
+2. פיתוח שותפויות וממשקים: קבוצות מיקוד, יישור קו, מדדים ויעדים, שגרות עבודה וליווי צוותים.
+כלים דיגיטליים: dashboard לניהול שינוי WOOP; executive ל-TOWS; synergy לדופק צוותי; tasks לניהול משימות; ideas למעבדת רעיונות; communication לתקשורת; feedback360 למשוב.
+החזר JSON עם recommendedTool, reasoning ו-structure (מחרוזת).`;
+
+async function askGemini(prompt: string, options: { json?: boolean; system?: string } = {}) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || apiKey.length < 20) throw new Error("AI provider is not configured");
+
+  const generationConfig: Record<string, unknown> = { maxOutputTokens: 1200, thinkingConfig: { thinkingLevel: "low" } };
+  if (options.json !== false) generationConfig.responseMimeType = "application/json";
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify({
+        ...(options.system ? { systemInstruction: { parts: [{ text: options.system }] } } : {}),
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig,
+      }),
+      signal: AbortSignal.timeout(20_000),
+    }
+  );
+  if (!response.ok) throw new Error("AI provider request failed");
+  const data = await response.json();
+  const output = data?.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || "").join("").trim();
+  if (!output) throw new Error("AI provider returned an empty response");
+  return options.json === false ? output : JSON.parse(output);
+}
+
+export const handler: Handler = async (event) => {
+  const origin = event.headers.origin;
   if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 200, headers, body: "" };
-  }
-
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers, body: "Method Not Allowed" };
-  }
-
-  // API Key validation
-  if (!validateApiKey()) {
+    if (!origin || !ALLOWED_ORIGINS.has(origin)) return json(403, { error: "Forbidden" });
     return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: "Server configuration error" }),
+      statusCode: 204,
+      headers: {
+        ...securityHeaders, "Access-Control-Allow-Origin": origin, "Vary": "Origin",
+        "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Max-Age": "86400",
+      },
+      body: "",
     };
   }
+  if (event.httpMethod !== "POST") return json(405, { error: "Method not allowed" }, origin);
+  if (!origin || !ALLOWED_ORIGINS.has(origin)) return json(403, { error: "Forbidden" });
+  if (!event.body || Buffer.byteLength(event.body, "utf8") > MAX_BODY_BYTES) return json(413, { error: "Request too large" }, origin);
 
-  // Rate Limiting
-  const clientIp = event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"] || "unknown";
-  if (!checkRateLimit(clientIp)) {
-    return {
-      statusCode: 429,
-      headers,
-      body: JSON.stringify({ error: "Too Many Requests" }),
-    };
-  }
+  const ip = event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"] || "unknown";
+  if (!rateLimitOk(ip)) return json(429, { error: "Too many requests. Try again shortly." }, origin);
+
+  let body: any;
+  try { body = JSON.parse(event.body); }
+  catch { return json(400, { error: "Invalid JSON" }, origin); }
+
+  const invalid = validate(body?.action, body?.payload);
+  if (invalid) return json(400, { error: invalid }, origin);
+  const p = body.payload;
 
   try {
-    const body = JSON.parse(event.body || "{}");
-    const { action, payload } = body;
-
-    // Input validation
-    const validation = validateInput(action, payload);
-    if (!validation.valid) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: validation.error || "Invalid request" }),
-      };
-    }
-
-    const groq = getGroq();
-
-    let responseData: any = {};
-
-    switch (action) {
+    let result: any;
+    switch (body.action) {
       case "getWoopFeedback": {
-        const { step, currentData } = payload;
-        const stepValue = currentData[step.toLowerCase()] || "";
-        const prompt = `אתה סוכן AI מומחה לייעוץ ארגוני המשתמש במודל ה-WOOP.
-נתח את שלב ה-${step} של המשתמש.
-הקלט: "${stepValue}"
-הקשר: ${JSON.stringify(currentData)}
-
-החזר JSON (חובה להקפיד שזה JSON חוקי) הכולל:
-{
-  "score": מספר (1-100),
-  "analysis": "ניתוח קצר ומקצועי בעברית",
-  "refinedText": "הצעה לניסוח מלוטש",
-  "clarifyingQuestion": "שאלה אחת מעוררת מחשבה",
-  "isReady": boolean
-}`;
-        
-        const completion = await groq.chat.completions.create({
-          messages: [{ role: "user", content: prompt }],
-          model: "llama-3.3-70b-versatile",
-          response_format: { type: "json_object" },
-          temperature: 0.5,
-        });
-        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        const stepValue = p.currentData[p.step.toLowerCase()] || "";
+        result = await askGemini(`אתה יועץ ארגוני מומחה ל-WOOP. נתח את שלב ${p.step}.
+הקלט: ${JSON.stringify(stepValue)}
+הקשר: ${JSON.stringify(p.currentData)}
+החזר JSON: {"score": מספר 1-100, "analysis": "ניתוח קצר בעברית", "refinedText": "ניסוח משופר", "clarifyingQuestion": "שאלה אחת", "isReady": boolean}.`);
         break;
       }
-
       case "generateTasksFromWoop": {
-        const { woop } = payload;
-        const prompt = `בהתבסס על ה-WOOP (משאלה: ${woop.wish}, תוצאה: ${woop.outcome}, מכשול: ${woop.obstacle}, תוכנית: ${woop.plan}), גזור 5 משימות אופרטיביות קונקרטיות וקצרות בעברית.
-החזר JSON עם מפתח "tasks" המכיל מערך של מחרוזות.`;
-        
-        const completion = await groq.chat.completions.create({
-          messages: [{ role: "user", content: prompt }],
-          model: "llama-3.3-70b-versatile",
-          response_format: { type: "json_object" },
-          temperature: 0.5,
-        });
-        const parsed = JSON.parse(completion.choices[0].message.content || '{"tasks":[]}');
-        responseData = parsed.tasks || [];
+        const w = p.woop;
+        const parsed = await askGemini(`בהתבסס על WOOP — משאלה: ${w.wish || ""}; תוצאה: ${w.outcome || ""}; מכשול: ${w.obstacle || ""}; תוכנית: ${w.plan || ""} — הצע 5 משימות קצרות ומעשיות בעברית. החזר JSON עם מפתח tasks המכיל מערך מחרוזות.`);
+        result = Array.isArray(parsed.tasks) ? parsed.tasks.slice(0, 5) : [];
         break;
       }
-
-      case "getLabRecommendation": {
-        const { userInput } = payload;
-        const prompt = `המטרה: לנתח את מצוקת המשתמש ולהמליץ על כלים ב-The Lab.
-המשתמש: "${userInput}"
-כלים: dashboard, executive, synergy, tasks, ideas, communication, feedback360
-החזר JSON:
-{
-  "explanation": "משפט אחד בעברית",
-  "recommendedToolIds": ["tool1", "tool2"]
-}`;
-        const completion = await groq.chat.completions.create({
-          messages: [{ role: "user", content: prompt }],
-          model: "llama-3.1-8b-instant",
-          response_format: { type: "json_object" },
-        });
-        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+      case "getLabRecommendation":
+        result = await askGemini(`נתח את הצורך והמלץ על כלי מעבדה אחד או שניים. משתמש: ${p.userInput}
+הכלים: dashboard, executive, synergy, tasks, ideas, communication, feedback360.
+החזר JSON עם explanation (משפט בעברית) ו-recommendedToolIds (מערך של מזהי כלים בלבד).`);
         break;
-      }
-
       case "getSynergyInsight": {
-        const { metrics, vibes } = payload;
-        const metricsSummary = Object.entries(metrics)
-          .filter(([key]) => key !== 'count')
-          .map(([key, val]) => `${key}: ${val}/6`)
-          .join(', ');
-        const prompt = `נתח את מצב הצוות: ${metricsSummary}. תגובות: ${vibes.join('\n')}. תן תובנה אסטרטגית והמלצה אחת פשוטה בעברית. סיגנון: Simple. Deep. Real.`;
-        
-        const completion = await groq.chat.completions.create({
-          messages: [{ role: "user", content: prompt }],
-          model: "llama-3.3-70b-versatile",
-        });
-        responseData = completion.choices[0].message.content;
+        const metrics = Object.entries(p.metrics).filter(([key]) => key !== "count").map(([key, val]) => `${key}: ${String(val).slice(0, 40)}/6`).join(", ");
+        result = await askGemini(`נתח את מצב הצוות: ${metrics}. תגובות: ${p.vibes.join("\\n")}. תן תובנה אסטרטגית והמלצה אחת פשוטה בעברית. סגנון: Simple. Deep. Real.`, { json: false });
         break;
       }
-
-      case "analyzeTaskMission": {
-        const { taskText } = payload;
-        const prompt = `נתח את המשימה: "${taskText}". פרק לתת-משימות וספק טיפ ניהולי.
-החזר JSON:
-{
-  "subtasks": ["m1", "m2"],
-  "priority": "low" או "medium" או "high",
-  "managerTip": "טיפ ניהולי קצר",
-  "quickWin": "התחל עכשיו"
-}`;
-        const completion = await groq.chat.completions.create({
-          messages: [{ role: "user", content: prompt }],
-          model: "llama-3.1-8b-instant",
-          response_format: { type: "json_object" },
-        });
-        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+      case "analyzeTaskMission":
+        result = await askGemini(`נתח את המשימה: ${p.taskText}. החזר JSON עם subtasks (מערך), priority (low/medium/high), managerTip וטיפ quickWin.`);
         break;
-      }
-
       case "analyzeTowsStrategy": {
-        const { tows } = payload;
-        const prompt = `בצע ניתוח TOWS אסטרטגי עבור: ${tows.title}.
-חוזקות: ${tows.strengths?.join(', ')}
-חולשות: ${tows.weaknesses?.join(', ')}
-הזדמנויות: ${tows.opportunities?.join(', ')}
-איומים: ${tows.threats?.join(', ')}
-החזר JSON:
-{
-  "strategiesSO": ["s1", "s2"],
-  "strategiesST": ["s1", "s2"],
-  "strategiesWO": ["s1", "s2"],
-  "strategiesWT": ["s1", "s2"],
-  "executiveSummary": "תקציר מנהלים אסטרטגי בעברית"
-}`;
-        const completion = await groq.chat.completions.create({
-          messages: [{ role: "user", content: prompt }],
-          model: "llama-3.3-70b-versatile",
-          response_format: { type: "json_object" },
-        });
-        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        const t = p.tows;
+        result = await askGemini(`בצע ניתוח TOWS אסטרטגי עבור: ${t.title || ""}.
+חוזקות: ${JSON.stringify(t.strengths || [])}; חולשות: ${JSON.stringify(t.weaknesses || [])}; הזדמנויות: ${JSON.stringify(t.opportunities || [])}; איומים: ${JSON.stringify(t.threats || [])}.
+החזר JSON עם strategiesSO, strategiesST, strategiesWO, strategiesWT (מערכים) ו-executiveSummary בעברית.`);
         break;
       }
-
       case "processIdea": {
-        const { content, projects, isAudio } = payload;
-        const projectContext = projects.map((p: any) => ({ id: p.id, title: p.title }));
-        const prompt = `נתח רעיון (${isAudio ? 'קולי' : 'טקסט'}): "${content}". 
-פרויקטים קיימים: ${JSON.stringify(projectContext)}.
-החזר JSON:
-{
-  "title": "כותרת קצרה",
-  "category": "קטגוריה",
-  "summary": "תקציר",
-  "nextSteps": ["c1", "c2"],
-  "priority": "high",
-  "matchedProjectId": "id or null",
-  "matchingExplanation": "הסבר ההתאמה או למה לא נמצאה"
-}`;
-        const completion = await groq.chat.completions.create({
-          messages: [{ role: "user", content: prompt }],
-          model: "llama-3.1-8b-instant",
-          response_format: { type: "json_object" },
-        });
-        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+        const projects = p.projects.map((project: any) => ({ id: String(project.id || "").slice(0, 100), title: String(project.title || "").slice(0, 200) }));
+        result = await askGemini(`נתח רעיון (${p.isAudio ? "קולי" : "טקסט"}): ${p.content}.
+פרויקטים קיימים: ${JSON.stringify(projects)}.
+החזר JSON עם title, category, summary, nextSteps (מערך), priority (low/medium/high), matchedProjectId (מזהה או null), matchingExplanation.`);
         break;
       }
-
-      case "searchSolutions": {
-        const { query } = payload;
-        const completion = await groq.chat.completions.create({
-          messages: [
-            { role: "system", content: SMART_SEARCH_SYSTEM_PROMPT },
-            { role: "user", content: query }
-          ],
-          model: "llama-3.3-70b-versatile",
-          response_format: { type: "json_object" },
-          temperature: 0.5,
-        });
-        responseData = JSON.parse(completion.choices[0].message.content || "{}");
+      case "searchSolutions":
+        result = await askGemini(p.query, { system: SMART_SEARCH_SYSTEM_PROMPT });
         break;
-      }
-
       default:
-        return { statusCode: 400, headers, body: JSON.stringify({ error: "Unknown action" }) };
+        return json(400, { error: "Unsupported action" }, origin);
     }
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(responseData),
-    };
-
-  } catch (error: any) {
-    console.error("Function Error:", error);
-    // Don't expose detailed error messages in production
-    const errorMessage = process.env.NODE_ENV === 'production' 
-      ? "Internal server error" 
-      : error.message;
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: errorMessage }),
-    };
+    return json(200, result, origin);
+  } catch (error) {
+    console.error("AI request failed:", error instanceof Error ? error.message : "Unknown error");
+    const configured = !!process.env.GEMINI_API_KEY;
+    return json(configured ? 502 : 503, {
+      error: configured ? "הניתוח נכשל. נסה שוב בעוד כמה רגעים." : "שירות ה-AI עדיין לא הוגדר בשרת.",
+    }, origin);
   }
 };
