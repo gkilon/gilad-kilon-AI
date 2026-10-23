@@ -58,10 +58,10 @@ const Arrow = () => <span aria-hidden="true" className="inline-block mr-2 transi
 
 const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   const services = [
-    { n: '01', title: 'פיתוח מנהלים', text: 'לעזור למנהלים להרחיב את טווח הפעולה שלהם, להתמודד עם צמתים מורכבים ולתרגם תובנות לשינוי בהתנהלות.' },
-    { n: '02', title: 'צוותי הנהלה', text: 'לבנות צוות הנהלה שהוא יותר מאוסף של מנהלים טובים: צוות שמסוגל לדבר על הדברים החשובים, לקבל החלטות ולעבוד יחד.' },
-    { n: '03', title: 'ממשקים ושותפויות', text: 'לפתוח מתחים, אי-הבנות ומאבקי אחריות בין יחידות — ולבנות דרך עבודה שמאפשרת לאנשים להצליח יחד.' },
-    { n: '04', title: 'שינוי וייעוץ ארגוני', text: 'להבין מה במבנה, בתהליכים, בתפקידים ובציפיות מקשה על הארגון להתקדם, ולבנות שינוי שאפשר לחיות איתו.' }
+    { n: '01', title: 'פיתוח מנהלים', text: 'ללוות מנהלים בצמתים מקצועיים, לפתח את דרך הניהול שלהם ולחבר בין מה שהם רוצים להשיג לבין מה שהם עושים ביום יום.' },
+    { n: '02', title: 'צוותי הנהלה', text: 'לעזור לצוותי הנהלה לגבש כיוון, לנהל שיחות חשובות, לקבל החלטות ולפעול כצוות גם כשיש חילוקי דעות.' },
+    { n: '03', title: 'ממשקים ושותפויות', text: 'לשפר את העבודה בין מנהלים ויחידות, להבהיר אחריות וציפיות ולבנות שותפויות שמקדמות את העבודה.' },
+    { n: '04', title: 'שינוי וייעוץ ארגוני', text: 'ללוות ארגונים בתקופות של צמיחה ושינוי, ולחבר בין המבנה והתהליכים לבין מה שאנשים צריכים כדי להצליח.' }
   ];
   const programs = [
     { title: 'פיתוח אישי שמגיע עד להתנהגות', tag: 'OBT · IMMUNITY TO CHANGE', text: 'תהליך מובנה שעוזר לזהות לא רק מה רוצים לשנות, אלא גם מה עוצר אותנו בפועל — ולתרגל שינוי בהדרגה.', href: 'https://obt.kilon-consulting.com/' },
@@ -78,11 +78,11 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         <div className="max-w-4xl">
           <p className="text-xs md:text-sm font-bold tracking-[0.18em] text-brand-accent mb-7">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה</p>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-light leading-[1.13] tracking-tight max-w-4xl">
-            לפעמים הבעיה היא לא האנשים.
-            <span className="block font-black mt-2">היא גם הדרך שבה הם נדרשים לעבוד יחד.</span>
+            יועץ ארגוני.
+            <span className="block font-black mt-2">אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.</span>
           </h1>
           <p className="text-lg md:text-2xl leading-relaxed text-brand-muted max-w-3xl mt-8">
-            אני גלעד קילון. אני עוזר למנהלים, לצוותי הנהלה ולארגונים לפתוח את מה שלא עובד — ביחסים, בתקשורת ובתהליכי העבודה — כדי לבנות משהו שכן עובד.
+            אני גלעד קילון. כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני מנסה להבין מה באמת קורה, לדבר על זה בגובה העיניים ולעזור להפוך הבנה לעבודה אחרת ולתוצאות.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 mt-10">
             <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-7 py-4 bg-brand-dark text-white font-bold hover:bg-brand-accent transition-colors">נדבר על האתגר שלך <Arrow /></a>
@@ -102,9 +102,9 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <h2 className="text-3xl md:text-5xl font-black leading-tight">לא מסתפקים במה שרואים על פני השטח.</h2>
         </div>
         <div className="space-y-6 text-lg md:text-xl leading-relaxed text-brand-muted">
-          <p>כשיש חיכוך בין מנהלים או יחידות, קל להחליט שזו בעיה של אופי, תקשורת או חוסר שיתוף פעולה. לפעמים זה חלק מהסיפור. אבל לא פעם, גם המבנה, חלוקת האחריות, התהליכים והציפיות מייצרים את החיכוך.</p>
-          <p>אני נכנס לתמונה כדי להבין מה באמת קורה — גם את מה שנאמר וגם את מה שכולם מרגישים אבל לא אומרים. משם אפשר לנהל שיחה ישירה, להגדיר מחדש את דרך העבודה ולייצר שינוי שמחזיק מעבר לסדנה או לפגישה.</p>
-          <p className="text-brand-dark font-bold">אמת פשוטה, אבל אמפתית. עומק, שמוביל למעשה.</p>
+          <p>לפעמים מגיעים בגלל מתח בין מנהלים או יחידות. במקרים אחרים, מנהל נכנס לתפקיד חדש, צוות הנהלה צריך להתגבש סביב כיוון, ארגון צומח וצריך להתאים את דרך העבודה, או שינוי חשוב מתקשה להפוך למציאות. בכל אחד מהמקרים כדאי להבין גם את האנשים וגם את התנאים שבהם הם פועלים.</p>
+          <p>אני מנסה להבין מה קורה בפועל, מה אנשים אומרים ומה נשאר בין השורות. משם אפשר להחליט מה צריך להשתנות, לנהל את השיחות הנדרשות ולבנות דרך פעולה שאפשר ליישם.</p>
+          <p className="text-brand-dark font-bold">לדבר בכנות וברגישות, להבין לעומק ולעשות עם זה משהו.</p>
         </div>
       </div>
     </section>
@@ -125,8 +125,8 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
 
     <section className="max-w-7xl mx-auto px-6 py-20 md:py-28">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div className="max-w-3xl"><p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">תהליכים וכלים שפיתחתי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">לא עוד כלי בפני עצמו. דרך לעבוד על שינוי.</h2></div>
-        <p className="text-brand-muted leading-relaxed max-w-md">הכלים נולדו מתוך העבודה הארגונית. הם עוזרים להפוך שיחה לתהליך, ותובנה לצעד שאפשר ליישם.</p>
+        <div className="max-w-3xl"><p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">תהליכים וכלים שפיתחתי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">כלים שמתחברים לעבודה בשטח.</h2></div>
+        <p className="text-brand-muted leading-relaxed max-w-md">פיתחתי את הכלים האלה מתוך העבודה עם מנהלים וארגונים. הם נועדו לעזור לאנשים לחשוב, לדבר ולעבוד אחרת, גם אחרי שהמפגש מסתיים.</p>
       </div>
       <div className="grid md:grid-cols-2 gap-4">
         {programs.map((p, i) => <a key={p.title} href={p.href} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener noreferrer' : undefined} className="group border border-brand-dark/10 bg-white p-7 md:p-9 hover:border-brand-accent transition-colors">
@@ -137,14 +137,14 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
 
     <section className="bg-brand-dark text-white">
       <div className="max-w-7xl mx-auto px-6 py-20 md:py-24 grid md:grid-cols-[1fr_0.8fr] gap-12 items-center">
-        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">קצת עליי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">אני לא מגיע עם תשובה מוכנה. אני מגיע כדי להבין איתכם מה באמת צריך לקרות.</h2><p className="text-white/70 text-lg leading-relaxed mt-6 max-w-2xl">יותר מעשרים שנה אני עובד עם ארגונים, מנהלים וצוותי הנהלה. אני מביא חשיבה מערכתית, סקרנות לאנשים ואומץ לפתוח שיחות שלא תמיד קל לנהל — בלי לשכוח שבסוף צריך לעבוד אחרת, לא רק להבין יותר.</p><button onClick={() => onEnterTool('about')} className="mt-8 border border-white/30 px-6 py-3 font-bold hover:bg-white hover:text-brand-dark transition-colors">הסיפור שלי <Arrow /></button></div>
-        <div className="border-r-2 border-brand-touch pr-7 md:pr-10 space-y-5 text-lg leading-relaxed text-white/80"><p>שותף לדרך, לא ספק.</p><p>קשוב למה שקורה, לא תקוע בתוכנית.</p><p>מחבר בין אנשים, תהליכים ותוצאות.</p></div>
+        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">קצת עליי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">קודם מבינים מה קורה. אחר כך מחליטים מה עושים.</h2><p className="text-white/70 text-lg leading-relaxed mt-6 max-w-2xl">יותר מעשרים שנה אני עובד עם מנהלים, צוותי הנהלה וארגונים. אני מסתכל על האנשים ועל המערכת שבה הם עובדים, ושואל מה יעזור להם להתפתח, לעבוד יחד ולהגיע לתוצאות. חשוב לי להבין לעומק, לדבר פשוט ולחבר את השיחה למה שקורה בפועל.</p><button onClick={() => onEnterTool('about')} className="mt-8 border border-white/30 px-6 py-3 font-bold hover:bg-white hover:text-brand-dark transition-colors">הסיפור שלי <Arrow /></button></div>
+        <div className="border-r-2 border-brand-touch pr-7 md:pr-10 space-y-5 text-lg leading-relaxed text-white/80"><p>שותף לדרך, לא ספק.</p><p>קשוב למה שקורה, ומוכן לשנות כיוון כשצריך.</p><p>מחבר בין אנשים, תהליכים ותוצאות.</p></div>
       </div>
     </section>
 
     <section className="bg-brand-dark text-white">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 grid md:grid-cols-[0.8fr_1.2fr] gap-10 md:gap-16 items-center">
-        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה לא עובד אצלכם כרגע?</h2><p className="mt-5 text-lg text-white/65 leading-relaxed">לא צריך להגיע עם אבחון או עם פתרון. נתחיל ממה שקורה בשטח ונבדוק יחד מה יכול לעזור.</p><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex mt-8 px-7 py-4 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">לתיאום שיחה <Arrow /></a></div>
+        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה אתם רוצים לקדם?</h2><p className="mt-5 text-lg text-white/65 leading-relaxed">אפשר להתחיל משאלה, מיעד או ממשהו שצריך להשתנות. נחשוב יחד מה הצעד הנכון.</p><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex mt-8 px-7 py-4 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">לתיאום שיחה <Arrow /></a></div>
         <div><p className="text-xs font-bold tracking-[0.14em] text-white/45 mb-4">או לתאר את האתגר ולקבל כיוון ראשוני</p><SmartSearchDark /></div>
       </div>
     </section>
