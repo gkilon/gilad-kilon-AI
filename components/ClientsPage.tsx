@@ -29,20 +29,20 @@ const ClientsPage: React.FC = () => {
         {/* Hero Section */}
         <section className="text-center space-y-8 animate-fadeIn">
           <div className="inline-block border-b-2 border-brand-accent pb-4">
-            <span className="text-[10px] font-bold text-brand-muted uppercase tracking-[0.4em] block mb-2">Ecosystem</span>
+            <span className="text-[10px] font-bold text-brand-muted uppercase tracking-[0.4em] block mb-2">לקוחות ושותפים</span>
             <h1 className="text-5xl md:text-8xl font-black bg-gradient-to-r from-brand-accent to-brand-gold bg-clip-text text-transparent tracking-tighter italic uppercase leading-none">
               לקוחות ושותפים.
             </h1>
           </div>
           <p className="text-xl md:text-3xl text-brand-muted max-w-2xl mx-auto font-light leading-relaxed">
-            "הצלחה נמדדת לא רק בתוצאות, אלא באמון, בחיבורים ובקשרים שנבנים לאורך זמן."
+            העבודה שלי נבנית לאורך זמן, עם אנשים וארגונים שבוחרים לחשוב ולעבוד יחד.
           </p>
         </section>
 
         {/* Clients Section */}
         <section className="space-y-16 animate-slideUp">
           <div className="flex items-center gap-6">
-            <h2 className="text-2xl font-black text-brand-dark italic uppercase tracking-widest shrink-0">לקוחות שאני מלווה</h2>
+            <h2 className="text-2xl font-black text-brand-dark italic uppercase tracking-widest shrink-0">ארגונים שעבדתי איתם</h2>
             <div className="h-px w-full bg-brand-dark/10"></div>
           </div>
 
@@ -67,7 +67,7 @@ const ClientsPage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 opacity-30 italic font-bold">רשימת הלקוחות תעודכן בקרוב...</div>
+              <div className="text-center py-12 opacity-30 italic font-bold"></div>
             )}
           </div>
         </section>
@@ -75,7 +75,7 @@ const ClientsPage: React.FC = () => {
         {/* Partners Section */}
         <section className="space-y-16">
           <div className="flex items-center gap-6">
-            <h2 className="text-2xl font-black text-brand-dark italic uppercase tracking-widest shrink-0">שיתופי פעולה וכלים מקצועיים</h2>
+            <h2 className="text-2xl font-black text-brand-dark italic uppercase tracking-widest shrink-0">שותפים מקצועיים</h2>
             <div className="h-px w-full bg-brand-dark/10"></div>
           </div>
 
@@ -110,7 +110,7 @@ const ClientsPage: React.FC = () => {
               ))
             ) : (
               <div className="col-span-full text-center py-20 bg-white">
-                <p className="text-brand-muted font-light italic">השותפויות יעודכנו כאן בקרוב.</p>
+                <p className="text-brand-muted font-light italic"></p>
               </div>
             )}
           </div>
@@ -118,9 +118,9 @@ const ClientsPage: React.FC = () => {
 
         <div className="mt-24 pt-12 border-t border-brand-dark/10 text-center space-y-6">
           <p className="text-xl text-brand-dark font-light tracking-tight leading-relaxed max-w-3xl mx-auto italic">
-            "אני מאמין בחיבורים שיוצרים ערך מוסף. הכלים והחברות שאני בוחר לעבוד איתם הם אלו שמאפשרים לי להעניק ללקוחות שלי את הפתרונות הטובים ביותר."
+            לאורך השנים אני עובד עם ארגונים, שותפים ואנשי מקצוע. כל שיתוף פעולה נבנה סביב האנשים, הצורך והעבודה שצריך לעשות.
           </p>
-          <span className="text-xs font-bold uppercase tracking-[0.4em] text-brand-muted block">Gilad Kilon Strategic Ecosystem</span>
+          <span className="text-xs font-bold uppercase tracking-[0.4em] text-brand-muted block">גלעד קילון · ייעוץ ארגוני ופיתוח מנהלים</span>
         </div>
 
       </div>
