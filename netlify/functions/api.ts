@@ -90,12 +90,12 @@ const validate = (action: unknown, payload: unknown): string | null => {
   }
 };
 
-const SMART_SEARCH_SYSTEM_PROMPT = \`אתה יועץ ארגוני דיגיטלי. המלץ על פתרון על סמך התהליכים שלנו.
+const SMART_SEARCH_SYSTEM_PROMPT = `אתה יועץ ארגוני דיגיטלי. המלץ על פתרון על סמך התהליכים שלנו.
 תהליכים מרכזיים:
 1. בניית צוות הנהלה: חקר העבר, אמפתיה, תמונת הצלחה, יעדים, תפקידים, נורמות ופידבק.
 2. פיתוח שותפויות וממשקים: קבוצות מיקוד, יישור קו, מדדים ויעדים, שגרות עבודה וליווי צוותים.
 כלים דיגיטליים: dashboard לניהול שינוי WOOP; executive ל-TOWS; synergy לדופק צוותי; tasks לניהול משימות; ideas למעבדת רעיונות; communication לתקשורת; feedback360 למשוב.
-החזר JSON עם recommendedTool, reasoning ו-structure (מחרוזת).\`;
+החזר JSON עם recommendedTool, reasoning ו-structure (מחרוזת).`;
 
 async function askGemini(prompt: string, options: { json?: boolean; system?: string } = {}) {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -105,7 +105,7 @@ async function askGemini(prompt: string, options: { json?: boolean; system?: str
   if (options.json !== false) generationConfig.responseMimeType = "application/json";
 
   const response = await fetch(
-    \`https://generativelanguage.googleapis.com/v1beta/models/\${MODEL}:generateContent\`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
@@ -158,43 +158,43 @@ export const handler: Handler = async (event) => {
     switch (body.action) {
       case "getWoopFeedback": {
         const stepValue = p.currentData[p.step.toLowerCase()] || "";
-        result = await askGemini(\`אתה יועץ ארגוני מומחה ל-WOOP. נתח את שלב \${p.step}.
-הקלט: \${JSON.stringify(stepValue)}
-הקשר: \${JSON.stringify(p.currentData)}
-החזר JSON: {"score": מספר 1-100, "analysis": "ניתוח קצר בעברית", "refinedText": "ניסוח משופר", "clarifyingQuestion": "שאלה אחת", "isReady": boolean}.\`);
+        result = await askGemini(`אתה יועץ ארגוני מומחה ל-WOOP. נתח את שלב ${p.step}.
+הקלט: ${JSON.stringify(stepValue)}
+הקשר: ${JSON.stringify(p.currentData)}
+החזר JSON: {"score": מספר 1-100, "analysis": "ניתוח קצר בעברית", "refinedText": "ניסוח משופר", "clarifyingQuestion": "שאלה אחת", "isReady": boolean}.`);
         break;
       }
       case "generateTasksFromWoop": {
         const w = p.woop;
-        const parsed = await askGemini(\`בהתבסס על WOOP — משאלה: \${w.wish || ""}; תוצאה: \${w.outcome || ""}; מכשול: \${w.obstacle || ""}; תוכנית: \${w.plan || ""} — הצע 5 משימות קצרות ומעשיות בעברית. החזר JSON עם מפתח tasks המכיל מערך מחרוזות.\`);
+        const parsed = await askGemini(`בהתבסס על WOOP — משאלה: ${w.wish || ""}; תוצאה: ${w.outcome || ""}; מכשול: ${w.obstacle || ""}; תוכנית: ${w.plan || ""} — הצע 5 משימות קצרות ומעשיות בעברית. החזר JSON עם מפתח tasks המכיל מערך מחרוזות.`);
         result = Array.isArray(parsed.tasks) ? parsed.tasks.slice(0, 5) : [];
         break;
       }
       case "getLabRecommendation":
-        result = await askGemini(\`נתח את הצורך והמלץ על כלי מעבדה אחד או שניים. משתמש: \${p.userInput}
+        result = await askGemini(`נתח את הצורך והמלץ על כלי מעבדה אחד או שניים. משתמש: ${p.userInput}
 הכלים: dashboard, executive, synergy, tasks, ideas, communication, feedback360.
-החזר JSON עם explanation (משפט בעברית) ו-recommendedToolIds (מערך של מזהי כלים בלבד).\`);
+החזר JSON עם explanation (משפט בעברית) ו-recommendedToolIds (מערך של מזהי כלים בלבד).`);
         break;
       case "getSynergyInsight": {
-        const metrics = Object.entries(p.metrics).filter(([key]) => key !== "count").map(([key, val]) => \`\${key}: \${String(val).slice(0, 40)}/6\`).join(", ");
-        result = await askGemini(\`נתח את מצב הצוות: \${metrics}. תגובות: \${p.vibes.join("\\n")}. תן תובנה אסטרטגית והמלצה אחת פשוטה בעברית. סגנון: Simple. Deep. Real.\`, { json: false });
+        const metrics = Object.entries(p.metrics).filter(([key]) => key !== "count").map(([key, val]) => `${key}: ${String(val).slice(0, 40)}/6`).join(", ");
+        result = await askGemini(`נתח את מצב הצוות: ${metrics}. תגובות: ${p.vibes.join("\\n")}. תן תובנה אסטרטגית והמלצה אחת פשוטה בעברית. סגנון: Simple. Deep. Real.`, { json: false });
         break;
       }
       case "analyzeTaskMission":
-        result = await askGemini(\`נתח את המשימה: \${p.taskText}. החזר JSON עם subtasks (מערך), priority (low/medium/high), managerTip וטיפ quickWin.\`);
+        result = await askGemini(`נתח את המשימה: ${p.taskText}. החזר JSON עם subtasks (מערך), priority (low/medium/high), managerTip וטיפ quickWin.`);
         break;
       case "analyzeTowsStrategy": {
         const t = p.tows;
-        result = await askGemini(\`בצע ניתוח TOWS אסטרטגי עבור: \${t.title || ""}.
-חוזקות: \${JSON.stringify(t.strengths || [])}; חולשות: \${JSON.stringify(t.weaknesses || [])}; הזדמנויות: \${JSON.stringify(t.opportunities || [])}; איומים: \${JSON.stringify(t.threats || [])}.
-החזר JSON עם strategiesSO, strategiesST, strategiesWO, strategiesWT (מערכים) ו-executiveSummary בעברית.\`);
+        result = await askGemini(`בצע ניתוח TOWS אסטרטגי עבור: ${t.title || ""}.
+חוזקות: ${JSON.stringify(t.strengths || [])}; חולשות: ${JSON.stringify(t.weaknesses || [])}; הזדמנויות: ${JSON.stringify(t.opportunities || [])}; איומים: ${JSON.stringify(t.threats || [])}.
+החזר JSON עם strategiesSO, strategiesST, strategiesWO, strategiesWT (מערכים) ו-executiveSummary בעברית.`);
         break;
       }
       case "processIdea": {
         const projects = p.projects.map((project: any) => ({ id: String(project.id || "").slice(0, 100), title: String(project.title || "").slice(0, 200) }));
-        result = await askGemini(\`נתח רעיון (\${p.isAudio ? "קולי" : "טקסט"}): \${p.content}.
-פרויקטים קיימים: \${JSON.stringify(projects)}.
-החזר JSON עם title, category, summary, nextSteps (מערך), priority (low/medium/high), matchedProjectId (מזהה או null), matchingExplanation.\`);
+        result = await askGemini(`נתח רעיון (${p.isAudio ? "קולי" : "טקסט"}): ${p.content}.
+פרויקטים קיימים: ${JSON.stringify(projects)}.
+החזר JSON עם title, category, summary, nextSteps (מערך), priority (low/medium/high), matchedProjectId (מזהה או null), matchingExplanation.`);
         break;
       }
       case "searchSolutions":
