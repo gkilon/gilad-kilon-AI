@@ -1,667 +1,155 @@
-
-import { SmartSearch, SmartSearchDark } from './SmartSearch';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TextReveal } from './motion/TextReveal';
-import { FadeIn } from './motion/FadeIn';
-import { StaggerContainer, StaggerItem } from './motion/StaggerContainer';
-import { ColorOrbs } from './motion/ColorOrbs';
-import { CursorTrail } from './motion/CursorTrail';
-import { motionTokens } from '../motion/config';
-import { CARD_ACCENTS } from '../motion/colors';
+import { SmartSearch } from './SmartSearch';
 
+interface LandingProps {
+  onEnterTool: (view: string) => void;
+}
 
-// === לוגו מוטמע בפורמט Base64 ===
-const LOGO_BASE64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArMAAAFpCAYAAAKT...';
-
-const ExpertiseIcons = {
-  Leadership: () => (
-    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <path d="M12 21V3M12 3L7 8M12 3L17 8" stroke="currentColor" strokeWidth="1" strokeLinecap="square" strokeLinejoin="miter" />
-      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1" />
-    </svg>
-  ),
-  Board: () => (
-    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <rect x="5" y="5" width="14" height="14" stroke="currentColor" strokeWidth="1" />
-      <path d="M5 12H19M12 5V19" stroke="currentColor" strokeWidth="0.5" strokeOpacity="0.4" />
-    </svg>
-  ),
-  Organization: () => (
-    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <path d="M2 20H22" stroke="currentColor" strokeWidth="1" />
-      <path d="M6 20V8L12 4L18 8V20" stroke="currentColor" strokeWidth="1" />
-    </svg>
-  ),
-  Partnership: () => (
-    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <circle cx="8" cy="12" r="5" stroke="currentColor" strokeWidth="1" />
-      <circle cx="16" cy="12" r="5" stroke="currentColor" strokeWidth="1" />
-    </svg>
-  ),
-  Tech: () => (
-    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <rect x="9" y="9" width="6" height="6" stroke="currentColor" strokeWidth="1" />
-      <path d="M12 9V6M12 18V15" stroke="currentColor" strokeWidth="1" />
-      <path d="M9 12H6M18 12H15" stroke="currentColor" strokeWidth="1" />
-    </svg>
-  ),
-  Coaching: () => (
-    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-      <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1" />
-      <path d="M12 12L15 9" stroke="currentColor" strokeWidth="1" />
-    </svg>
-  )
+export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg'; dark?: boolean; className?: string }> = ({
+  size = 'sm', dark = true, className = 'items-start'
+}) => {
+  const color = dark ? 'text-brand-dark' : 'text-white';
+  const muted = dark ? 'text-brand-muted' : 'text-white/70';
+  const sizes = {
+    sm: { title: 'text-lg', sub: 'text-[7px]', tracking: 'tracking-[0.32em]' },
+    md: { title: 'text-4xl md:text-6xl', sub: 'text-[10px] md:text-xs', tracking: 'tracking-[0.42em]' },
+    lg: { title: 'text-5xl md:text-7xl', sub: 'text-xs md:text-sm', tracking: 'tracking-[0.42em]' }
+  };
+  const s = sizes[size];
+  return <div className={`flex flex-col select-none ${className}`} dir="ltr">
+    <div className={`flex items-baseline leading-none ${color} ${s.title}`}>
+      <span className="font-light tracking-[0.08em] mr-1.5">GILAD</span>
+      <span className="font-black tracking-[0.02em]">KILON</span>
+      <span className="font-black text-brand-accent ml-0.5">.</span>
+    </div>
+    <div className={`font-bold uppercase ${s.tracking} ${muted} ${s.sub} mt-1.5`}>Management Consulting</div>
+  </div>;
 };
 
 export const Icons = {
-  WOOP: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-      <circle cx="12" cy="12" r="10" strokeOpacity="0.2" />
-      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" className="text-brand-accent" />
-    </svg>
-  ),
-  TOWS: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-      <rect x="3" y="3" width="18" height="18" strokeOpacity="0.2" />
-      <path d="M12 3v18M3 12h18" />
-    </svg>
-  ),
-  Pulse: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" className="text-brand-accent" />
-    </svg>
-  ),
-  Tasks: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-      <path d="M9 11l3 3L22 4" />
-    </svg>
-  ),
-  Ideas: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2" />
-    </svg>
-  ),
-  DNA: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-      <path d="M4 12c0 2 2 4 4 4s4-2 4-4" />
-    </svg>
-  ),
-  Feedback: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-      <circle cx="12" cy="12" r="10" strokeOpacity="0.2" />
-      <path d="M12 16v.01" strokeWidth="2.5" />
-    </svg>
-  )
+  WOOP: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full"><circle cx="12" cy="12" r="9" /><path d="M12 3a9 9 0 0 1 9 9" /><path d="M8 12h8M12 8v8" /></svg>,
+  TOWS: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full"><rect x="3" y="3" width="18" height="18" /><path d="M12 3v18M3 12h18" /></svg>,
+  Pulse: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full"><path d="M2 12h4l3-8 5 16 3-8h5" /></svg>,
+  Tasks: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full"><path d="M9 11l3 3L22 4" /><path d="M20 12v7H4V4h11" /></svg>,
+  Ideas: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full"><circle cx="12" cy="10" r="6" /><path d="M9 16v2h6v-2M10 21h4M12 2V1" /></svg>,
+  DNA: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full"><path d="M7 3c0 6 10 12 10 18M17 3C17 9 7 15 7 21M8 7h8M6 12h12M8 17h8" /></svg>,
+  Feedback: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full"><circle cx="12" cy="12" r="9" /><path d="M8 12h8M12 8v8" /></svg>
 };
 
-const toolCatalog: Record<string, { label: string, icon: React.ReactNode, view: string }> = {
-  dashboard: { label: "ניהול שינוי (WOOP)", icon: <Icons.WOOP />, view: "dashboard" },
-  executive: { label: "פורום הנהלה (TOWS)", icon: <Icons.TOWS />, view: "executive" },
-  synergy: { label: "דופק צוותי (Pulse)", icon: <Icons.Pulse />, view: "synergy" },
-  tasks: { label: "ניהול משימות", icon: <Icons.Tasks />, view: "tasks" },
-  ideas: { label: "מעבדת רעיונות", icon: <Icons.Ideas />, view: "ideas" },
-  communication: { label: "DNA תקשורת", icon: <Icons.DNA />, view: "communication" },
-  feedback360: { label: "משוב 360", icon: <Icons.Feedback />, view: "feedback360" }
-};
-
-export const BrandLogo: React.FC<{ size?: 'sm' | 'md' | 'lg', dark?: boolean, className?: string }> = ({ size = 'sm', dark = true, className }) => {
-  const textColor = dark ? 'text-brand-dark' : 'text-white';
-  const subTextColor = dark ? 'text-brand-muted' : 'text-white/80';
-
-  // Define size configurations
-  const config = {
-    sm: {
-      title: 'text-lg',
-      sub: 'text-[5px]',
-      dot: 'text-lg',
-      gap: 'mr-1.5',
-      tracking: 'tracking-[0.4em]'
-    },
-    md: {
-      title: 'text-4xl md:text-6xl',
-      sub: 'text-[10px] md:text-xs',
-      dot: 'text-4xl md:text-6xl',
-      gap: 'mr-1.5',
-      tracking: 'tracking-[0.5em]'
-    },
-    lg: {
-      title: 'text-4xl md:text-6xl',
-      sub: 'text-xs md:text-sm',
-      dot: 'text-4xl md:text-6xl',
-      gap: 'mr-2',
-      tracking: 'tracking-[0.5em]'
-    }
-  };
-
-  const current = config[size];
-  const alignmentClass = className || 'items-start';
-
-  return (
-    <div className={`flex flex-col select-none group ${alignmentClass}`} dir="ltr">
-      <div className={`flex items-baseline leading-none ${textColor} ${current.title} transition-colors`}>
-        <span className={`font-light tracking-[0.1em] ${current.gap}`}>GILAD</span>
-        <span className="font-black tracking-[0.05em]">KILON</span>
-        <span className={`font-black text-brand-accent ${current.dot} leading-none ml-0.5`}>.</span>
-      </div>
-      <div className={`font-bold uppercase ${current.tracking} ${subTextColor} ${current.sub} mt-1.5 transition-colors`}>
-        Management Consulting
-      </div>
-    </div>
-  );
-};
-
-export const ExpertiseCard: React.FC<{ title: string, desc: string, icon: React.ReactNode, index: number, impactTag: string }> = ({ title, desc, icon, index, impactTag }) => {
-  const accent = CARD_ACCENTS[index % CARD_ACCENTS.length];
-
-  return (
-  <motion.div
-    className={`arch-card p-8 md:p-10 flex flex-col justify-between h-full group relative overflow-hidden ${accent.glow}`}
-    whileHover={{
-      y: -12,
-      scale: 1.03,
-      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
-      transition: { duration: 0.4, ease: motionTokens.easing.sharp },
-    }}
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-50px" }}
-    transition={{ duration: 0.6, ease: motionTokens.easing.sharp }}
-  >
-    <motion.div
-      className={`absolute top-0 right-0 w-1.5 h-0 ${accent.bar} group-hover:h-full`}
-      transition={{ duration: 0.5, ease: motionTokens.easing.sharp }}
-    />
-    <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-transparent to-transparent group-hover:via-current ${accent.text} transition-all duration-700 opacity-80`} />
-    
-    {/* Premium gradient overlay on hover */}
-    <motion.div 
-      className={`absolute inset-0 bg-gradient-to-br ${accent.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-      initial={false}
-    />
-    
-    {/* Radial glow effect */}
-    <motion.div 
-      className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
-      style={{ 
-        background: `radial-gradient(circle at 50% 0%, ${accent.text.replace('text-', '')}20 0%, transparent 60%)` 
-      }}
-      initial={false}
-    />
-
-    <div className="flex justify-between items-start mb-8 relative z-10">
-      <motion.div
-        className={`w-12 h-12 ${accent.text} opacity-90 group-hover:opacity-100 transition-all duration-300 bg-gradient-to-br from-white to-gray-50 rounded-lg shadow-sm`}
-        whileHover={{ rotate: [0, -15, 15, 0], scale: 1.15 }}
-        transition={{ duration: 0.5 }}
-      >
-        {icon}
-      </motion.div>
-      <span className={`text-sm font-mono font-bold ${accent.text} opacity-70 group-hover:opacity-100 transition-opacity duration-300 bg-white/50 px-2 py-1 rounded`}>{(index + 1).toString().padStart(2, '0')}</span>
-    </div>
-
-    <div className="space-y-4 text-right relative z-10">
-      <h4 className={`text-2xl font-bold text-brand-dark tracking-tight transition-colors duration-300 ${accent.titleHover}`}>{title}</h4>
-      <p className="text-sm text-brand-muted leading-relaxed font-light group-hover:text-brand-dark/80 transition-colors duration-300">{desc}</p>
-    </div>
-
-    <div className="mt-8 pt-6 border-t border-brand-dark/10 flex justify-between items-center opacity-70 group-hover:opacity-100 transition-opacity duration-300 relative z-10">
-      <span className={`text-[11px] uppercase tracking-widest font-bold px-3 py-1.5 border ${accent.tag} group-hover:scale-105 transition-transform duration-300 rounded-sm shadow-sm`}>{impactTag}</span>
-      <motion.span
-        className={`${accent.text} opacity-0 group-hover:opacity-100 text-xl`}
-        animate={{ x: [0, -10, 0] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        →
-      </motion.span>
-    </div>
-  </motion.div>
-  );
-};
-
-export const ToolEntry: React.FC<{
-  title: string,
-  desc: string,
-  icon: React.ReactNode,
-  onClick: () => void
-}> = ({ title, desc, icon, onClick }) => (
-  <motion.button
-    onClick={onClick}
-    className="flex flex-col items-start w-full text-right border-2 border-brand-dark/10 p-8 hover:border-brand-accent hover:shadow-2xl transition-all group bg-white h-full relative overflow-hidden"
-    whileHover={{ y: -6, scale: 1.02 }}
-    whileTap={{ scale: 0.97 }}
-    transition={{ duration: 0.3, ease: motionTokens.easing.sharp }}
-  >
-    <div className="absolute top-0 right-0 w-0 h-1.5 bg-gradient-to-l from-brand-accent to-brand-touch group-hover:w-full transition-all duration-500"></div>
-    <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/10 via-transparent to-brand-touch/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(96, 125, 139, 0.15) 0%, transparent 70%)' }}></div>
-    
-    <div className="flex items-center justify-between w-full mb-6 relative z-10">
-      <motion.div 
-        className="w-12 h-12 text-brand-muted group-hover:text-brand-accent transition-colors p-2 border border-brand-dark/10 rounded-lg bg-gradient-to-br from-white to-gray-50 shadow-sm group-hover:shadow-md"
-        whileHover={{ rotate: [0, -10, 10, 0], scale: 1.15 }}
-        transition={{ duration: 0.4 }}
-      >
-        {icon}
-      </motion.div>
-      <motion.span 
-        className="text-brand-dark/50 group-hover:text-brand-accent transition-all text-xl"
-        whileHover={{ x: -6 }}
-      >
-        ←
-      </motion.span>
-    </div>
-    <h3 className="text-xl font-bold text-brand-dark mb-3 group-hover:text-brand-accent transition-colors relative z-10">{title}</h3>
-    <p className="text-sm text-brand-muted font-light leading-relaxed group-hover:text-brand-dark/80 transition-colors relative z-10">{desc}</p>
+export const ToolEntry: React.FC<{ title: string; desc: string; icon: React.ReactNode; onClick: () => void }> = ({ title, desc, icon, onClick }) => (
+  <motion.button onClick={onClick} whileHover={{ y: -3 }} whileTap={{ scale: 0.99 }}
+    className="w-full text-right border border-brand-dark/10 bg-white p-6 hover:border-brand-accent transition-all group">
+    <div className="w-9 h-9 text-brand-accent mb-5">{icon}</div>
+    <h3 className="font-bold text-lg mb-2 group-hover:text-brand-accent transition-colors">{title}</h3>
+    <p className="text-sm leading-relaxed text-brand-muted">{desc}</p>
   </motion.button>
 );
 
-interface LandingProps { onEnterTool: (view: string) => void; }
+export const ExpertiseCard: React.FC<{ title: string; desc: string; icon: React.ReactNode; index: number; impactTag: string }> = ({ title, desc, icon, index, impactTag }) => (
+  <div className="bg-white border border-brand-dark/10 p-7 md:p-8 h-full">
+    <div className="flex items-start justify-between mb-8"><div className="w-10 h-10 text-brand-accent">{icon}</div><span className="text-xs text-brand-muted">{String(index + 1).padStart(2, '0')}</span></div>
+    <h3 className="text-xl font-bold mb-3">{title}</h3><p className="text-brand-muted leading-relaxed text-sm">{desc}</p>
+    <div className="mt-6 pt-4 border-t border-brand-dark/10 text-xs text-brand-accent font-bold">{impactTag}</div>
+  </div>
+);
+
+const Arrow = () => <span aria-hidden="true" className="inline-block mr-2 transition-transform group-hover:-translate-x-1">←</span>;
 
 const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
-  const expertiseData = [
-   { title: 'פיתוח מנהלים', desc: 'שילוב של נגיעה אישית והבנה מדויקת של חוזקות וחולשות, יחד עם כלים ומיומנויות פרקטיים המותאמים לתרבות הארגונית ולצרכים הספציפיים של המנהלים אצלכם.', icon: <ExpertiseIcons.Leadership />, impact: 'צמיחה' },
-    { title: 'פיתוח צוותי הנהלה', desc: 'בניית שותפות אמיתית בצוות ההנהלה, הן ברמה הבין-אישית והן ברמה האסטרטגית: לאן מכוונים, איך עובדים יחד, ואיך הופכים חזון משותף לדרך פעולה.', icon: <ExpertiseIcons.Board />, impact: 'סנכרון' },
-    { title: 'ייעוץ ארגוני בצמתי שינוי', desc: 'ייעוץ ארגוני בתהליכי שינוי, התאמת המבנה הארגוני לאתגרי המחר ובניית גמישות עסקית לטווח ארוך.', icon: <ExpertiseIcons.Organization />, impact: 'אסטרטגיה' },
-    { title: 'בניית שותפויות בארגון', desc: 'מעבר מניהול ממשקים לעבודה בשותפות אמיתית, שיפור שיתוף הפעולה בין יחידות עסקיות שונות בארגון.', icon: <ExpertiseIcons.Partnership />, impact: 'אמון' },
-    { title: 'שילוב טכנולוגי בהדרכה', desc: 'שילוב עדין של טכנולוגיה בתהליכי הדרכה ופיתוח, והתאמת התהליכים לעולם הבינה המלאכותית.', icon: <ExpertiseIcons.Tech />, impact: 'יעילות' },
-    { title: 'ייעוץ אישי למנהלים (בדרגים שונים)', desc: 'סיוע אישי למנהלים לעשות קפיצת מדרגה ניהולית, מרחב דיסקרטי לחשיבה ולהתייעצות בצמתים מורכבים.', icon: <ExpertiseIcons.Coaching />, impact: 'השפעה' }
+  const services = [
+    { n: '01', title: 'פיתוח מנהלים', text: 'לעזור למנהלים להרחיב את טווח הפעולה שלהם, להתמודד עם צמתים מורכבים ולתרגם תובנות לשינוי בהתנהלות.' },
+    { n: '02', title: 'צוותי הנהלה', text: 'לבנות צוות הנהלה שהוא יותר מאוסף של מנהלים טובים: צוות שמסוגל לדבר על הדברים החשובים, לקבל החלטות ולעבוד יחד.' },
+    { n: '03', title: 'ממשקים ושותפויות', text: 'לפתוח מתחים, אי-הבנות ומאבקי אחריות בין יחידות — ולבנות דרך עבודה שמאפשרת לאנשים להצליח יחד.' },
+    { n: '04', title: 'שינוי וייעוץ ארגוני', text: 'להבין מה במבנה, בתהליכים, בתפקידים ובציפיות מקשה על הארגון להתקדם, ולבנות שינוי שאפשר לחיות איתו.' }
+  ];
+  const programs = [
+    { title: 'פיתוח אישי שמגיע עד להתנהגות', tag: 'OBT · IMMUNITY TO CHANGE', text: 'תהליך מובנה שעוזר לזהות לא רק מה רוצים לשנות, אלא גם מה עוצר אותנו בפועל — ולתרגל שינוי בהדרגה.', href: 'https://obt.kilon-consulting.com/' },
+    { title: 'משוב שמייצר התפתחות', tag: 'פיתוח ארגוני', text: 'חלופה לתהליך הערכת ביצועים שמחזירה לעובד את האחריות להתפתחותו, ומשאירה למנהל ולארגון תפקיד תומך וברור.', href: 'mailto:gilad@kilon.co.il?subject=משוב%20שמייצר%20התפתחות' },
+    { title: 'קוד הצבעים', tag: 'סדנה וכלי אישי', text: 'להבין איך אנשים שונים מתקשרים, מה מניע אותם ואיך להתאים את השיחה בלי לוותר על עצמנו.', href: 'mailto:gilad@kilon.co.il?subject=קוד%20הצבעים' },
+    { title: 'מערכת ויחסים', tag: 'שותפויות ועבודת ממשקים', text: 'לעבוד על שני הדברים יחד: היחסים בין האנשים והמערכת שבה הם צריכים להצליח לעבוד יחד.', href: 'mailto:gilad@kilon.co.il?subject=מערכת%20ויחסים' }
   ];
 
-  return (
-    <div className="min-h-screen flex flex-col bg-brand-beige text-brand-dark font-sans" dir="rtl">
-
-      {/* Cursor Trail Effect */}
-      <CursorTrail />
-
-      {/* Continuous Growth Animation */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Growing organic shapes - continuous expansion */}
-        <motion.div
-          className="absolute bottom-[10%] left-[15%] border-4 border-brand-accent/30 rounded-full"
-          style={{ width: 300, height: 300 }}
-          animate={{
-            scale: [1, 2.5, 1],
-            opacity: [0.2, 0.6, 0.2],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        
-        <motion.div
-          className="absolute bottom-[15%] left-[20%] border-3 border-brand-touch/30 rounded-full"
-          style={{ width: 200, height: 200 }}
-          animate={{
-            scale: [0.8, 2.2, 0.8],
-            opacity: [0.15, 0.5, 0.15],
-            rotate: [0, -120, -240]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        
-        <motion.div
-          className="absolute bottom-[20%] left-[25%] border-2 border-brand-gold/30 rounded-full"
-          style={{ width: 150, height: 150 }}
-          animate={{
-            scale: [0.6, 2, 0.6],
-            opacity: [0.1, 0.45, 0.1],
-            rotate: [0, 90, 180]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        
-        {/* New circles that appear and grow */}
-        <motion.div
-          className="absolute bottom-[25%] right-[15%] border-2 border-brand-accent/25 rounded-full"
-          style={{ width: 100, height: 100 }}
-          animate={{
-            scale: [0, 1.8, 0],
-            opacity: [0, 0.4, 0]
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        />
-        <motion.div
-          className="absolute bottom-[30%] right-[25%] border-2 border-brand-touch/25 rounded-full"
-          style={{ width: 80, height: 80 }}
-          animate={{
-            scale: [0, 1.6, 0],
-            opacity: [0, 0.35, 0]
-          }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
-        />
-        
-        {/* Right-top animated square */}
-        <motion.div
-          className="absolute top-[10%] right-[10%] border-2 border-brand-accent/30"
-          style={{ width: 80, height: 80 }}
-          animate={{
-            scale: [1, 1.5, 1],
-            rotate: [0, 45, 90, 135, 180],
-            opacity: [0.2, 0.5, 0.3, 0.5, 0.2]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        
-        {/* Connecting lines that grow outward */}
-        <motion.div
-          className="absolute top-[30%] left-[30%] h-[1px] bg-brand-dark/10"
-          animate={{
-            width: [0, 400, 0],
-            opacity: [0, 0.3, 0]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute top-[40%] right-[30%] h-[1px] bg-brand-dark/10"
-          animate={{
-            width: [0, 300, 0],
-            opacity: [0, 0.25, 0]
-          }}
-          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        />
-        <motion.div
-          className="absolute top-[50%] left-[25%] h-[1px] bg-brand-dark/10"
-          animate={{
-            width: [0, 350, 0],
-            opacity: [0, 0.28, 0]
-          }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        />
-        
-        {/* Small dots that move upward continuously */}
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-3 h-3 bg-brand-accent/40 rounded-full"
-            style={{
-              left: `${15 + i * 7}%`,
-              bottom: '5%',
-            }}
-            animate={{
-              y: [0, -100 - (i * 20), 0],
-              opacity: [0, 0.6, 0],
-              scale: [0.5, 1.2, 0.5]
-            }}
-            transition={{
-              duration: 6 + i * 0.5,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: i * 0.5
-            }}
-          />
-        ))}
-        
-        {/* Gentle gradient overlay */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-t from-brand-beige via-transparent to-brand-beige"
-          animate={{ opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
+  return <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
+    <section className="relative overflow-hidden border-b border-brand-dark/10">
+      <div className="absolute left-[-8rem] top-[-6rem] w-[28rem] h-[28rem] rounded-full border border-brand-accent/15 pointer-events-none" />
+      <div className="absolute left-[-4rem] top-[-2rem] w-[20rem] h-[20rem] rounded-full border border-brand-touch/15 pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 relative">
+        <div className="max-w-4xl">
+          <p className="text-xs md:text-sm font-bold tracking-[0.18em] text-brand-accent mb-7">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה</p>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-light leading-[1.13] tracking-tight max-w-4xl">
+            לפעמים הבעיה היא לא האנשים.
+            <span className="block font-black mt-2">היא גם הדרך שבה הם נדרשים לעבוד יחד.</span>
+          </h1>
+          <p className="text-lg md:text-2xl leading-relaxed text-brand-muted max-w-3xl mt-8">
+            אני גלעד קילון. אני עוזר למנהלים, לצוותי הנהלה ולארגונים לפתוח את מה שלא עובד — ביחסים, בתקשורת ובתהליכי העבודה — כדי לבנות משהו שכן עובד.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 mt-10">
+            <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-7 py-4 bg-brand-dark text-white font-bold hover:bg-brand-accent transition-colors">נדבר על האתגר שלך <Arrow /></a>
+            <button onClick={() => onEnterTool('about')} className="inline-flex items-center justify-center px-7 py-4 border border-brand-dark/20 font-bold hover:border-brand-dark transition-colors">קצת עליי <Arrow /></button>
+          </div>
+          <div className="mt-12 pt-5 border-t border-brand-dark/10 flex flex-wrap gap-x-8 gap-y-3 text-sm text-brand-muted">
+            <span>20+ שנות ניסיון בייעוץ ארגוני</span><span>עבודה עם הנהלות ומנהלים</span><span>עומק מקצועי, בלי לאבד את הפרקטיקה</span>
+          </div>
+        </div>
       </div>
+    </section>
 
-      {/* Background Grid — breathing pulse */}
-      <motion.div
-        className="fixed inset-0 bg-grid-pattern pointer-events-none z-[1]"
-        animate={{ opacity: [0.25, 0.42, 0.25] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      {/* Floating color orbs — hero ambient */}
-      <div className="fixed inset-0 pointer-events-none z-[2] overflow-hidden">
-        <ColorOrbs variant="light" />
+    <section className="max-w-7xl mx-auto px-6 py-20 md:py-28">
+      <div className="grid md:grid-cols-[0.75fr_1.25fr] gap-10 md:gap-20">
+        <div>
+          <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איך אני עובד</p>
+          <h2 className="text-3xl md:text-5xl font-black leading-tight">לא מסתפקים במה שרואים על פני השטח.</h2>
+        </div>
+        <div className="space-y-6 text-lg md:text-xl leading-relaxed text-brand-muted">
+          <p>כשיש חיכוך בין מנהלים או יחידות, קל להחליט שזו בעיה של אופי, תקשורת או חוסר שיתוף פעולה. לפעמים זה חלק מהסיפור. אבל לא פעם, גם המבנה, חלוקת האחריות, התהליכים והציפיות מייצרים את החיכוך.</p>
+          <p>אני נכנס לתמונה כדי להבין מה באמת קורה — גם את מה שנאמר וגם את מה שכולם מרגישים אבל לא אומרים. משם אפשר לנהל שיחה ישירה, להגדיר מחדש את דרך העבודה ולייצר שינוי שמחזיק מעבר לסדנה או לפגישה.</p>
+          <p className="text-brand-dark font-bold">אמת פשוטה, אבל אמפתית. עומק, שמוביל למעשה.</p>
+        </div>
       </div>
+    </section>
 
-      {/* Sidebar Decoration (Desktop) */}
-      <div className="hidden xl:flex fixed left-12 top-0 bottom-0 flex-col justify-center items-center z-50 pointer-events-none opacity-60">
-        <div className="h-full w-px bg-brand-touch/30"></div>
-        <span className="[writing-mode:vertical-rl] py-8 font-mono text-[9px] uppercase tracking-[0.3em] rotate-180 text-brand-touch">Strategic Architecture v2.0</span>
-        <div className="h-full w-px bg-brand-touch/30"></div>
+    <section className="bg-white border-y border-brand-dark/10">
+      <div className="max-w-7xl mx-auto px-6 py-20 md:py-24">
+        <div className="max-w-3xl mb-12">
+          <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איפה אנחנו יכולים לעבוד יחד</p>
+          <h2 className="text-3xl md:text-5xl font-black leading-tight">האתגרים משתנים. השאלה היא מה צריך להשתנות כדי להתקדם.</h2>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {services.map(s => <article key={s.n} className="border border-brand-dark/10 p-6 md:p-7 bg-brand-beige/50">
+            <div className="text-xs text-brand-accent font-bold mb-8">{s.n}</div><h3 className="text-xl font-bold mb-4">{s.title}</h3><p className="text-sm md:text-base leading-relaxed text-brand-muted">{s.text}</p>
+          </article>)}
+        </div>
       </div>
+    </section>
 
-      <main className="flex-1 relative z-10">
+    <section className="max-w-7xl mx-auto px-6 py-20 md:py-28">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="max-w-3xl"><p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">תהליכים וכלים שפיתחתי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">לא עוד כלי בפני עצמו. דרך לעבוד על שינוי.</h2></div>
+        <p className="text-brand-muted leading-relaxed max-w-md">הכלים נולדו מתוך העבודה הארגונית. הם עוזרים להפוך שיחה לתהליך, ותובנה לצעד שאפשר ליישם.</p>
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
+        {programs.map((p, i) => <a key={p.title} href={p.href} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener noreferrer' : undefined} className="group border border-brand-dark/10 bg-white p-7 md:p-9 hover:border-brand-accent transition-colors">
+          <p className="text-[11px] font-bold tracking-[0.14em] text-brand-accent mb-5">{p.tag}</p><div className="flex gap-6 items-start"><span className="text-sm text-brand-muted mt-1">0{i + 1}</span><div><h3 className="text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{p.title}</h3><p className="text-brand-muted leading-relaxed">{p.text}</p><span className="inline-block mt-6 text-sm font-bold">לשיחה על התהליך <Arrow /></span></div></div>
+        </a>)}
+      </div>
+    </section>
 
-        {/* Hero Section */}
-        <section className="min-h-[90vh] flex flex-col justify-center items-center text-center px-6 relative overflow-hidden">
-          {/* Dramatic gradient background overlay */}
-          <motion.div 
-            className="absolute inset-0 bg-gradient-to-b from-brand-touch/5 via-transparent to-brand-accent/5 opacity-60"
-            animate={{ 
-              backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'],
-              opacity: [0.4, 0.7, 0.4]
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ backgroundSize: '200% 200%' }}
-          />
-          
-          {/* Decorative floating lines - enhanced */}
-          <motion.div
-            className="absolute top-1/4 left-[5%] w-24 h-0.5 bg-gradient-to-r from-transparent via-brand-touch to-transparent hidden lg:block"
-            animate={{ scaleX: [0.3, 1, 0.3], opacity: [0.2, 0.8, 0.2], x: [0, 20, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute bottom-1/3 right-[8%] w-32 h-0.5 bg-gradient-to-r from-transparent via-brand-gold to-transparent hidden lg:block"
-            animate={{ scaleX: [1, 0.3, 1], opacity: [0.3, 0.9, 0.3], x: [0, -30, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-          />
-          <motion.div
-            className="absolute top-[20%] right-[12%] w-4 h-4 border-2 border-brand-accent hidden md:block rounded-sm"
-            animate={{ rotate: [0, 90, 180, 270, 360], scale: [1, 1.3, 1], borderColor: ['#607d8b', '#f26522', '#c5a065', '#607d8b'] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-          />
-          
-          {/* Additional floating elements */}
-          <motion.div
-            className="absolute top-[35%] left-[15%] w-2 h-2 bg-brand-touch/40 rounded-full hidden lg:block"
-            animate={{ y: [0, -20, 0], opacity: [0.3, 0.8, 0.3] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute bottom-[25%] right-[20%] w-3 h-3 bg-brand-gold/30 rounded-full hidden lg:block"
-            animate={{ y: [0, 25, 0], opacity: [0.2, 0.7, 0.2] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-          />
+    <section className="bg-brand-dark text-white">
+      <div className="max-w-7xl mx-auto px-6 py-20 md:py-24 grid md:grid-cols-[1fr_0.8fr] gap-12 items-center">
+        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">קצת עליי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">אני לא מגיע עם תשובה מוכנה. אני מגיע כדי להבין איתכם מה באמת צריך לקרות.</h2><p className="text-white/70 text-lg leading-relaxed mt-6 max-w-2xl">יותר מעשרים שנה אני עובד עם ארגונים, מנהלים וצוותי הנהלה. אני מביא חשיבה מערכתית, סקרנות לאנשים ואומץ לפתוח שיחות שלא תמיד קל לנהל — בלי לשכוח שבסוף צריך לעבוד אחרת, לא רק להבין יותר.</p><button onClick={() => onEnterTool('about')} className="mt-8 border border-white/30 px-6 py-3 font-bold hover:bg-white hover:text-brand-dark transition-colors">הסיפור שלי <Arrow /></button></div>
+        <div className="border-r-2 border-brand-touch pr-7 md:pr-10 space-y-5 text-lg leading-relaxed text-white/80"><p>שותף לדרך, לא ספק.</p><p>קשוב למה שקורה, לא תקוע בתוכנית.</p><p>מחבר בין אנשים, תהליכים ותוצאות.</p></div>
+      </div>
+    </section>
 
-          <div className="absolute top-10 right-10 hidden sm:block">
-            <motion.div
-              className="text-right"
-              animate={{ opacity: [0.6, 1, 0.6] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              <motion.span
-                className="text-[10px] font-mono text-brand-touch uppercase tracking-widest block"
-                animate={{ letterSpacing: ['0.3em', '0.35em', '0.3em'] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                Consulting API
-              </motion.span>
-              <span className="text-[10px] font-mono text-brand-muted uppercase tracking-widest block">Est. 2018</span>
-            </motion.div>
-          </div>
-
-          <div className="space-y-8 max-w-5xl mx-auto flex flex-col items-center relative z-10">
-
-            {/* Central Brand Identity */}
-            <FadeIn delay={0.1}>
-              <motion.div 
-                className="mb-4"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              >
-                <BrandLogo size="md" dark={true} className="items-center" />
-              </motion.div>
-            </FadeIn>
-
-            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-[70px] font-black leading-[0.9] tracking-tighter text-brand-dark select-none text-center" dir="ltr">
-              <TextReveal text="SIMPLE." as="span" className="block bg-gradient-to-r from-brand-dark to-brand-accent bg-clip-text text-transparent" delay={0.2} />
-              <TextReveal text="DEEP." as="span" className="block bg-gradient-to-r from-brand-accent to-brand-touch bg-clip-text text-transparent" delay={0.5} />
-              <TextReveal text="REAL." as="span" className="block bg-gradient-to-r from-brand-touch to-brand-gold bg-clip-text text-transparent" delay={0.8} />
-            </h1>
-
-            <motion.div
-              className="h-0.5 bg-gradient-to-r from-transparent via-brand-touch to-transparent mx-auto"
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 120, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 1.1, ease: motionTokens.easing.sharp }}
-            />
-
-            <FadeIn delay={1.2} className="w-full" direction="none">
-              <div dir="rtl">
-                <p className="text-xl md:text-2xl font-light text-brand-dark/80 max-w-2xl mx-auto leading-relaxed">
-                  שותף לדרך שרץ איתך למרחקים ארוכים. <br className="hidden md:block" />
-                  <span className="font-bold text-brand-dark">מייצר בהירות, שקט ושליטה בתוך הרעש הארגוני.</span>
-                </p>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={1.4} className="w-full" direction="none">
-              <div className="flex flex-col md:flex-row gap-6 justify-center items-center pt-8">
-                <motion.button
-                  onClick={() => onEnterTool('lab')}
-                  className="px-10 py-4 bg-gradient-to-r from-brand-accent to-brand-touch text-white min-w-[220px] text-sm font-bold uppercase tracking-[0.2em] hover:from-brand-touch hover:to-brand-gold transition-all shadow-xl hover:shadow-2xl hover:shadow-brand-accent/30"
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  Open Workspace
-                </motion.button>
-                <motion.a
-                  href="#expertise"
-                  className="px-10 py-4 border-2 border-brand-accent/30 text-brand-accent min-w-[220px] text-sm font-bold uppercase tracking-[0.2em] hover:border-brand-accent hover:bg-brand-accent/10 transition-all backdrop-blur-md text-center"
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  Discover Methodology
-                </motion.a>
-              </div>
-            </FadeIn>
-
-            {/* Scroll indicator */}
-            <motion.div
-              className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, y: [0, 12, 0] }}
-              transition={{
-                opacity: { delay: 2, duration: 0.6 },
-                y: { delay: 2, duration: 2, repeat: Infinity, ease: 'easeInOut' },
-              }}
-            >
-              <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-brand-muted">Scroll</span>
-              <div className="w-px h-10 bg-gradient-to-b from-brand-touch to-transparent" />
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Expertise Grid */}
-        <section id="expertise" className="py-32 px-6 border-t border-brand-dark/5 bg-white/40 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto">
-            <motion.div 
-              className="flex flex-col md:flex-row justify-between items-end mb-20 text-right w-full"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, ease: motionTokens.easing.sharp }}
-            >
-              <div className="max-w-xl">
-                <motion.span 
-                  className="text-[9px] font-bold text-brand-accent uppercase tracking-[0.25em] block mb-4"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                >
-                  Our Expertise
-                </motion.span>
-                <h2 className="text-4xl md:text-5xl font-black text-brand-dark tracking-tight leading-tight">
-                  בניית תשתיות עומק<br />
-                  <span className="text-brand-muted">לצמיחה עסקית.</span>
-                </h2>
-              </div>
-              <motion.div 
-                className="hidden md:block w-32 h-px bg-brand-dark/10 mb-4"
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-              />
-            </motion.div>
-
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-dark/10 border border-brand-dark/10 shadow-sm overflow-hidden"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5 }}
-            >
-              {expertiseData.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: idx * 0.08, ease: motionTokens.easing.sharp }}
-                >
-                  <ExpertiseCard index={idx} title={item.title} desc={item.desc} icon={item.icon} impactTag={item.impact} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ===== SMART SEARCH — Primary Feature ===== */}
-        <section className="relative bg-brand-dark overflow-hidden">
-          {/* Background texture */}
-          <div className="absolute inset-0 bg-grid-pattern opacity-[0.06] pointer-events-none" style={{backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)'}}></div>
-
-          {/* Accent glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[2px] bg-gradient-to-r from-transparent via-brand-touch to-transparent opacity-60"></div>
-
-          <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 md:py-32 text-center">
-            <FadeIn direction="none">
-              <span className="inline-block text-[10px] font-bold text-brand-touch uppercase tracking-[0.35em] mb-6">AI Solution Architect</span>
-            </FadeIn>
-            <FadeIn delay={0.1}>
-              <h2 className="text-4xl md:text-6xl font-black text-white leading-[0.95] tracking-tighter mb-6">
-                מה האתגר<br />
-                <span className="text-brand-muted font-light">שלך עכשיו?</span>
-              </h2>
-            </FadeIn>
-            <FadeIn delay={0.2} direction="none">
-              <p className="text-white/50 font-light text-lg mb-12 max-w-xl mx-auto">תאר במילים שלך — ואגזור לך את הפתרון המדויק</p>
-            </FadeIn>
-
-            {/* Inline SmartSearch with dark theme */}
-            <FadeIn delay={0.3} direction="none">
-              <div className="max-w-2xl mx-auto">
-                <SmartSearchDark />
-              </div>
-            </FadeIn>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="bg-brand-dark text-white pt-24 pb-12 px-6">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 border-b border-white/10 pb-16">
-            <div className="text-center md:text-right">
-              <BrandLogo size="md" dark={false} className="items-center md:items-end" />
-
-            </div>
-
-            <div className="flex flex-col items-center md:items-end gap-2">
-              <a href="mailto:gilad@kilon.org" className="text-2xl font-light hover:text-brand-gold transition-colors">gilad@kilon.org</a>
-              <a href="tel:+972526417512" className="text-xl font-mono text-brand-muted hover:text-white transition-colors">052-6417512</a>
-            </div>
-          </div>
-
-          <div className="max-w-7xl mx-auto pt-12 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.2em] text-white/30 gap-4">
-            <p>&copy; 2025 ALL RIGHTS RESERVED.</p>
-            <p>TLV / NYC / LND</p>
-          </div>
-        </footer>
-
-      </main>
-    </div>
-  );
+    <section className="max-w-7xl mx-auto px-6 py-20 md:py-24">
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה לא עובד אצלכם כרגע?</h2><p className="mt-5 text-lg text-brand-muted leading-relaxed">לא צריך להגיע עם אבחון או עם פתרון. נתחיל ממה שקורה בשטח ונבדוק יחד מה יכול לעזור.</p><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex mt-8 px-7 py-4 bg-brand-accent text-white font-bold hover:bg-brand-dark transition-colors">לתיאום שיחה <Arrow /></a></div>
+        <div className="border border-brand-dark/10 bg-white p-5 md:p-8"><p className="text-xs font-bold tracking-[0.14em] text-brand-muted mb-4">אם נוח לך להתחיל בכתב</p><SmartSearch /></div>
+      </div>
+    </section>
+    <footer className="border-t border-brand-dark/10 px-6 py-8"><div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between text-sm text-brand-muted"><BrandLogo /><span>גלעד קילון · ייעוץ ארגוני ופיתוח מנהלים</span><a href="mailto:gilad@kilon.co.il" className="hover:text-brand-accent">gilad@kilon.co.il</a></div></footer>
+  </div>;
 };
 
 export default Landing;
