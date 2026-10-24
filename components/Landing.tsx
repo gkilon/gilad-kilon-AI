@@ -100,19 +100,16 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </div>
           </div>
           <div className="order-1 lg:order-2 max-w-3xl">
-            <div className="flex items-center gap-4 mb-7">
-              <img src="/gilad-portrait.svg" alt="גלעד קילון" className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-brand-gold/80 shadow-md shrink-0" />
-              <div>
-                <p className="text-lg md:text-xl font-bold text-white">גלעד קילון</p>
-                <p className="text-xs md:text-sm font-bold tracking-[0.08em] text-brand-gold mt-1">יועץ ארגוני · פיתוח מנהלים · צוותי הנהלה</p>
-              </div>
+            <div className="mb-7">
+              <p className="text-2xl md:text-3xl font-bold text-white tracking-tight">גלעד קילון</p>
+              <p className="text-sm md:text-base font-bold tracking-[0.04em] text-brand-gold mt-3">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-light leading-[1.12] tracking-tight">
               יועץ ארגוני.
               <span className="block font-bold mt-3">אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.</span>
             </h1>
             <p className="text-lg md:text-xl leading-relaxed text-white/75 max-w-2xl mt-7">
-              אני גלעד קילון. כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני מנסה להבין מה באמת קורה, לדבר על זה בגובה העיניים ולעזור להפוך הבנה לעבודה אחרת ולתוצאות.
+              כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני אומר את הדברים ישר, גם כשלא נוח, בלי הצגות ובלי לאבד את הכבוד לאנשים. המטרה היא להבין מה באמת קורה, ולתרגם את זה לעבודה אחרת ולתוצאות.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 mt-8">
               <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-7 py-4 bg-brand-touch text-white font-bold hover:bg-brand-gold hover:text-brand-dark transition-colors">נדבר על האתגר שלך <Arrow /></a>
