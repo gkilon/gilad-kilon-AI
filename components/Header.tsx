@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
     { slug: 'system-and-relationships', label: 'מערכת ויחסים: סדנת שותפויות' },
     { slug: 'negotiation-to-partnership', label: 'ממשא ומתן לבניית שותפויות' },
     { slug: 'obt-capsule', label: 'קפסולת OBT' },
-    { slug: 'system-and-relationships-lecture', label: 'בין מערכת ליחסים' },
+    { slug: 'system-and-relationships-lecture', label: 'בין מערכת ליחסים: מבנה, פונקציות ואנשים' },
     { slug: 'technology-and-relationships', label: 'כשהטכנולוגיה משתגעת, מישהו צריך להישאר שפוי' }
   ];
   const handleProducts = (slug?: string) => {
