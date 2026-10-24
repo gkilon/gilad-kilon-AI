@@ -100,7 +100,13 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </div>
           </div>
           <div className="order-1 lg:order-2 max-w-3xl">
-            <p className="text-xs md:text-sm font-bold tracking-[0.14em] text-brand-gold mb-6">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה</p>
+            <div className="flex items-center gap-4 mb-7">
+              <img src="/gilad-portrait.svg" alt="גלעד קילון" className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-brand-gold/80 shadow-md shrink-0" />
+              <div>
+                <p className="text-lg md:text-xl font-bold text-white">גלעד קילון</p>
+                <p className="text-xs md:text-sm font-bold tracking-[0.08em] text-brand-gold mt-1">יועץ ארגוני · פיתוח מנהלים · צוותי הנהלה</p>
+              </div>
+            </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-light leading-[1.12] tracking-tight">
               יועץ ארגוני.
               <span className="block font-bold mt-3">אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.</span>
