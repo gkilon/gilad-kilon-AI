@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 type Offering = { slug: string; title: string; kind: string; description: string; detail: string; url?: string; group: 'unique' | 'workshop' };
 const offerings: Offering[] = [
@@ -24,11 +24,11 @@ const ProductsPage: React.FC = () => {
     <button onClick={() => navigate('/products')} className="text-sm font-bold text-brand-muted hover:text-brand-dark mb-10">← לכל המוצרים והסדנאות</button>
     <p className="text-xs font-bold text-brand-accent mb-4">{selected.kind}</p><h1 className="text-4xl md:text-6xl font-black leading-tight max-w-4xl">{selected.title}</h1>
     <p className="text-xl md:text-2xl leading-relaxed text-brand-muted mt-7 max-w-3xl">{selected.description}</p>
-    <div className="mt-10 border-t border-brand-dark/10 pt-8 max-w-3xl"><p className="text-lg leading-relaxed">{selected.detail}</p><div className="mt-8 flex flex-wrap gap-4 items-center">
-      {selected.url && <a href={selected.url} target="_blank" rel="noopener noreferrer" className="inline-flex px-6 py-3 bg-brand-accent text-white font-bold hover:bg-brand-touch transition-colors">לדף הנחיתה של התהליך ←</a>}
-      <a href={`mailto:gilad@kilon.co.il?subject=${encodeURIComponent(selected.title)}`} className="inline-flex px-6 py-3 border border-brand-dark/20 font-bold hover:border-brand-dark transition-colors">לשיחה על הנושא ←</a>
+    <div className="mt-10 border-t border-brand-dark/10 pt-8 max-w-3xl"><p className="text-lg leading-relaxed">{selected.detail}</p><div className="mt-8 flex flex-wrap gap-3 items-center">
+      {selected.url && <a href={selected.url} target="_blank" rel="noopener noreferrer" className="inline-flex px-6 py-3 bg-brand-accent text-white font-bold hover:bg-brand-touch transition-colors">להיכרות עם התהליך ←</a>}
+      <Link to={`/contact?topic=${encodeURIComponent(selected.title)}`} className="inline-flex px-6 py-3 border border-brand-dark/20 font-bold hover:border-brand-dark transition-colors">לפרטים נוספים ולשיחה ←</Link>
     </div></div></div></main>;
-  const renderItems = (items: Offering[]) => <div className="grid md:grid-cols-2 gap-4">{items.map(item => <button key={item.slug} onClick={() => navigate(`/products/${item.slug}`)} className="text-right bg-brand-paper border border-brand-dark/10 p-7 md:p-9 hover:border-brand-accent hover:bg-white transition-colors"><p className="text-xs font-bold text-brand-accent mb-4">{item.kind}</p><h3 className="text-xl md:text-2xl font-bold mb-3">{item.title}</h3><p className="text-brand-muted leading-relaxed">{item.description}</p><span className="inline-block mt-6 font-bold underline underline-offset-4">לפרטים ←</span></button>)}</div>;
+  const renderItems = (items: Offering[]) => <div className="grid md:grid-cols-2 gap-4">{items.map(item => <button key={item.slug} onClick={() => navigate(`/products/${item.slug}`)} className="text-right bg-brand-paper border border-brand-dark/10 p-7 md:p-9 hover:border-brand-accent hover:bg-white transition-colors"><p className="text-xs font-bold text-brand-accent mb-4">{item.kind}</p><h3 className="text-xl md:text-2xl font-bold mb-3">{item.title}</h3><p className="text-brand-muted leading-relaxed">{item.description}</p><span className="inline-block mt-6 font-bold underline underline-offset-4">לפרטים נוספים ←</span></button>)}</div>;
   return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl"><div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
     <header className="max-w-4xl mb-14 md:mb-20 border-r-4 border-brand-touch pr-6 md:pr-8"><p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">מוצרים, הרצאות וסדנאות</p><h1 className="text-4xl md:text-6xl font-black leading-tight">דרכים שונות לעבוד יחד.</h1><p className="text-lg md:text-2xl leading-relaxed text-brand-muted mt-6">כאן תמצאו תהליכים שפיתחתי לצד הרצאות וסדנאות. לכל אחד יש מטרה אחרת, ואפשר לבחור את הפורמט שמתאים לצורך של הארגון.</p></header>
     <section className="mb-16"><h2 className="text-2xl md:text-3xl font-bold mb-6">תהליכים ייחודיים</h2>{renderItems(unique)}</section>
