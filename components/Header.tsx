@@ -76,6 +76,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             </div></div>}
           </div>
           <button onClick={() => handleNav('lab')} className={`px-4 py-2 border text-sm font-semibold transition-colors ${isLabView ? 'border-brand-accent text-brand-accent bg-white' : 'border-brand-dark/20 hover:border-brand-dark'}`}>המעבדה</button>
+          <button onClick={() => { navigate('/contact'); window.scrollTo(0, 0); }} className="px-4 py-2 bg-brand-dark text-white text-sm font-semibold hover:bg-brand-accent transition-colors">בואו נדבר</button>
         </nav>
         <div className="flex items-center gap-3">
           {session ? <div className="flex items-center gap-3">
@@ -103,9 +104,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             </div>}
           </div>
           <button onClick={() => handleNav('lab')} className="text-xl font-bold border border-brand-dark/20 px-6 py-3">המעבדה</button>
+          <button onClick={() => { navigate('/contact'); setIsMenuOpen(false); window.scrollTo(0, 0); }} className="text-xl font-bold bg-brand-dark text-white px-6 py-3">בואו נדבר</button>
           {!session && <button onClick={() => handleNav('login')} className="text-brand-muted">כניסה</button>}
         </nav>
-        <div className="px-6 py-8 text-center border-t border-brand-dark/10"><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-block bg-brand-dark text-white px-7 py-3 font-bold">נדבר</a></div>
+        <div className="px-6 py-8 text-center border-t border-brand-dark/10"><p className="text-sm text-brand-muted">WhatsApp זמין גם דרך הכפתור הירוק באתר.</p></div>
       </motion.div>}
     </AnimatePresence>
   </>;
