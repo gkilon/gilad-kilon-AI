@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 type ContactItem = { id: string; name: string; email: string; phone?: string; organization?: string; topic: string; message: string; createdAt: string };
@@ -28,7 +28,6 @@ const ContactPage: React.FC = () => {
     } catch (error) { setStatus(error instanceof Error ? error.message : 'שגיאה בטעינת הפניות'); }
     finally { setBusy(false); }
   };
-  useEffect(() => { if (adminMode && adminToken) void loadContacts(); }, [adminMode]);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault(); setBusy(true); setStatus('');
