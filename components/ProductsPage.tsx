@@ -33,6 +33,7 @@ const offerings: Offering[] = [
     detail: 'תכנית שמציעה חשיבה מחודשת על תהליך הערכת הביצועים. במקום להסתפק בשיחה תקופתית ובמשוב, יוצרים תהליך שמסייע לעובד להוביל את ההתפתחות שלו, כשהמנהל משמש גורם תומך והארגון מאפשר את התנאים לכך.',
     audience: 'ארגונים ומשאבי אנוש שרוצים לבחון מחדש את תהליך הערכת הביצועים ואת חלוקת האחריות להתפתחות.',
     approach: 'לא מצפים מכל מנהל להפוך למאמן אישי. בונים תהליך וכלים שמחזירים לעובד אחריות ומגדירים למנהל ול-HR תפקיד תומך וברור.',
+    url: 'https://effervescent-gelato-193991.netlify.app/',
     group: 'process'
   },
   {
@@ -135,8 +136,17 @@ const ProductsPage: React.FC = () => {
   const selected = offerings.find(item => item.slug === slug) || (slug === 'feedback' ? offerings.find(item => item.slug === 'p2g') : undefined);
   const processItems = offerings.filter(item => item.group === 'process');
   const focusedItems = offerings.filter(item => item.group === 'focused');
+  const category = slug === 'processes' ? {
+    title: 'ייעוץ ותהליכים',
+    intro: 'עבודה משותפת על אתגרים ניהוליים וארגוניים — מפיתוח מנהלים וצוותים ועד ממשקים ושינוי.',
+    items: processItems
+  } : slug === 'workshops' ? {
+    title: 'סדנאות והרצאות',
+    intro: 'מפגשים ממוקדים שמחברים בין תפיסה מקצועית, התנסות וכלים שאפשר לקחת לעבודה.',
+    items: focusedItems
+  } : null;
 
-  if (slug && !selected) return <main className="min-h-screen bg-brand-beige px-6 py-24 text-center" dir="rtl"><h1 className="text-3xl font-bold">לא מצאתי את העמוד הזה</h1><button onClick={() => navigate('/products')} className="mt-6 underline">לכל התהליכים והסדנאות</button></main>;
+  if (slug && !selected && !category) return <main className="min-h-screen bg-brand-beige px-6 py-24 text-center" dir="rtl"><h1 className="text-3xl font-bold">לא מצאתי את העמוד הזה</h1><button onClick={() => navigate('/products')} className="mt-6 underline">לכל התהליכים והסדנאות</button></main>;
 
   if (selected) return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
     <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
@@ -149,10 +159,26 @@ const ProductsPage: React.FC = () => {
         <section><h2 className="text-lg font-bold mb-2">למי זה מתאים?</h2><p className="text-lg leading-relaxed text-brand-muted">{selected.audience}</p></section>
         <section><h2 className="text-lg font-bold mb-2">מה אני מביא לתהליך?</h2><p className="text-lg leading-relaxed text-brand-muted">{selected.approach}</p></section>
         <div className="flex flex-wrap gap-3 items-center pt-2">
-          {selected.url && <a href={selected.url} target="_blank" rel="noopener noreferrer" className="inline-flex px-6 py-3 bg-brand-accent text-white font-bold hover:bg-brand-touch transition-colors">{selected.slug === 'obt' ? 'להיכרות עם כלי OBT ←' : selected.slug === 'communication-styles' ? 'להיכרות עם כלי סגנונות התקשורת ←' : 'לכלי המשלים ←'}</a>}
+          {selected.url && <a href={selected.url} target="_blank" rel="noopener noreferrer" className="inline-flex px-6 py-3 bg-brand-accent text-white font-bold hover:bg-brand-touch transition-colors">{selected.slug === 'obt' ? 'להיכרות עם כלי OBT ←' : selected.slug === 'communication-styles' ? 'להיכרות עם כלי סגנונות התקשורת ←' : selected.slug === 'p2g' ? 'לדף תכנית המשוב ←' : 'לכלי המשלים ←'}</a>}
           <Link to={`/contact?topic=${encodeURIComponent(selected.title)}`} className="inline-flex px-6 py-3 border border-brand-dark/20 font-bold hover:border-brand-dark transition-colors">לשיחה על הנושא ←</Link>
         </div>
       </div>
+    </div>
+  </main>;
+
+  if (category) return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
+    <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
+      <Link to="/products" className="inline-block text-sm font-bold text-brand-muted hover:text-brand-dark mb-10">← לכל האפשרויות</Link>
+      <header className="max-w-4xl mb-12 md:mb-16 border-r-4 border-brand-touch pr-6 md:pr-8">
+        <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איך אפשר לעבוד יחד</p>
+        <h1 className="text-4xl md:text-6xl font-black leading-tight">{category.title}</h1>
+        <p className="text-lg md:text-2xl leading-relaxed text-brand-muted mt-6">{category.intro}</p>
+      </header>
+      {renderItems(category.items)}
+      <section className="mt-16 bg-brand-dark text-white p-8 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-7">
+        <div className="max-w-2xl"><h2 className="text-2xl md:text-3xl font-bold">לא בטוחים מה מתאים?</h2><p className="text-white/70 leading-relaxed mt-3">אפשר להתחיל בשיחה קצרה ולחשוב יחד מה נכון לאתגר שלכם.</p></div>
+        <Link to="/contact?topic=התייעצות%20ראשונית" className="inline-flex self-start md:self-auto px-6 py-3 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">בואו נדבר ←</Link>
+      </section>
     </div>
   </main>;
 
@@ -165,19 +191,25 @@ const ProductsPage: React.FC = () => {
 
   return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
     <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-      <header className="max-w-4xl mb-14 md:mb-20 border-r-4 border-brand-touch pr-6 md:pr-8">
+      <header className="max-w-4xl mb-12 md:mb-16 border-r-4 border-brand-touch pr-6 md:pr-8">
         <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איך אפשר לעבוד יחד</p>
         <h1 className="text-4xl md:text-6xl font-black leading-tight">מתחילים ממה שצריך להשתנות.</h1>
-        <p className="text-lg md:text-2xl leading-relaxed text-brand-muted mt-6">יש אתגרים שדורשים תהליך מתמשך, ויש נושאים שאפשר לפתוח בסדנה או במפגש ממוקד. בכל מקרה, מתחילים בהבנת המציאות ובוחרים דרך שמתאימה לאתגר — לא להיפך.</p>
+        <p className="text-lg md:text-2xl leading-relaxed text-brand-muted mt-6">יש אתגרים שדורשים תהליך מתמשך, ויש נושאים שאפשר לפתוח בסדנה או במפגש ממוקד. בחרו את סוג העבודה שמעניין אתכם כדי להכיר את האפשרויות.</p>
       </header>
-      <section id="processes" className="mb-16 md:mb-20 scroll-mt-28">
-        <div className="max-w-3xl mb-8"><p className="text-xs font-bold tracking-[0.16em] text-brand-accent mb-3">עבודה מתמשכת על אתגר ממשי</p><h2 className="text-2xl md:text-3xl font-bold mb-4">תהליכים ניהוליים וארגוניים</h2><p className="text-brand-muted leading-relaxed">פיתוח מנהלים, בניית צוותים, שיפור ממשקים וליווי שינוי — בהתאמה לאנשים, לארגון ולמה שקורה בפועל.</p></div>
-        {renderItems(processItems)}
-      </section>
-      <section id="workshops" className="scroll-mt-28">
-        <div className="max-w-3xl mb-8"><p className="text-xs font-bold tracking-[0.16em] text-brand-accent mb-3">למידה, התנסות וכלים</p><h2 className="text-2xl md:text-3xl font-bold mb-4">סדנאות והרצאות</h2><p className="text-brand-muted leading-relaxed">מסגרות שפיתחתי סביב נושאים מוגדרים. בכל אחת מהן יש תפיסה מקצועית, התנסות וחיבור למה שאפשר לעשות אחרת בעבודה.</p></div>
-        {renderItems(focusedItems)}
-      </section>
+      <div className="grid md:grid-cols-2 gap-5 max-w-5xl">
+        <Link to="/products/processes" className="group bg-brand-paper border border-brand-dark/10 p-8 md:p-10 hover:border-brand-accent hover:bg-white transition-colors">
+          <p className="text-xs font-bold tracking-[0.16em] text-brand-accent mb-4">תהליך מתמשך</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">ייעוץ ותהליכים</h2>
+          <p className="text-brand-muted leading-relaxed">פיתוח מנהלים וצוותים, שיפור ממשקים, שותפויות וליווי תהליכי שינוי.</p>
+          <span className="inline-block mt-7 font-bold underline underline-offset-4">לכל התהליכים ←</span>
+        </Link>
+        <Link to="/products/workshops" className="group bg-brand-paper border border-brand-dark/10 p-8 md:p-10 hover:border-brand-accent hover:bg-white transition-colors">
+          <p className="text-xs font-bold tracking-[0.16em] text-brand-accent mb-4">מפגשים ממוקדים</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">סדנאות והרצאות</h2>
+          <p className="text-brand-muted leading-relaxed">נושאים ממוקדים, למידה והתנסות שמחוברים לאתגרים אמיתיים בעבודה.</p>
+          <span className="inline-block mt-7 font-bold underline underline-offset-4">לכל הסדנאות וההרצאות ←</span>
+        </Link>
+      </div>
       <section className="mt-16 md:mt-20 bg-brand-dark text-white p-8 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-7">
         <div className="max-w-2xl"><h2 className="text-2xl md:text-3xl font-bold">לא בטוחים מה מתאים לאתגר שלכם?</h2><p className="text-white/70 leading-relaxed mt-3">אפשר להתחיל בשיחה קצרה, להבין מה קורה ולחשוב יחד מה יהיה נכון.</p></div>
         <Link to="/contact?topic=התייעצות%20ראשונית" className="inline-flex self-start md:self-auto px-6 py-3 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">בואו נדבר ←</Link>
