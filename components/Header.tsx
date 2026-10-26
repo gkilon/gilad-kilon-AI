@@ -37,15 +37,23 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
     window.scrollTo(0, 0);
   };
 
-  const productItems = [
-    { slug: 'obt', label: 'תהליך OBT להתפתחות אישית' },
-    { slug: 'feedback', label: 'משוב שמייצר התפתחות' },
-    { slug: 'communication-styles', label: 'סדנת סגנונות תקשורת' },
-    { slug: 'system-and-relationships', label: 'מערכת ויחסים: סדנת שותפויות' },
-    { slug: 'negotiation-to-partnership', label: 'ממשא ומתן לבניית שותפויות' },
-    { slug: 'obt-capsule', label: 'קפסולת OBT' },
-    { slug: 'system-and-relationships-lecture', label: 'בין מערכת ליחסים: מבנה, פונקציות ואנשים' },
-    { slug: 'technology-and-relationships', label: 'כשהטכנולוגיה משתגעת, מישהו צריך להישאר שפוי' }
+  const productGroups = [
+    { title: 'תהליכים ניהוליים וארגוניים', items: [
+      { slug: 'obt', label: 'OBT להתפתחות אישית' },
+      { slug: 'p2g', label: 'P2G — מתהליך הערכה להתפתחות' },
+      { slug: 'management-development', label: 'פיתוח מנהלים וייעוץ אישי' },
+      { slug: 'team-development', label: 'פיתוח צוותי הנהלה' },
+      { slug: 'interfaces-and-partnerships', label: 'ממשקי עבודה ושותפויות' },
+      { slug: 'change-processes', label: 'ליווי תהליכי שינוי' }
+    ]},
+    { title: 'סדנאות ותכניות ממוקדות', items: [
+      { slug: 'communication-styles', label: 'סגנונות תקשורת בעולם העבודה החדש' },
+      { slug: 'system-and-relationships', label: 'מערכת ויחסים: מממשקים לשותפויות' },
+      { slug: 'obt-capsule', label: 'קפסולת OBT' },
+      { slug: 'negotiation-to-partnership', label: 'ממשא ומתן לבניית שותפויות' },
+      { slug: 'system-and-relationships-lecture', label: 'בין מערכת ליחסים' },
+      { slug: 'technology-and-relationships', label: 'כשהטכנולוגיה משתגעת' }
+    ]}
   ];
   const handleProducts = (slug?: string) => {
     setIsMenuOpen(false);
@@ -72,7 +80,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             {productsMenuOpen && <div className="absolute top-full right-0 pt-3 w-80 z-[1001]"><div className="bg-white border border-brand-dark/10 shadow-lg py-2">
               <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
               <div className="border-t border-brand-dark/10 my-1" />
-              {productItems.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2.5 text-sm hover:bg-brand-beige">{item.label}</button>)}
+              {productGroups.map(group => <div key={group.title}>
+                <p className="px-5 pt-3 pb-1 text-[11px] font-bold text-brand-accent">{group.title}</p>
+                {group.items.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2 text-sm hover:bg-brand-beige">{item.label}</button>)}
+              </div>)}
             </div></div>}
           </div>
           <button onClick={() => handleNav('lab')} className={`px-4 py-2 border text-sm font-semibold transition-colors ${isLabView ? 'border-brand-accent text-brand-accent bg-white' : 'border-brand-dark/20 hover:border-brand-dark'}`}>המעבדה</button>
@@ -100,7 +111,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             <button onClick={() => setProductsMenuOpen(v => !v)} className="text-xl font-bold" aria-expanded={productsMenuOpen}>מוצרים וסדנאות <span aria-hidden="true">⌄</span></button>
             {productsMenuOpen && <div className="w-full max-w-sm bg-brand-paper border border-brand-dark/10 py-2 max-h-[45vh] overflow-y-auto">
               <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
-              {productItems.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2.5 text-sm hover:bg-brand-beige">{item.label}</button>)}
+              {productGroups.map(group => <div key={group.title}>
+                <p className="px-5 pt-3 pb-1 text-[11px] font-bold text-brand-accent">{group.title}</p>
+                {group.items.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2 text-sm hover:bg-brand-beige">{item.label}</button>)}
+              </div>)}
             </div>}
           </div>
           <button onClick={() => handleNav('lab')} className="text-xl font-bold border border-brand-dark/20 px-6 py-3">המעבדה</button>
