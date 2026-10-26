@@ -23,6 +23,7 @@ import BrandAssets from './components/BrandAssets.tsx';
 import ArticlesPage from './components/ArticlesPage.tsx';
 import ArticleDetail from './components/ArticleDetail.tsx';
 import ProductsPage from './components/ProductsPage.tsx';
+import ContactPage from './components/ContactPage.tsx';
 
 const FloatingWhatsApp: React.FC = () => (
   <a 
@@ -200,6 +201,8 @@ const App: React.FC = () => {
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
         <Routes location={location}>
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/contact-admin" element={<ContactPage />} />
           <Route path="/" element={<Landing onEnterTool={handleNavigate} />} />
           <Route path="/home" element={<Landing onEnterTool={handleNavigate} />} />
           <Route path="/login" element={<Login onLogin={(tid, isM, isA) => { setSession({teamId: tid, isManager: isM}); if (isA) navigate('/admin'); else navigate('/home'); }} />} />
