@@ -141,7 +141,8 @@ const offerings: Offering[] = [
 const ProductsPage: React.FC = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const selected = offerings.find(item => item.slug === slug);
+  // Keep the previous feedback URL working as an alias for the P2G program.
+  const selected = offerings.find(item => item.slug === slug) || (slug === 'feedback' ? offerings.find(item => item.slug === 'p2g') : undefined);
   const processItems = offerings.filter(item => item.group === 'process');
   const focusedItems = offerings.filter(item => item.group === 'focused');
 
