@@ -112,8 +112,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני אומר את הדברים ישר, גם כשלא נוח, בלי הצגות ובלי לאבד את הכבוד לאנשים. המטרה היא להבין מה באמת קורה, ולתרגם את זה לעבודה אחרת ולתוצאות.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 mt-8">
-              <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-7 py-4 bg-brand-touch text-white font-bold hover:bg-brand-gold hover:text-brand-dark transition-colors">נדבר על האתגר שלך <Arrow /></a>
-              <Link to="/contact" className="inline-flex items-center justify-center px-7 py-4 border border-white/30 font-bold hover:bg-white hover:text-brand-dark transition-colors">שליחת פנייה דרך האתר <Arrow /></Link>
+              <Link to="/contact" className="inline-flex items-center justify-center px-7 py-4 bg-brand-touch text-white font-bold hover:bg-brand-gold hover:text-brand-dark transition-colors">בואו נדבר <Arrow /></Link>
               <button onClick={() => onEnterTool('about')} className="inline-flex items-center justify-center px-7 py-4 border border-white/30 font-bold hover:bg-white hover:text-brand-dark transition-colors">קצת עליי <Arrow /></button>
             </div>
             <div className="mt-10 pt-5 border-t border-white/20 flex flex-wrap gap-x-7 gap-y-3 text-sm text-white/65">
@@ -161,7 +160,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
 
     <section className="bg-brand-dark text-white">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 grid md:grid-cols-[0.8fr_1.2fr] gap-10 md:gap-16 items-center">
-        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה אתם רוצים לקדם?</h2><p className="mt-5 text-lg text-white/65 leading-relaxed">אפשר להתחיל משאלה, מיעד או ממשהו שצריך להשתנות. נחשוב יחד מה הצעד הנכון.</p><div className="flex flex-wrap gap-3 mt-8"><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex px-7 py-4 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">לתיאום שיחה <Arrow /></a><Link to="/contact" className="inline-flex px-7 py-4 border border-white/30 font-bold hover:bg-white hover:text-brand-dark transition-colors">טופס פנייה <Arrow /></Link></div></div>
+        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה אתם רוצים לקדם?</h2><p className="mt-5 text-lg text-white/65 leading-relaxed">אפשר להתחיל משאלה, מיעד או ממשהו שצריך להשתנות. נחשוב יחד מה הצעד הנכון.</p><div className="flex flex-wrap gap-3 mt-8"><Link to="/contact" className="inline-flex px-7 py-4 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">בואו נדבר <Arrow /></Link></div></div>
         <div><p className="text-xs font-bold tracking-[0.14em] text-white/45 mb-4">או לתאר את האתגר ולקבל כיוון ראשוני</p><SmartSearchDark /></div>
       </div>
     </section>
