@@ -127,13 +127,6 @@ const offerings: Offering[] = [
     group: 'focused'
   },
   {
-    slug: 'technology-and-relationships',
-    title: 'כשהטכנולוגיה משתגעת — מישהו צריך להישאר שפוי',
-    kind: 'הרצאה',
-    description: 'על הצד האנושי של שינוי טכנולוגי ועל העבודה המשותפת כשהמציאות משתנה.',
-    detail: 'מפגש שמחבר בין טכנולוגיה, עבודה ארגונית והתגובות האנושיות לשינוי. נבחן איך לשמור על שיקול דעת, תקשורת ושיתוף פעולה גם כשהכלים והמערכות משתנים בקצב מהיר.',
-    audience: 'ארגונים וצוותים שמתמודדים עם שינוי טכנולוגי ורוצים לדבר גם על ההשפעה שלו על אנשים ועל העבודה.',
-    approach: 'לא עוד התלהבות טכנולוגית או פחד ממנה, אלא שיחה עניינית על מה משתנה בעבודה ומה צריך לשמור אנושי.',
     group: 'focused'
   }
 ];
@@ -180,12 +173,12 @@ const ProductsPage: React.FC = () => {
         <h1 className="text-4xl md:text-6xl font-black leading-tight">מתחילים ממה שצריך להשתנות.</h1>
         <p className="text-lg md:text-2xl leading-relaxed text-brand-muted mt-6">יש אתגרים שדורשים תהליך מתמשך, ויש נושאים שאפשר לפתוח בסדנה או במפגש ממוקד. בכל מקרה, מתחילים בהבנת המציאות ובוחרים דרך שמתאימה לאתגר — לא להיפך.</p>
       </header>
-      <section className="mb-16 md:mb-20">
+      <section id="processes" className="mb-16 md:mb-20 scroll-mt-28">
         <div className="max-w-3xl mb-8"><p className="text-xs font-bold tracking-[0.16em] text-brand-accent mb-3">עבודה מתמשכת על אתגר ממשי</p><h2 className="text-2xl md:text-3xl font-bold mb-4">תהליכים ניהוליים וארגוניים</h2><p className="text-brand-muted leading-relaxed">פיתוח מנהלים, בניית צוותים, שיפור ממשקים וליווי שינוי — בהתאמה לאנשים, לארגון ולמה שקורה בפועל.</p></div>
         {renderItems(processItems)}
       </section>
-      <section>
-        <div className="max-w-3xl mb-8"><p className="text-xs font-bold tracking-[0.16em] text-brand-accent mb-3">למידה, התנסות וכלים</p><h2 className="text-2xl md:text-3xl font-bold mb-4">סדנאות ותכניות ממוקדות</h2><p className="text-brand-muted leading-relaxed">מסגרות שפיתחתי סביב נושאים מוגדרים. בכל אחת מהן יש תפיסה מקצועית, התנסות וחיבור למה שאפשר לעשות אחרת בעבודה.</p></div>
+      <section id="workshops" className="scroll-mt-28">
+        <div className="max-w-3xl mb-8"><p className="text-xs font-bold tracking-[0.16em] text-brand-accent mb-3">למידה, התנסות וכלים</p><h2 className="text-2xl md:text-3xl font-bold mb-4">סדנאות והרצאות</h2><p className="text-brand-muted leading-relaxed">מסגרות שפיתחתי סביב נושאים מוגדרים. בכל אחת מהן יש תפיסה מקצועית, התנסות וחיבור למה שאפשר לעשות אחרת בעבודה.</p></div>
         {renderItems(focusedItems)}
       </section>
       <section className="mt-16 md:mt-20 bg-brand-dark text-white p-8 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-7">
