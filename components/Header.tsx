@@ -38,22 +38,9 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
   };
 
   const productGroups = [
-    { title: 'תהליכים ניהוליים וארגוניים', items: [
-      { slug: 'obt', label: 'OBT להתפתחות אישית' },
-      { slug: 'p2g', label: 'P2G — מתהליך הערכה להתפתחות' },
-      { slug: 'management-development', label: 'פיתוח מנהלים וייעוץ אישי' },
-      { slug: 'team-development', label: 'פיתוח צוותי הנהלה' },
-      { slug: 'interfaces-and-partnerships', label: 'ממשקי עבודה ושותפויות' },
-      { slug: 'change-processes', label: 'ליווי תהליכי שינוי' }
-    ]},
-    { title: 'סדנאות ותכניות ממוקדות', items: [
-      { slug: 'communication-styles', label: 'סגנונות תקשורת בעולם העבודה החדש' },
-      { slug: 'system-and-relationships', label: 'מערכת ויחסים: מממשקים לשותפויות' },
-      { slug: 'obt-capsule', label: 'קפסולת OBT' },
-      { slug: 'negotiation-to-partnership', label: 'ממשא ומתן לבניית שותפויות' },
-      { slug: 'system-and-relationships-lecture', label: 'בין מערכת ליחסים' },
-      { slug: 'technology-and-relationships', label: 'כשהטכנולוגיה משתגעת' }
-    ]}
+    { title: 'ייעוץ ותהליכים', href: '/products#processes', description: 'פיתוח מנהלים, צוותים, ממשקים ושינוי' },
+    { title: 'סדנאות והרצאות', href: '/products#workshops', description: 'מפגשים ממוקדים סביב אתגרים מקצועיים' },
+    { title: 'כל התהליכים והסדנאות', href: '/products', description: 'לכל האפשרויות ולפרטים נוספים' }
   ];
   const handleProducts = (slug?: string) => {
     setIsMenuOpen(false);
@@ -76,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
             {item.label}{currentView === item.id && <span className="block h-0.5 bg-brand-accent mt-1" />}
           </button>)}
           <div className="relative" onMouseEnter={() => setProductsMenuOpen(true)} onMouseLeave={() => setProductsMenuOpen(false)}>
-            <button onClick={() => setProductsMenuOpen(v => !v)} aria-expanded={productsMenuOpen} className={`${linkClass} flex items-center gap-2 ${currentView.startsWith('products') ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}>מוצרים וסדנאות <span aria-hidden="true">⌄</span></button>
+            <button onClick={() => setProductsMenuOpen(v => !v)} aria-expanded={productsMenuOpen} className={`${linkClass} flex items-center gap-2 ${currentView.startsWith('products') ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}>איך אפשר לעבוד יחד <span aria-hidden="true">⌄</span></button>
             {productsMenuOpen && <div className="absolute top-full right-0 pt-3 w-80 z-[1001]"><div className="bg-white border border-brand-dark/10 shadow-lg py-2">
               <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
               <div className="border-t border-brand-dark/10 my-1" />
@@ -108,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
         <nav className="flex-1 flex flex-col items-center justify-start gap-7 px-6 py-8 overflow-y-auto">
           {navItems.map(item => <button key={item.id} onClick={() => handleNav(item.id)} className={`text-2xl ${currentView === item.id ? 'font-bold' : 'font-light text-brand-muted'}`}>{item.label}</button>)}
           <div className="w-full flex flex-col items-center gap-4">
-            <button onClick={() => setProductsMenuOpen(v => !v)} className="text-xl font-bold" aria-expanded={productsMenuOpen}>מוצרים וסדנאות <span aria-hidden="true">⌄</span></button>
+            <button onClick={() => setProductsMenuOpen(v => !v)} className="text-xl font-bold" aria-expanded={productsMenuOpen}>איך אפשר לעבוד יחד <span aria-hidden="true">⌄</span></button>
             {productsMenuOpen && <div className="w-full max-w-sm bg-brand-paper border border-brand-dark/10 py-2 max-h-[45vh] overflow-y-auto">
               <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
               {productGroups.map(group => <div key={group.title}>
