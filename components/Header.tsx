@@ -42,12 +42,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
     { title: 'סדנאות והרצאות', href: '/products#workshops', description: 'מפגשים ממוקדים סביב אתגרים מקצועיים' },
     { title: 'כל התהליכים והסדנאות', href: '/products', description: 'לכל האפשרויות ולפרטים נוספים' }
   ];
-  const handleProducts = (slug?: string) => {
-    setIsMenuOpen(false);
-    setProductsMenuOpen(false);
-    navigate(slug ? '/products/' + slug : '/products');
-    window.scrollTo(0, 0);
-  };
+
 
   const isLabView = currentView === 'lab' || ['dashboard', 'executive', 'synergy', 'ideas', 'communication', 'feedback360', 'tasks', 'wizard'].includes(currentView);
   const linkClass = 'text-sm font-semibold transition-colors';
@@ -65,12 +60,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           <div className="relative" onMouseEnter={() => setProductsMenuOpen(true)} onMouseLeave={() => setProductsMenuOpen(false)}>
             <button onClick={() => setProductsMenuOpen(v => !v)} aria-expanded={productsMenuOpen} className={`${linkClass} flex items-center gap-2 ${currentView.startsWith('products') ? 'text-brand-dark' : 'text-brand-muted hover:text-brand-dark'}`}>איך אפשר לעבוד יחד <span aria-hidden="true">⌄</span></button>
             {productsMenuOpen && <div className="absolute top-full right-0 pt-3 w-80 z-[1001]"><div className="bg-white border border-brand-dark/10 shadow-lg py-2">
-              <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
-              <div className="border-t border-brand-dark/10 my-1" />
-              {productGroups.map(group => <div key={group.title}>
-                <p className="px-5 pt-3 pb-1 text-[11px] font-bold text-brand-accent">{group.title}</p>
-                {group.items.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2 text-sm hover:bg-brand-beige">{item.label}</button>)}
-              </div>)}
+              {productGroups.map(group => <button key={group.title} onClick={() => { setIsMenuOpen(false); setProductsMenuOpen(false); navigate(group.href); window.scrollTo(0, 0); }} className="block w-full text-right px-5 py-3 hover:bg-brand-beige"><span className="block text-sm font-bold">{group.title}</span><span className="block mt-1 text-xs text-brand-muted">{group.description}</span></button>)}
             </div></div>}
           </div>
           <button onClick={() => handleNav('lab')} className={`px-4 py-2 border text-sm font-semibold transition-colors ${isLabView ? 'border-brand-accent text-brand-accent bg-white' : 'border-brand-dark/20 hover:border-brand-dark'}`}>המעבדה</button>
