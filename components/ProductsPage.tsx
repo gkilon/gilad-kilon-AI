@@ -146,6 +146,13 @@ const ProductsPage: React.FC = () => {
     items: focusedItems
   } : null;
 
+  const renderItems = (items: Offering[]) => <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{items.map((item, index) => <article key={item.slug} className="flex flex-col text-right bg-brand-paper border border-brand-dark/10 p-7 md:p-8 hover:border-brand-accent hover:bg-white transition-colors">
+    <p className="text-xs font-bold text-brand-accent mb-4">{item.kind}</p>
+    <h3 className="text-xl md:text-2xl font-bold mb-3">{item.title}</h3>
+    <p className="text-brand-muted leading-relaxed flex-1">{item.description}</p>
+    <Link to={`/products/${item.slug}`} className="inline-block mt-7 font-bold underline underline-offset-4">לפרטים נוספים ←</Link>
+  </article>)}</div>;
+
   if (slug && !selected && !category) return <main className="min-h-screen bg-brand-beige px-6 py-24 text-center" dir="rtl"><h1 className="text-3xl font-bold">לא מצאתי את העמוד הזה</h1><button onClick={() => navigate('/products')} className="mt-6 underline">לכל התהליכים והסדנאות</button></main>;
 
   if (selected) return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
@@ -182,12 +189,7 @@ const ProductsPage: React.FC = () => {
     </div>
   </main>;
 
-  const renderItems = (items: Offering[]) => <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{items.map((item, index) => <article key={item.slug} className="flex flex-col text-right bg-brand-paper border border-brand-dark/10 p-7 md:p-8 hover:border-brand-accent hover:bg-white transition-colors">
-    <p className="text-xs font-bold text-brand-accent mb-4">{item.kind}</p>
-    <h3 className="text-xl md:text-2xl font-bold mb-3">{item.title}</h3>
-    <p className="text-brand-muted leading-relaxed flex-1">{item.description}</p>
-    <Link to={`/products/${item.slug}`} className="inline-block mt-7 font-bold underline underline-offset-4">לפרטים נוספים ←</Link>
-  </article>)}</div>;
+
 
   return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
     <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
