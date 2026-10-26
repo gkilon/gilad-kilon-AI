@@ -97,11 +97,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           <div className="w-full flex flex-col items-center gap-4">
             <button onClick={() => setProductsMenuOpen(v => !v)} className="text-xl font-bold" aria-expanded={productsMenuOpen}>איך אפשר לעבוד יחד <span aria-hidden="true">⌄</span></button>
             {productsMenuOpen && <div className="w-full max-w-sm bg-brand-paper border border-brand-dark/10 py-2 max-h-[45vh] overflow-y-auto">
-              <button onClick={() => handleProducts()} className="block w-full text-right px-5 py-3 text-sm font-bold hover:bg-brand-beige">כל המוצרים והסדנאות</button>
-              {productGroups.map(group => <div key={group.title}>
-                <p className="px-5 pt-3 pb-1 text-[11px] font-bold text-brand-accent">{group.title}</p>
-                {group.items.map(item => <button key={item.slug} onClick={() => handleProducts(item.slug)} className="block w-full text-right px-5 py-2 text-sm hover:bg-brand-beige">{item.label}</button>)}
-              </div>)}
+              {productGroups.map(group => <button key={group.title} onClick={() => { setIsMenuOpen(false); setProductsMenuOpen(false); navigate(group.href); window.scrollTo(0, 0); }} className="block w-full text-right px-5 py-3 hover:bg-brand-beige"><span className="block text-sm font-bold">{group.title}</span><span className="block mt-1 text-xs text-brand-muted">{group.description}</span></button>)}
             </div>}
           </div>
           <button onClick={() => handleNav('lab')} className="text-xl font-bold border border-brand-dark/20 px-6 py-3">המעבדה</button>
