@@ -38,9 +38,9 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
   };
 
   const productGroups = [
-    { title: 'ייעוץ ותהליכים', href: '/products#processes', description: 'פיתוח מנהלים, צוותים, ממשקים ושינוי' },
-    { title: 'סדנאות והרצאות', href: '/products#workshops', description: 'מפגשים ממוקדים סביב אתגרים מקצועיים' },
-    { title: 'כל התהליכים והסדנאות', href: '/products', description: 'לכל האפשרויות ולפרטים נוספים' }
+    { title: 'ייעוץ ותהליכים', href: '/products/processes', description: 'פיתוח מנהלים, צוותים, ממשקים ושינוי' },
+    { title: 'סדנאות והרצאות', href: '/products/workshops', description: 'מפגשים ממוקדים סביב אתגרים מקצועיים' },
+    { title: 'כל האפשרויות', href: '/products', description: 'בחירת הדרך המתאימה לאתגר שלכם' }
   ];
 
 
