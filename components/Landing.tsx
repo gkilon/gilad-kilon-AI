@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SmartSearchDark } from './SmartSearch';
+import { Link } from 'react-router-dom';
 
 interface LandingProps {
   onEnterTool: (view: string) => void;
@@ -68,10 +69,10 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
     { title: 'משוב שמייצר התפתחות', tag: 'תהליך ייחודי לארגונים', text: 'חלופה לתהליך הערכת ביצועים, שמחזירה לעובד אחריות להתפתחותו ומגדירה תפקיד תומך למנהל ולארגון.', href: 'https://effervescent-gelato-193991.netlify.app/' }
   ];
   const workshops = [
-    { title: 'סדנת סגנונות תקשורת', tag: 'סדנה', text: 'להבין את ההבדלים בסגנונות התקשורת, לזהות מה מניע אנשים ולמצוא דרך לעבוד ולדבר טוב יותר יחד.', href: 'mailto:gilad@kilon.co.il?subject=סדנת%20סגנונות%20תקשורת' },
-    { title: 'מערכת ויחסים: סדנת שותפויות', tag: 'סדנה', text: 'לעבוד על היחסים בין האנשים וגם על הממשקים, הציפיות ודרך העבודה שמאפשרים לשותפות להצליח.', href: 'mailto:gilad@kilon.co.il?subject=מערכת%20ויחסים' },
-    { title: 'ממשא ומתן לבניית שותפויות', tag: 'הרצאה או סדנה', text: 'איך לעבור ממשא ומתן שבו כל צד מנסה להשיג את שלו לבניית הסכמות ושותפויות שמחזיקות לאורך זמן.', href: 'mailto:gilad@kilon.co.il?subject=ממשא%20ומתן%20לבניית%20שותפויות' },
-    { title: 'קפסולת OBT', tag: 'חצי יום ממוקד', text: 'טעימה ממוקדת מתהליך OBT: היכרות עם המטרה, זיהוי מה עוצר את השינוי, ויציאה עם כיוון לעבודה אישית.', href: 'mailto:gilad@kilon.co.il?subject=קפסולת%20OBT' }
+    { title: 'סדנת סגנונות תקשורת', tag: 'סדנה', text: 'להבין את ההבדלים בסגנונות התקשורת, לזהות מה מניע אנשים ולמצוא דרך לעבוד ולדבר טוב יותר יחד.', href: '/contact?topic=סדנת%20סגנונות%20תקשורת' },
+    { title: 'מערכת ויחסים: סדנת שותפויות', tag: 'סדנה', text: 'לעבוד על היחסים בין האנשים וגם על הממשקים, הציפיות ודרך העבודה שמאפשרים לשותפות להצליח.', href: '/contact?topic=מערכת%20ויחסים%3A%20סדנת%20שותפויות' },
+    { title: 'ממשא ומתן לבניית שותפויות', tag: 'הרצאה או סדנה', text: 'איך לעבור ממשא ומתן שבו כל צד מנסה להשיג את שלו לבניית הסכמות ושותפויות שמחזיקות לאורך זמן.', href: '/contact?topic=ממשא%20ומתן%20לבניית%20שותפויות' },
+    { title: 'קפסולת OBT', tag: 'חצי יום ממוקד', text: 'טעימה ממוקדת מתהליך OBT: היכרות עם המטרה, זיהוי מה עוצר את השינוי, ויציאה עם כיוון לעבודה אישית.', href: '/contact?topic=קפסולת%20OBT' }
   ];
 
   return <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
@@ -112,6 +113,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 mt-8">
               <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-7 py-4 bg-brand-touch text-white font-bold hover:bg-brand-gold hover:text-brand-dark transition-colors">נדבר על האתגר שלך <Arrow /></a>
+              <Link to="/contact" className="inline-flex items-center justify-center px-7 py-4 border border-white/30 font-bold hover:bg-white hover:text-brand-dark transition-colors">שליחת פנייה דרך האתר <Arrow /></Link>
               <button onClick={() => onEnterTool('about')} className="inline-flex items-center justify-center px-7 py-4 border border-white/30 font-bold hover:bg-white hover:text-brand-dark transition-colors">קצת עליי <Arrow /></button>
             </div>
             <div className="mt-10 pt-5 border-t border-white/20 flex flex-wrap gap-x-7 gap-y-3 text-sm text-white/65">
@@ -159,11 +161,11 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
 
     <section className="bg-brand-dark text-white">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 grid md:grid-cols-[0.8fr_1.2fr] gap-10 md:gap-16 items-center">
-        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה אתם רוצים לקדם?</h2><p className="mt-5 text-lg text-white/65 leading-relaxed">אפשר להתחיל משאלה, מיעד או ממשהו שצריך להשתנות. נחשוב יחד מה הצעד הנכון.</p><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex mt-8 px-7 py-4 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">לתיאום שיחה <Arrow /></a></div>
+        <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה אתם רוצים לקדם?</h2><p className="mt-5 text-lg text-white/65 leading-relaxed">אפשר להתחיל משאלה, מיעד או ממשהו שצריך להשתנות. נחשוב יחד מה הצעד הנכון.</p><div className="flex flex-wrap gap-3 mt-8"><a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="inline-flex px-7 py-4 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">לתיאום שיחה <Arrow /></a><Link to="/contact" className="inline-flex px-7 py-4 border border-white/30 font-bold hover:bg-white hover:text-brand-dark transition-colors">טופס פנייה <Arrow /></Link></div></div>
         <div><p className="text-xs font-bold tracking-[0.14em] text-white/45 mb-4">או לתאר את האתגר ולקבל כיוון ראשוני</p><SmartSearchDark /></div>
       </div>
     </section>
-    <footer className="border-t border-brand-dark/10 px-6 py-8"><div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between text-sm text-brand-muted"><BrandLogo /><span>גלעד קילון · ייעוץ ארגוני ופיתוח מנהלים</span><a href="mailto:gilad@kilon.co.il" className="hover:text-brand-accent">gilad@kilon.co.il</a></div></footer>
+    <footer className="border-t border-brand-dark/10 px-6 py-8"><div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between text-sm text-brand-muted"><BrandLogo /><span>גלעד קילון · ייעוץ ארגוני ופיתוח מנהלים</span><Link to="/contact" className="hover:text-brand-accent">יצירת קשר</Link></div></footer>
   </div>;
 };
 
