@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 
 type ContactItem = { id: string; name: string; email: string; phone?: string; organization?: string; topic: string; message: string; createdAt: string };
 const ContactPage: React.FC = () => {
@@ -10,6 +10,7 @@ const ContactPage: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [organization, setOrganization] = useState('');
   const [topic, setTopic] = useState(new URLSearchParams(location.search).get('topic') || '');
+  useEffect(() => { if (!adminMode) setTopic(new URLSearchParams(location.search).get('topic') || ''); }, [location.search, adminMode]);
   const [message, setMessage] = useState('');
   const [website, setWebsite] = useState('');
   const [status, setStatus] = useState('');
@@ -50,9 +51,14 @@ const ContactPage: React.FC = () => {
   </div></main>;
 
   return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl"><div className="max-w-3xl mx-auto px-6 py-14 md:py-20">
-    <button type="button" onClick={() => window.history.back()} className="text-sm font-bold text-brand-muted hover:text-brand-dark mb-8">← חזרה</button>
+    <Link to="/" className="inline-block text-sm font-bold text-brand-muted hover:text-brand-dark mb-8">← לעמוד הראשי</Link>
     <p className="text-xs font-bold tracking-widest text-brand-accent mb-4">אפשר להתחיל משיחה</p><h1 className="text-4xl md:text-5xl font-black leading-tight">במה אפשר לעזור?</h1>
-    <p className="text-lg leading-relaxed text-brand-muted mt-5 mb-10">ספרו לי בקצרה על הצורך או השאלה. הפנייה תישמר במערכת ואחזור אליכם.</p>
+    <p className="text-lg leading-relaxed text-brand-muted mt-5 mb-7">ספרו לי בקצרה על הצורך או השאלה. הפנייה תישמר במערכת ואחזור אליכם.</p>
+    <div className="grid sm:grid-cols-3 gap-3 mb-10">
+      <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white border border-brand-dark/10 p-4 hover:border-brand-accent transition-colors"><span className="text-xl" aria-hidden="true">◉</span><span><span className="block text-sm font-bold">WhatsApp</span><span className="block text-xs text-brand-muted mt-1">הודעה קצרה</span></span></a>
+      <a href="mailto:gilad@kilon.org" className="flex items-center gap-3 bg-white border border-brand-dark/10 p-4 hover:border-brand-accent transition-colors"><span className="text-xl" aria-hidden="true">✉</span><span><span className="block text-sm font-bold">דוא״ל</span><span dir="ltr" className="block text-xs text-brand-muted mt-1">gilad@kilon.org</span></span></a>
+      <a href="tel:+972526417512" className="flex items-center gap-3 bg-white border border-brand-dark/10 p-4 hover:border-brand-accent transition-colors"><span className="text-xl" aria-hidden="true">☎</span><span><span className="block text-sm font-bold">טלפון</span><span dir="ltr" className="block text-xs text-brand-muted mt-1">052-641-7512</span></span></a>
+    </div>
     <form onSubmit={submit} className="bg-white border border-brand-dark/10 p-6 md:p-9 space-y-5">
       <div className="absolute -left-[10000px]" aria-hidden="true"><label>אין למלא שדה זה<input tabIndex={-1} autoComplete="off" value={website} onChange={e => setWebsite(e.target.value)}/></label></div>
       <label className="block text-sm font-bold">שם מלא *<input className={inputClass + ' mt-2'} value={name} onChange={e => setName(e.target.value)} autoComplete="name" maxLength={120} required /></label>
