@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            background: #F4EFE6;
+            color: #203638;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Strategic Grid Background */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(17, 17, 17, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(17, 17, 17, 0.05) 1px, transparent 1px);
+        }
+
+        /* Architectural Card */
+        .arch-card {
+            background: #ffffff;
+            border: 1px solid rgba(17, 17, 17, 0.1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .arch-card:hover {
+            border-color: #111111;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+        }
+
+        .text-kern-tight {
+            letter-spacing: -0.03em;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #203638;
+            border-radius: 3px;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #F4EFE6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #C96F52;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #356B68;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
