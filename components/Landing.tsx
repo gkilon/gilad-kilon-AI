@@ -132,6 +132,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         <div className="space-y-6 text-lg md:text-xl leading-relaxed text-brand-muted">
           <p>לפעמים מגיעים בגלל מתח בין מנהלים או יחידות. במקרים אחרים, מנהל נכנס לתפקיד חדש, צוות הנהלה צריך להתגבש סביב כיוון, ארגון צומח וצריך להתאים את דרך העבודה, או שינוי חשוב מתקשה להפוך למציאות. בכל אחד מהמקרים כדאי להבין גם את האנשים וגם את התנאים שבהם הם פועלים.</p>
           <p>אני מנסה להבין מה קורה בפועל, מה אנשים אומרים ומה נשאר בין השורות. משם אפשר להחליט מה צריך להשתנות, לנהל את השיחות הנדרשות ולבנות דרך פעולה שאפשר ליישם.</p>
+          <figure className="mt-8"><img src="/workshop.jpg" alt="גלעד מנחה מפגש עבודה עם קבוצה" className="w-full aspect-[4/3] object-cover object-center rounded-sm" loading="lazy" /><figcaption className="mt-2 text-sm text-brand-muted">עבודה עם קבוצה — להבין יחד מה קורה ולמצוא דרך להתקדם.</figcaption></figure>
           <p className="text-brand-dark font-bold">לדבר בכנות וברגישות, להבין לעומק ולעשות עם זה משהו.</p>
         </div>
       </div>
@@ -154,7 +155,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
     <section className="bg-brand-accent text-white">
       <div className="max-w-7xl mx-auto px-6 py-20 md:py-24 grid md:grid-cols-[1fr_0.8fr] gap-12 items-center">
         <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">קצת עליי</p><h2 className="text-3xl md:text-5xl font-black leading-tight">קודם מבינים מה קורה. אחר כך מחליטים מה עושים.</h2><p className="text-white/70 text-lg leading-relaxed mt-6 max-w-2xl">יותר מעשרים שנה אני עובד עם מנהלים, צוותי הנהלה וארגונים. אני מסתכל על האנשים ועל המערכת שבה הם עובדים, ושואל מה יעזור להם להתפתח, לעבוד יחד ולהגיע לתוצאות. חשוב לי להבין לעומק, לדבר פשוט ולחבר את השיחה למה שקורה בפועל.</p><button onClick={() => onEnterTool('about')} className="mt-8 border border-white/30 px-6 py-3 font-bold hover:bg-white hover:text-brand-dark transition-colors">הסיפור שלי <Arrow /></button></div>
-        <div className="border-r-2 border-brand-touch pr-7 md:pr-10 space-y-5 text-lg leading-relaxed text-white/80"><p>שותף לדרך, לא ספק.</p><p>קשוב למה שקורה, ומוכן לשנות כיוון כשצריך.</p><p>מחבר בין אנשים, תהליכים ותוצאות.</p></div>
+        <div className="grid sm:grid-cols-[0.72fr_1fr] gap-6 items-center"><img src="/gilad-portrait.jpg" alt="גלעד קילון" className="w-full max-w-[260px] mx-auto aspect-[4/5] object-cover object-center rounded-sm" loading="lazy" /><div className="border-r-2 border-brand-touch pr-7 md:pr-10 space-y-5 text-lg leading-relaxed text-white/80"><p>שותף לדרך, לא ספק.</p><p>קשוב למה שקורה, ומוכן לשנות כיוון כשצריך.</p><p>מחבר בין אנשים, תהליכים ותוצאות.</p></div></div>
       </div>
     </section>
 
