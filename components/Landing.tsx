@@ -103,18 +103,21 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <div className="order-1 lg:order-2 max-w-3xl">
             <div className="mb-7">
               <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">גלעד קילון</p>
+              <p className="text-sm md:text-base font-bold tracking-[0.04em] text-brand-gold mt-3">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.12] tracking-tight">
-              להבין מה באמת קורה בין האנשים — ולשנות את הדרך שבה עובדים יחד.
+              אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.
             </h1>
             <p className="text-lg md:text-xl leading-relaxed text-white/75 max-w-2xl mt-7">
-              כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני אומר את הדברים ישר, גם כשלא נוח, בלי הצגות ובלי לאבד את הכבוד לאנשים.
+              כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני אומר את הדברים ישר, גם כשלא נוח, בלי הצגות ובלי לאבד את הכבוד לאנשים. המטרה היא להבין מה באמת קורה, ולתרגם את זה לעבודה אחרת ולתוצאות.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+            <div className="flex flex-col sm:flex-row gap-3 mt-8">
               <Link to="/contact" className="inline-flex items-center justify-center px-7 py-4 bg-brand-touch text-white font-bold hover:bg-brand-gold hover:text-brand-dark transition-colors">בואו נדבר <Arrow /></Link>
               <button onClick={() => onEnterTool('about')} className="inline-flex items-center justify-center px-7 py-4 border border-white/30 font-bold hover:bg-white hover:text-brand-dark transition-colors">קצת עליי <Arrow /></button>
             </div>
-            <p className="mt-5 text-sm text-white/55">20+ שנות ניסיון · עבודה עם הנהלות ומנהלים</p>
+            <div className="mt-10 pt-5 border-t border-white/20 flex flex-wrap gap-x-7 gap-y-3 text-sm text-white/65">
+              <span>20+ שנות ניסיון</span><span>עבודה עם הנהלות ומנהלים</span><span>עומק מקצועי, בגובה העיניים</span>
+            </div>
           </div>
         </div>
       </div>
