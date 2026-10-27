@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
 
 
   const isLabView = currentView === 'lab' || ['dashboard', 'executive', 'synergy', 'ideas', 'communication', 'feedback360', 'tasks', 'wizard'].includes(currentView);
-  const linkClass = 'text-sm font-semibold transition-colors';
+  const linkClass = 'text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent';
 
   return <>
     <motion.header className={`sticky top-0 z-[1000] w-full border-b backdrop-blur-md ${isScrolled ? 'py-2 bg-brand-beige/95 border-brand-dark/10 shadow-sm' : 'py-4 bg-brand-beige/90 border-brand-dark/5'}`}
@@ -62,8 +62,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
               {productGroups.map(group => <button key={group.title} onClick={() => { setIsMenuOpen(false); setProductsMenuOpen(false); navigate(group.href); window.scrollTo(0, 0); }} className="block w-full text-right px-5 py-3 hover:bg-brand-beige"><span className="block text-sm font-bold">{group.title}</span><span className="block mt-1 text-xs text-brand-muted">{group.description}</span></button>)}
             </div></div>}
           </div>
-          <button onClick={() => handleNav('lab')} className={`px-4 py-2 border text-sm font-semibold transition-colors ${isLabView ? 'border-brand-accent text-brand-accent bg-white' : 'border-brand-dark/20 hover:border-brand-dark'}`}>המעבדה</button>
-          <button onClick={() => { navigate('/contact'); window.scrollTo(0, 0); }} className="px-4 py-2 bg-brand-dark text-white text-sm font-semibold hover:bg-brand-accent transition-colors">בואו נדבר</button>
+          <button onClick={() => handleNav('lab')} className={`text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent ${isLabView ? 'text-brand-accent underline underline-offset-8' : 'text-brand-muted hover:text-brand-dark'}`}>המעבדה</button>
+          <button onClick={() => { navigate('/contact'); window.scrollTo(0, 0); }} className="px-5 py-2.5 bg-brand-dark text-white text-sm font-semibold hover:bg-brand-accent transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent">בואו נדבר</button>
         </nav>
         <div className="flex items-center gap-3">
           {session ? <div className="flex items-center gap-3">
@@ -89,8 +89,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
               {productGroups.map(group => <button key={group.title} onClick={() => { setIsMenuOpen(false); setProductsMenuOpen(false); navigate(group.href); window.scrollTo(0, 0); }} className="block w-full text-right px-5 py-3 hover:bg-brand-beige"><span className="block text-sm font-bold">{group.title}</span><span className="block mt-1 text-xs text-brand-muted">{group.description}</span></button>)}
             </div>}
           </div>
-          <button onClick={() => handleNav('lab')} className="text-xl font-bold border border-brand-dark/20 px-6 py-3">המעבדה</button>
-          <button onClick={() => { navigate('/contact'); setIsMenuOpen(false); window.scrollTo(0, 0); }} className="text-xl font-bold bg-brand-dark text-white px-6 py-3">בואו נדבר</button>
+          <button onClick={() => handleNav('lab')} className="text-xl font-bold px-6 py-3 underline underline-offset-8 decoration-brand-accent">המעבדה</button>
+          <button onClick={() => { navigate('/contact'); setIsMenuOpen(false); window.scrollTo(0, 0); }} className="text-xl font-bold bg-brand-dark text-white px-6 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent">בואו נדבר</button>
           {!session && <button onClick={() => handleNav('login')} className="text-brand-muted">כניסה</button>}
         </nav>
         <div className="px-6 py-8 text-center border-t border-brand-dark/10"><p className="text-sm text-brand-muted">WhatsApp זמין גם דרך הכפתור הירוק באתר.</p></div>
