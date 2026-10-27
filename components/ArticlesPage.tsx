@@ -10,14 +10,14 @@ const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, onSelectArticle }
   return (
     <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-12 md:space-y-16 text-right">
-        <section className="max-w-4xl space-y-6 border-r-4 border-brand-touch pr-6 md:pr-8">
+        <section className="max-w-4xl space-y-6 border-r-4 border-brand-touch pr-6 md:pr-8 bg-brand-dark text-white p-7 md:p-10 relative overflow-hidden">
           <div>
-            <span className="text-xs font-bold text-brand-accent block mb-4">מאמרים ותוכן</span>
+            <span className="text-xs font-bold text-brand-gold block mb-4">מאמרים ותוכן</span>
             <h1 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">
               חומרים מקצועיים.
             </h1>
           </div>
-          <p className="text-lg md:text-2xl text-brand-muted max-w-3xl leading-relaxed">
+          <p className="text-lg md:text-2xl text-white/70 max-w-3xl leading-relaxed">
             תובנות, כלים ומחשבות על ניהול, אסטרטגיה ואנשים.
           </p>
         </section>
