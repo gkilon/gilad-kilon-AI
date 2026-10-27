@@ -103,10 +103,9 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <div className="order-1 lg:order-2 max-w-3xl">
             <div className="mb-7">
               <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">גלעד קילון</p>
-              <p className="text-sm md:text-base font-bold tracking-[0.04em] text-brand-gold mt-3">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.12] tracking-tight">
-              להבין מה באמת קורה בין האנשים — ולשנות את העבודה עצמה.
+              להבין מה באמת קורה בין האנשים — ולשנות את הדרך שבה עובדים יחד.
             </h1>
             <p className="text-lg md:text-xl leading-relaxed text-white/75 max-w-2xl mt-7">
               כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני אומר את הדברים ישר, גם כשלא נוח, בלי הצגות ובלי לאבד את הכבוד לאנשים.
