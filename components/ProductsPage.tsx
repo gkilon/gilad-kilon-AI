@@ -157,10 +157,11 @@ const ProductsPage: React.FC = () => {
 
   if (selected) return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
     <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-      <button onClick={() => navigate('/products')} className="text-sm font-bold text-brand-muted hover:text-brand-dark mb-10">← לכל התהליכים והסדנאות</button>
-      <p className="text-xs font-bold text-brand-accent mb-4">{selected.kind}</p>
+      <section className="bg-brand-dark text-white p-7 md:p-10 mb-10 relative overflow-hidden">
+      <button onClick={() => navigate('/products')} className="text-sm font-bold text-white/65 hover:text-white mb-10">← לכל התהליכים והסדנאות</button>
+      <p className="text-xs font-bold text-brand-gold mb-4">{selected.kind}</p>
       <h1 className="text-4xl md:text-6xl font-black leading-tight max-w-4xl">{selected.title}</h1>
-      <p className="text-xl md:text-2xl leading-relaxed text-brand-muted mt-7 max-w-3xl">{selected.description}</p>
+      <p className="text-xl md:text-2xl leading-relaxed text-white/70 mt-7 max-w-3xl">{selected.description}</p></section>
       <div className="mt-10 border-t border-brand-dark/10 pt-8 max-w-3xl space-y-8">
         <section><h2 className="text-lg font-bold mb-2">על מה עובדים?</h2><p className="text-lg leading-relaxed">{selected.detail}</p></section>
         <section><h2 className="text-lg font-bold mb-2">למי זה מתאים?</h2><p className="text-lg leading-relaxed text-brand-muted">{selected.audience}</p></section>
@@ -176,10 +177,10 @@ const ProductsPage: React.FC = () => {
   if (category) return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
     <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
       <Link to="/products" className="inline-block text-sm font-bold text-brand-muted hover:text-brand-dark mb-10">← לכל האפשרויות</Link>
-      <header className="max-w-4xl mb-12 md:mb-16 border-r-4 border-brand-touch pr-6 md:pr-8">
-        <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איך אפשר לעבוד יחד</p>
+      <header className="max-w-4xl mb-12 md:mb-16 border-r-4 border-brand-touch pr-6 md:pr-8 bg-brand-dark text-white p-7 md:p-10 relative overflow-hidden">
+        <p className="text-xs font-bold tracking-[0.18em] text-brand-gold mb-4">איך אפשר לעבוד יחד</p>
         <h1 className="text-4xl md:text-6xl font-black leading-tight">{category.title}</h1>
-        <p className="text-lg md:text-2xl leading-relaxed text-brand-muted mt-6">{category.intro}</p>
+        <p className="text-lg md:text-2xl leading-relaxed text-white/70 mt-6">{category.intro}</p>
       </header>
       {renderItems(category.items)}
       <section className="mt-16 bg-brand-dark text-white p-8 md:p-12 flex flex-col md:flex-row md:items-center md:justify-between gap-7">
@@ -193,7 +194,7 @@ const ProductsPage: React.FC = () => {
 
   return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
     <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-      <header className="max-w-4xl mb-12 md:mb-16 border-r-4 border-brand-touch pr-6 md:pr-8">
+      <header className="max-w-4xl mb-12 md:mb-16 border-r-4 border-brand-touch pr-6 md:pr-8 bg-brand-dark text-white p-7 md:p-10 relative overflow-hidden">
         <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איך אפשר לעבוד יחד</p>
         <h1 className="text-4xl md:text-6xl font-black leading-tight">מתחילים ממה שצריך להשתנות.</h1>
         <p className="text-lg md:text-2xl leading-relaxed text-brand-muted mt-6">יש אתגרים שדורשים תהליך מתמשך, ויש נושאים שאפשר לפתוח בסדנה או במפגש ממוקד. בחרו את סוג העבודה שמעניין אתכם כדי להכיר את האפשרויות.</p>
