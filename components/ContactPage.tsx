@@ -51,9 +51,9 @@ const ContactPage: React.FC = () => {
   </div></main>;
 
   return <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl"><div className="max-w-3xl mx-auto px-6 py-14 md:py-20">
-    <Link to="/" className="inline-block text-sm font-bold text-brand-muted hover:text-brand-dark mb-8">← לעמוד הראשי</Link>
-    <p className="text-xs font-bold tracking-widest text-brand-accent mb-4">אפשר להתחיל משיחה</p><h1 className="text-4xl md:text-5xl font-black leading-tight">במה אפשר לעזור?</h1>
-    <p className="text-lg leading-relaxed text-brand-muted mt-5 mb-7">ספרו לי בקצרה על הצורך או השאלה. הפנייה תישמר במערכת ואחזור אליכם.</p>
+    <section className="bg-brand-dark text-white p-7 md:p-10 mb-8 relative overflow-hidden"><Link to="/" className="inline-block text-sm font-bold text-white/65 hover:text-white mb-8">← לעמוד הראשי</Link>
+    <p className="text-xs font-bold tracking-widest text-brand-gold mb-4">אפשר להתחיל משיחה</p><h1 className="text-4xl md:text-5xl font-black leading-tight">במה אפשר לעזור?</h1>
+    <p className="text-lg leading-relaxed text-white/70 mt-5">ספרו לי בקצרה על הצורך או השאלה. הפנייה תישמר במערכת ואחזור אליכם.</p></section>
     <div className="grid sm:grid-cols-3 gap-3 mb-10">
       <a href="https://wa.me/972526417512" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white border border-brand-dark/10 p-4 hover:border-brand-accent transition-colors"><span className="text-xl" aria-hidden="true">◉</span><span><span className="block text-sm font-bold">WhatsApp</span><span className="block text-xs text-brand-muted mt-1">הודעה קצרה</span></span></a>
       <a href="mailto:gilad@kilon.org" className="flex items-center gap-3 bg-white border border-brand-dark/10 p-4 hover:border-brand-accent transition-colors"><span className="text-xl" aria-hidden="true">✉</span><span><span className="block text-sm font-bold">דוא״ל</span><span dir="ltr" className="block text-xs text-brand-muted mt-1">gilad@kilon.org</span></span></a>
