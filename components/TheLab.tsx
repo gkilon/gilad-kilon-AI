@@ -78,7 +78,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-3">
           <article className="overflow-hidden border border-brand-dark/10 bg-white">
             <PreviewPlaceholder label="מקום לצילום מסך אמיתי של תוצר מתוך הכלי" />
             <div className="p-6 sm:p-8">
@@ -109,6 +109,23 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
               </p>
               <a href="https://obt-360.kilon-consulting.com/" target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center font-bold text-brand-accent transition-colors hover:text-brand-dark">
                 להיכרות עם הכלי <span aria-hidden="true" className="mr-2">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <article className="overflow-hidden border border-brand-dark/10 bg-white">
+            <PreviewPlaceholder label="מקום לצילום מסך אמיתי של תוצר מתוך הכלי" />
+            <div className="p-6 sm:p-8">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">כלי לעבודה עם שותפויות</span>
+                <span className="text-xs text-brand-muted">ממשקים ושיתוף פעולה</span>
+              </div>
+              <h3 className="text-2xl font-bold">ניהול שותפויות</h3>
+              <p className="mt-3 leading-relaxed text-brand-muted">
+                כלי מבוסס AI לתמיכה בבחינת שותפויות ובחשיבה על איכות העבודה המשותפת. הוא מסייע להתבונן במה שקורה בממשק בין אנשים או קבוצות, ולזהות נושאים שכדאי לברר ולפתח — כחלק משיחה ועבודה מקצועית.
+              </p>
+              <a href="https://bucolic-stardust-e4fa35.netlify.app/" target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center font-bold text-brand-accent transition-colors hover:text-brand-dark">
+                לפתיחת הכלי <span aria-hidden="true" className="mr-2">↗</span>
               </a>
             </div>
           </article>
