@@ -101,12 +101,9 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             </div>
           </div>
           <div className="order-1 lg:order-2 max-w-3xl">
-            <div className="mb-7 flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-5">
-              <img src="/gilad-circle.jpg" alt="גלעד קילון" className="w-[88px] h-[88px] sm:w-[92px] sm:h-[92px] md:w-[104px] md:h-[104px] aspect-square object-cover object-[center_20%] rounded-full border border-white/15 shrink-0" loading="eager" />
-              <div>
-                <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">גלעד קילון</p>
-                <p className="text-sm md:text-base font-bold tracking-[0.04em] text-brand-gold mt-3">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
-              </div>
+            <div className="mb-7">
+              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">גלעד קילון</p>
+              <p className="text-sm md:text-base font-bold tracking-[0.04em] text-brand-gold mt-3">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.12] tracking-tight">
               אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.
