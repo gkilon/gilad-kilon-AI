@@ -84,13 +84,29 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </div>
       <div className="max-w-7xl mx-auto px-6 py-14 md:py-24 lg:py-28 relative">
         <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-10 lg:gap-20 items-center">
-          <div className="order-2 lg:order-1 flex justify-center lg:justify-start">
-            <img src="/gilad-portrait.jpg" alt="גלעד קילון" className="w-full max-w-[280px] md:max-w-[320px] aspect-[4/5] object-cover object-center rounded-sm border border-white/15 shadow-xl" loading="eager" />
+          <div className="order-2 lg:order-1">
+            <div className="relative min-h-[300px] md:min-h-[420px] overflow-hidden bg-brand-accent/30 border border-white/15 p-7 md:p-10 flex flex-col justify-between">
+              <div className="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-brand-gold/70 top-[-3rem] left-[-3rem]"></div>
+              <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border border-white/30 top-10 left-10"></div>
+              <div className="absolute w-28 h-28 rounded-full bg-brand-touch/90 top-20 left-24 md:left-36"></div>
+              <div className="relative z-10 flex justify-between items-start gap-4">
+                <span className="text-xs md:text-sm tracking-wide text-white/75">אנשים · מערכת · תוצאות</span>
+                <span className="w-3 h-3 rounded-full bg-brand-gold mt-1"></span>
+              </div>
+              <div className="relative z-10 max-w-xs mt-36">
+                <p className="text-2xl md:text-3xl font-bold leading-snug">לראות את התמונה הרחבה, בלי לאבד את האדם שמולה.</p>
+                <div className="w-16 h-1 bg-brand-touch mt-6"></div>
+              </div>
+              <p className="relative z-10 text-xs text-white/60 mt-8">גלעד קילון · ייעוץ ארגוני</p>
+            </div>
           </div>
           <div className="order-1 lg:order-2 max-w-3xl">
-            <div className="mb-7">
-              <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">גלעד קילון</p>
-              <p className="text-sm md:text-base font-bold tracking-[0.04em] text-brand-gold mt-3">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
+            <div className="mb-7 flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-5">
+              <img src="/gilad-portrait.jpg" alt="גלעד קילון" className="w-[88px] sm:w-[92px] md:w-[104px] aspect-[4/5] object-cover object-center rounded-sm border border-white/15 shrink-0" loading="eager" />
+              <div>
+                <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">גלעד קילון</p>
+                <p className="text-sm md:text-base font-bold tracking-[0.04em] text-brand-gold mt-3">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
+              </div>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.12] tracking-tight">
               אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.
@@ -119,7 +135,6 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
         <div className="space-y-6 text-lg md:text-xl leading-relaxed text-brand-muted">
           <p>לפעמים מגיעים בגלל מתח בין מנהלים או יחידות. במקרים אחרים, מנהל נכנס לתפקיד חדש, צוות הנהלה צריך להתגבש סביב כיוון, ארגון צומח וצריך להתאים את דרך העבודה, או שינוי חשוב מתקשה להפוך למציאות. בכל אחד מהמקרים כדאי להבין גם את האנשים וגם את התנאים שבהם הם פועלים.</p>
           <p>אני מנסה להבין מה קורה בפועל, מה אנשים אומרים ומה נשאר בין השורות. משם אפשר להחליט מה צריך להשתנות, לנהל את השיחות הנדרשות ולבנות דרך פעולה שאפשר ליישם.</p>
-          <figure className="mt-8"><img src="/workshop.jpg" alt="גלעד מנחה מפגש עבודה עם קבוצה" className="w-full aspect-[4/3] object-cover object-center rounded-sm" loading="lazy" /><figcaption className="mt-2 text-sm text-brand-muted">עבודה עם קבוצה — להבין יחד מה קורה ולמצוא דרך להתקדם.</figcaption></figure>
           <p className="text-brand-dark font-bold">לדבר בכנות וברגישות, להבין לעומק ולעשות עם זה משהו.</p>
         </div>
       </div>
