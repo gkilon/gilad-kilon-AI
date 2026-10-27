@@ -20,24 +20,24 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
 
   return (
     <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
-      <section className="border-b border-brand-dark/10 bg-white">
+      <section className="border-b border-white/10 bg-brand-dark text-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
           {onBack && (
-            <button onClick={onBack} className="mb-10 inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand-dark transition-colors">
+            <button onClick={onBack} className="mb-10 inline-flex items-center gap-2 text-sm text-white/65 hover:text-white transition-colors">
               <span aria-hidden="true">→</span> חזרה לאתר
             </button>
           )}
-          <p className="text-sm font-bold text-brand-accent mb-4">כלים לעבודה עם מנהלים וצוותים</p>
+          <p className="text-sm font-bold text-brand-gold mb-4">כלים לעבודה עם מנהלים וצוותים</p>
           <h1 className="text-4xl md:text-6xl font-black leading-tight">המעבדה</h1>
-          <p className="mt-5 max-w-3xl text-lg md:text-xl leading-relaxed text-brand-muted">
+          <p className="mt-5 max-w-3xl text-lg md:text-xl leading-relaxed text-white/70">
             מרחב של כלים שפיתחתי לעבודה עם מנהלים, צוותי הנהלה וארגונים. אפשר להתנסות בכלים הזמינים, ולמשתמשים עם קוד גישה יש גם אפשרויות עבודה נוספות.
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-3">
-            <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm ${isLoggedIn ? 'bg-emerald-50 text-emerald-800' : 'bg-brand-beige text-brand-muted'}`}>
+            <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm ${isLoggedIn ? 'bg-emerald-50 text-emerald-800' : 'bg-white/10 text-white/75'}`}>
               <span className={`h-2 w-2 rounded-full ${isLoggedIn ? 'bg-emerald-600' : 'bg-brand-accent'}`} />
               {isLoggedIn ? 'גישה מלאה פעילה' : 'תצוגה והתנסות'}
             </span>
-            {!isLoggedIn && <button onClick={() => onEnterTool('login')} className="text-sm font-bold underline underline-offset-4 hover:text-brand-accent">כניסה עם קוד גישה</button>}
+            {!isLoggedIn && <button onClick={() => onEnterTool('login')} className="text-sm font-bold underline underline-offset-4 text-white hover:text-brand-gold">כניסה עם קוד גישה</button>}
           </div>
         </div>
       </section>
