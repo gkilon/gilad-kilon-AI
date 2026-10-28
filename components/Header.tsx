@@ -66,10 +66,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           <button onClick={() => { navigate('/contact'); window.scrollTo(0, 0); }} className="px-5 py-2.5 bg-brand-dark text-white text-sm font-semibold hover:bg-brand-accent transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent">בואו נדבר</button>
         </nav>
         <div className="flex items-center gap-3">
-          {session ? <div className="flex items-center gap-3">
+          {session?.isAdmin ? <div className="flex items-center gap-3">
             {isAdmin && <button onClick={() => handleNav('admin')} className="text-brand-dark" aria-label="ניהול">⚙️</button>}
             <button onClick={onLogout} className="text-xs font-bold text-brand-muted hover:text-brand-dark">יציאה</button>
-          </div> : <button onClick={() => handleNav('login')} className="hidden md:block text-xs font-bold text-brand-muted hover:text-brand-dark">כניסה</button>}
+          </div> : null}
           <button onClick={() => setIsMenuOpen(true)} className="lg:hidden p-2" aria-label="פתיחת תפריט">
             <div className="space-y-1.5 w-6"><span className="block h-0.5 w-full bg-brand-dark" /><span className="block h-0.5 w-2/3 bg-brand-dark mr-auto" /><span className="block h-0.5 w-full bg-brand-dark" /></div>
           </button>
@@ -91,7 +91,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           </div>
           <button onClick={() => handleNav('lab')} className="text-xl font-bold px-6 py-3 underline underline-offset-8 decoration-brand-accent">המעבדה</button>
           <button onClick={() => { navigate('/contact'); setIsMenuOpen(false); window.scrollTo(0, 0); }} className="text-xl font-bold bg-brand-dark text-white px-6 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent">בואו נדבר</button>
-          {!session && <button onClick={() => handleNav('login')} className="text-brand-muted">כניסה</button>}
+
         </nav>
         <div className="px-6 py-8 text-center border-t border-brand-dark/10"><p className="text-sm text-brand-muted">WhatsApp זמין גם דרך הכפתור הירוק באתר.</p></div>
       </motion.div>}
