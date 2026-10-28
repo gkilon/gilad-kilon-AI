@@ -11,6 +11,7 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
   const [contacts, setContacts] = useState<any[]>([]);
   const [contactsLoading, setContactsLoading] = useState(false);
   const [contactsError, setContactsError] = useState('');
+  const [contactsReload, setContactsReload] = useState(0);
 
   useEffect(() => {
     getSystemConfig().then(data => {
@@ -29,7 +30,7 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
       .catch(error => { if (!cancelled) setContactsError(error instanceof Error ? error.message : 'לא ניתן לטעון את הפניות. בדוק את הרשאות Firestore.'); })
       .finally(() => { if (!cancelled) setContactsLoading(false); });
     return () => { cancelled = true; };
-  }, [activeTab]);
+  }, [activeTab, contactsReload]);
 
   const handleSave = async () => {
     setSaveStatus('שומר...');
@@ -205,7 +206,7 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
           <div className="space-y-6 animate-fadeIn">
             <div className="flex flex-wrap justify-between items-center border-b-2 border-brand-dark pb-4 gap-3">
               <div><h3 className="text-2xl font-black italic">פניות מהאתר</h3><p className="text-sm text-brand-muted mt-2">הפניות שנשלחו דרך טופס יצירת הקשר.</p></div>
-              <button onClick={() => { setActiveTab('system'); setActiveTab('contacts'); }} className="px-4 py-2 border border-brand-dark/20 text-sm font-bold hover:bg-brand-dark/5">רענון</button>
+              <button onClick={() => setContactsReload(value => value + 1)} className="px-4 py-2 border border-brand-dark/20 text-sm font-bold hover:bg-brand-dark/5">רענון</button>
             </div>
             {contactsLoading && <p className="py-8 text-center text-brand-muted">טוען פניות...</p>}
             {contactsError && <p role="alert" className="p-4 bg-red-50 border border-red-200 text-red-800">{contactsError}</p>}
