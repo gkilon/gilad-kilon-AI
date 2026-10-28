@@ -1,28 +1,13 @@
 import React from 'react';
+import commScreenshot from '../comm.png';
+import syncScreenshot from '../sync.png';
+import obtScreenshot from '../obt.png';
 
 interface TheLabProps {
   onEnterTool: (view: string) => void;
   onBack?: () => void;
   isLoggedIn: boolean;
 }
-
-const PreviewPlaceholder: React.FC<{ label: string }> = ({ label }) => (
-  <div className="relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-sm border border-white/15 bg-[#182c34] p-5 sm:min-h-[260px] sm:p-7">
-    <div aria-hidden="true" className="absolute -left-10 -top-12 h-48 w-48 rounded-full border border-[#d5b46a]/35" />
-    <div aria-hidden="true" className="absolute -left-1 top-8 h-32 w-32 rounded-full border border-white/10" />
-    <div className="relative flex items-center justify-between gap-3">
-      <span className="text-xs font-semibold tracking-wide text-white/60">תצוגת תוצר</span>
-      <span className="h-2 w-2 rounded-full bg-[#d5b46a]" />
-    </div>
-    <div className="relative max-w-xs py-8">
-      <div className="mb-3 h-2 w-20 rounded bg-white/20" />
-      <div className="mb-2 h-3 w-full rounded bg-white/10" />
-      <div className="mb-2 h-3 w-4/5 rounded bg-white/10" />
-      <div className="h-3 w-3/5 rounded bg-white/10" />
-    </div>
-    <div className="relative border-t border-white/10 pt-4 text-sm text-white/65">{label}</div>
-  </div>
-);
 
 const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
   return (
@@ -80,7 +65,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
 
         <div className="grid gap-6 lg:grid-cols-3">
           <article className="overflow-hidden border border-brand-dark/10 bg-white">
-            <PreviewPlaceholder label="מקום לצילום מסך אמיתי של תוצר מתוך הכלי" />
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-brand-beige"><img src={commScreenshot} alt="צילום מסך של כלי סגנונות התקשורת" className="h-full w-full object-cover object-top" loading="lazy" /></div>
             <div className="p-6 sm:p-8">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">התנסות עצמאית</span>
@@ -97,7 +82,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
           </article>
 
           <article className="overflow-hidden border border-brand-dark/10 bg-white">
-            <PreviewPlaceholder label="מקום לצילום מסך אמיתי של תוצר מתוך הכלי" />
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-brand-beige"><img src={obtScreenshot} alt="צילום מסך של כלי זיהוי מטרות התפתחותיות OBT" className="h-full w-full object-cover object-top" loading="lazy" /></div>
             <div className="p-6 sm:p-8">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">חלק מתהליך מקצועי</span>
@@ -114,7 +99,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
           </article>
 
           <article className="overflow-hidden border border-brand-dark/10 bg-white">
-            <PreviewPlaceholder label="מקום לצילום מסך אמיתי של תוצר מתוך הכלי" />
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-brand-beige"><img src={syncScreenshot} alt="צילום מסך של כלי ניהול שותפויות" className="h-full w-full object-cover object-top" loading="lazy" /></div>
             <div className="p-6 sm:p-8">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">כלי לעבודה עם שותפויות</span>
