@@ -29,7 +29,7 @@ async function firestoreAccessToken(account: any) {
   const signer = createSign("RSA-SHA256"); signer.update(unsigned); signer.end();
   const assertion = unsigned + "." + signer.sign(account.private_key).toString("base64url");
   const response = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", assertion }), signal: AbortSignal.timeout(8000) });
-  if (!response.ok) throw new Error("Firestore authentication failed");
+  if (!response.ok) throw new Error(`Firestore authentication failed (HTTP ${response.status})`);
   return (await response.json()).access_token as string;
 }
 async function firestoreRequest(path: string, method: string, body?: unknown) {
@@ -44,7 +44,7 @@ async function firestoreRequest(path: string, method: string, body?: unknown) {
     method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(10000)
   });
   const data = response.status === 204 ? null : await response.json().catch(() => null);
-  if (!response.ok) throw new Error("Firestore request failed");
+  if (!response.ok) throw new Error(`Firestore request failed (HTTP ${response.status})`);
   return data;
 }
 const field = (value: string | null | undefined) => ({ stringValue: value || "" });
@@ -71,7 +71,7 @@ export const handler: Handler = async event => {
     try {
       const data = await firestoreRequest("websiteContacts?pageSize=100&orderBy=createdAt%20desc", "GET");
       return reply(200, { contacts: (data?.documents || []).map(fromDoc) });
-    } catch { return reply(500, { error: "לא ניתן לטעון את הפניות. בדקו את הגדרות המערכת." }); }
+    } catch (error) { console.error("[contact-api] Admin list failed:", error instanceof Error ? error.message : "Unknown error"); return reply(500, { error: "לא ניתן לטעון את הפניות. בדקו את הגדרות המערכת." }); }
   }
 
   if (!event.body || Buffer.byteLength(event.body, "utf8") > MAX_BODY_BYTES) return reply(413, { error: "הבקשה גדולה מדי" });
@@ -85,7 +85,7 @@ export const handler: Handler = async event => {
   const contact = { id: randomUUID(), name: p.name.trim(), email: p.email.trim(), phone: (p.phone || "").trim(), organization: (p.organization || "").trim(), topic: (p.topic || "").trim(), message: p.message.trim(), createdAt: new Date().toISOString() };
   try {
     await firestoreRequest("websiteContacts?documentId=" + encodeURIComponent(contact.id), "POST", { fields: { name: field(contact.name), email: field(contact.email), phone: field(contact.phone), organization: field(contact.organization), topic: field(contact.topic), message: field(contact.message), createdAt: { timestampValue: contact.createdAt } } });
-  } catch { return reply(500, { error: "לא הצלחנו לשמור את הפנייה. נסו שוב מאוחר יותר." }); }
+  } catch (error) { console.error("[contact-api] Firestore save failed:", error instanceof Error ? error.message : "Unknown error"); return reply(500, { error: "לא הצלחנו לשמור את הפנייה. נסו שוב מאוחר יותר." }); }
   let notificationSent = true;
   try { await notify(contact); } catch { notificationSent = false; }
   return reply(200, { success: true, notificationSent });
