@@ -109,10 +109,17 @@ const getSystemConfig = async () => {
 };
 
 const updateSystemConfig = async (config: any) => {
-  if (!db) {
-    console.error('Firebase not configured');
-    return;
+  if (!db || !auth || !auth.currentUser) {
+    throw new Error('נדרשת התחברות מנהל כדי לשמור שינויים');
   }
+
+  // Defense in depth: the UI route is not an authorization boundary.
+  // Firestore Security Rules must independently enforce the admin claim too.
+  const token = await auth.currentUser.getIdTokenResult(true);
+  if (token.claims.admin !== true) {
+    throw new Error('אין הרשאת מנהל לשמירת שינויים');
+  }
+
   await setDoc(doc(db, "system", "config"), config, { merge: true });
 };
 
