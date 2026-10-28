@@ -1,5 +1,6 @@
 // Standard modular import for initializeApp from firebase/app
 import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import {
   getFirestore,
   collection,
@@ -25,6 +26,22 @@ const firebaseConfig = {
 const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined" && firebaseConfig.projectId !== "undefined";
 const app = isConfigValid ? initializeApp(firebaseConfig) : null;
 const db = app ? getFirestore(app) : null;
+const auth = app ? getAuth(app) : null;
+
+const signInAdmin = async (email: string, password: string) => {
+  if (!auth) return { success: false, error: "Firebase לא מוגדר" };
+  try {
+    const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
+    const token = await credential.user.getIdTokenResult(true);
+    if (token.claims.admin !== true) {
+      await signOut(auth);
+      return { success: false, error: "לחשבון זה אין הרשאת מנהל" };
+    }
+    return { success: true, uid: credential.user.uid };
+  } catch {
+    return { success: false, error: "פרטי התחברות שגויים או שחשבון המנהל לא הוגדר" };
+  }
+};
 
 const isFirebaseReady = () => !!db;
 
@@ -168,6 +185,8 @@ const getTeamPulses = async (teamId: string) => {
 
 export {
   db,
+  auth,
+  signInAdmin,
   isFirebaseReady,
   DEFAULT_METRICS,
   getSystemConfig,
