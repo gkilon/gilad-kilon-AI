@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { WoopProject, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types.ts';
-import { fetchFromCloud, getSystemConfig, syncToCloud, deleteFromCloud } from './firebase';
+import { fetchFromCloud, getSystemConfig, syncToCloud, deleteFromCloud, subscribeToAdminAuth, signOutAdmin } from './firebase';
 import Dashboard from './components/Dashboard.tsx';
 import WoopWizard from './components/WoopWizard.tsx';
 import Header from './components/Header.tsx';
@@ -55,12 +55,15 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isConfigLoading, setIsConfigLoading] = useState(true);
   
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [session, setSession] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('gk_session');
     return saved ? JSON.parse(saved) : null;
   });
 
   
+  useEffect(() => subscribeToAdminAuth(setIsAdminAuthenticated), []);
+
   // Helper for manual navigation
   const handleNavigate = (view: ViewType) => {
     navigate(`/${view}`);
@@ -189,7 +192,7 @@ const App: React.FC = () => {
         onNavigate={handleNavigate} 
         currentView={location.pathname.substring(1) || 'home'} 
         session={session} 
-        onLogout={() => { setSession(null); navigate('/home'); }} 
+        onLogout={() => { void signOutAdmin(); setSession(null); navigate('/home'); }} 
       />
       <main className="w-full mx-auto">
         <AnimatePresence mode="wait">
@@ -220,8 +223,8 @@ const App: React.FC = () => {
           <Route path="/products/:slug" element={<ProductsPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/clients" element={<ClientsPage />} />
-          <Route path="/admin" element={session?.isAdmin ? <AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} /> : <Navigate to="/admin-login" replace />} />
-          <Route path="/brand_assets" element={session?.isAdmin ? <BrandAssets onBack={() => navigate('/admin')} /> : <Navigate to="/admin-login" replace />} />
+          <Route path="/admin" element={isAdminAuthenticated && session?.isAdmin ? <AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} /> : <Navigate to="/admin-login" replace />} />
+          <Route path="/brand_assets" element={isAdminAuthenticated && session?.isAdmin ? <BrandAssets onBack={() => navigate('/admin')} /> : <Navigate to="/admin-login" replace />} />
           <Route path="/articles" element={<ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); navigate(`/article_detail/${a.id}`); }} />} />
           <Route path="/article_detail/:articleId" element={isConfigLoading ? <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען...</div> : selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => navigate('/articles')} /> : <Navigate to="/articles" />} />
           <Route path="*" element={<Navigate to="/" />} />
