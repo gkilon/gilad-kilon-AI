@@ -8,6 +8,7 @@ import {
   query,
   where,
   getDocs,
+  orderBy,
   doc,
   deleteDoc,
   setDoc,
@@ -106,6 +107,14 @@ const getSystemConfig = async () => {
     };
   }
   return defaultConfig;
+};
+
+const getWebsiteContacts = async () => {
+  if (!db || !auth || !auth.currentUser) throw new Error('נדרשת התחברות מנהל כדי לצפות בפניות');
+  const token = await auth.currentUser.getIdTokenResult(true);
+  if (token.claims.admin !== true) throw new Error('אין הרשאת מנהל לצפייה בפניות');
+  const snapshot = await getDocs(query(collection(db, "websiteContacts"), orderBy("createdAt", "desc")));
+  return snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
 };
 
 const updateSystemConfig = async (config: any) => {
@@ -216,6 +225,7 @@ export {
   isFirebaseReady,
   DEFAULT_METRICS,
   getSystemConfig,
+  getWebsiteContacts,
   updateSystemConfig,
   createWorkspace,
   loginToWorkspace,
