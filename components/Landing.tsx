@@ -90,23 +90,21 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border border-white/30 top-10 left-10"></div>
               <div className="absolute w-28 h-28 rounded-full bg-brand-touch/90 top-20 left-24 md:left-36"></div>
               <div className="relative z-10 flex justify-between items-start gap-4">
-                <span className="text-xs md:text-sm tracking-wide text-white/75">אנשים · מערכת · תוצאות</span>
+                <span className="text-xs md:text-sm tracking-wide text-white/75">ייעוץ · פיתוח · שינוי</span>
                 <span className="w-3 h-3 rounded-full bg-brand-gold mt-1"></span>
               </div>
-              <div className="relative z-10 max-w-xs mt-36">
-                <p className="text-2xl md:text-3xl font-bold leading-snug">לראות את התמונה הרחבה, בלי לאבד את האדם שמולה.</p>
-                <div className="w-16 h-1 bg-brand-touch mt-6"></div>
+              <div className="relative z-10 mt-28 md:mt-32">
+                <p className="text-3xl md:text-4xl font-bold leading-tight">גלעד קילון</p>
+                <p className="text-sm md:text-base text-white/75 mt-3">יועץ ארגוני ומפתח תהליכים וכלים ניהוליים</p>
+                <div className="w-16 h-1 bg-brand-touch mt-6 mb-5"></div>
+                <p className="text-base md:text-lg font-semibold leading-relaxed">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
+                <p className="text-sm text-white/65 mt-4">20+ שנות ניסיון עם ארגונים, מנהלים וצוותים</p>
               </div>
-              <p className="relative z-10 text-xs text-white/60 mt-8">גלעד קילון · ייעוץ ארגוני</p>
             </div>
           </div>
           <div className="order-1 lg:order-2 max-w-3xl">
-            <div className="mb-7">
-              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">גלעד קילון</p>
-              <p className="text-sm md:text-base font-bold tracking-[0.04em] text-brand-gold mt-3">ייעוץ ארגוני · פיתוח מנהלים · צוותי הנהלה · שותפויות ושינוי</p>
-            </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.12] tracking-tight">
-              אדם של אנשים, חושב פשוט, רואה לעומק ומחובר לתוצאות.
+              לראות את התמונה הרחבה, בלי לאבד את האדם שבתוכה.
             </h1>
             <p className="text-lg md:text-xl leading-relaxed text-white/75 max-w-2xl mt-7">
               כבר יותר מעשרים שנה אני עובד עם מנהלים וארגונים על התפתחות, עבודת צוות, שותפויות ושינויים. אני אומר את הדברים ישר, גם כשלא נוח, בלי הצגות ובלי לאבד את הכבוד לאנשים. המטרה היא להבין מה באמת קורה, ולתרגם את זה לעבודה אחרת ולתוצאות.
