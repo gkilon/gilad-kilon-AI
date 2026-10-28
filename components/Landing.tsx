@@ -88,10 +88,9 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
             <div className="relative min-h-[300px] md:min-h-[420px] overflow-hidden bg-brand-accent/30 border border-white/15 p-7 md:p-10 flex flex-col justify-between">
               <div className="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border border-brand-gold/70 top-[-3rem] left-[-3rem]"></div>
               <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border border-white/30 top-10 left-10"></div>
-              <div className="absolute w-28 h-28 rounded-full bg-brand-touch/90 top-20 left-24 md:left-36"></div>
               <div className="relative z-10 flex justify-between items-start gap-4">
                 <span className="text-xs md:text-sm tracking-wide text-white/75">ייעוץ · פיתוח · שינוי</span>
-                <span className="w-3 h-3 rounded-full bg-brand-gold mt-1"></span>
+                <img src="/gilad-kilon-portrait.jpg" alt="גלעד קילון" className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover object-center border-4 border-white/80 shadow-xl" />
               </div>
               <div className="relative z-10 mt-28 md:mt-32">
                 <p className="text-3xl md:text-4xl font-bold leading-tight">גלעד קילון</p>
