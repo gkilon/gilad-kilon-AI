@@ -64,6 +64,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           </div>
           <button onClick={() => handleNav('lab')} className={`text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent ${isLabView ? 'text-brand-accent underline underline-offset-8' : 'text-brand-muted hover:text-brand-dark'}`}>המעבדה</button>
           <button onClick={() => { navigate('/contact'); window.scrollTo(0, 0); }} className="px-5 py-2.5 bg-brand-dark text-white text-sm font-semibold hover:bg-brand-accent transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent">בואו נדבר</button>
+          <button onClick={() => { navigate('/admin-login'); window.scrollTo(0, 0); }} className="text-xs text-brand-muted hover:text-brand-dark underline underline-offset-4" aria-label="כניסת מנהל">כניסת מנהל</button>
         </nav>
         <div className="flex items-center gap-3">
           {session?.isAdmin ? <div className="flex items-center gap-3">
@@ -91,6 +92,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentView, session, onLog
           </div>
           <button onClick={() => handleNav('lab')} className="text-xl font-bold px-6 py-3 underline underline-offset-8 decoration-brand-accent">המעבדה</button>
           <button onClick={() => { navigate('/contact'); setIsMenuOpen(false); window.scrollTo(0, 0); }} className="text-xl font-bold bg-brand-dark text-white px-6 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-accent">בואו נדבר</button>
+          <button onClick={() => { navigate('/admin-login'); setIsMenuOpen(false); window.scrollTo(0, 0); }} className="text-sm text-brand-muted underline underline-offset-4">כניסת מנהל</button>
 
         </nav>
         <div className="px-6 py-8 text-center border-t border-brand-dark/10"><p className="text-sm text-brand-muted">WhatsApp זמין גם דרך הכפתור הירוק באתר.</p></div>
