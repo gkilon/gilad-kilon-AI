@@ -9,6 +9,7 @@ const rateLimits = new Map<string, number[]>();
 const ALLOWED_ORIGINS = new Set([
   "https://kilon-consulting.com",
   "https://www.kilon-consulting.com",
+  "https://deploy-preview-3--celadon-sprinkles-343fe8.netlify.app",
   "http://localhost:5173",
   "http://localhost:5174",
 ]);
