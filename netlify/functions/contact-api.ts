@@ -37,7 +37,18 @@ async function firestoreRequest(path: string, method: string, body?: unknown) {
   let account: any;
   try { account = raw ? JSON.parse(raw) : null; } catch { throw new Error("Invalid service account configuration"); }
   const projectId = process.env.FIREBASE_PROJECT_ID || account?.project_id;
-  if (!account?.client_email || !account?.private_key || !projectId) throw new Error("Firestore is not configured");
+  if (!account?.client_email || !account?.private_key || !projectId) {
+    // Log presence checks only; never log service-account values or secrets.
+    console.error("[contact-api] Firestore config check:", {
+      hasServiceAccountJson: Boolean(raw),
+      jsonParsed: Boolean(account),
+      hasClientEmail: Boolean(account?.client_email),
+      hasPrivateKey: Boolean(account?.private_key),
+      hasProjectId: Boolean(projectId),
+      hasAccountProjectId: Boolean(account?.project_id),
+    });
+    throw new Error("Firestore is not configured");
+  }
   if (account.project_id && account.project_id !== projectId) throw new Error("Firebase project configuration mismatch");
   const token = await firestoreAccessToken(account);
   const response = await fetch(`https://firestore.googleapis.com/v1/projects/${encodeURIComponent(projectId)}/databases/(default)/documents/${path}`, {
