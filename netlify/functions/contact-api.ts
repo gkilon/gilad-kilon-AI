@@ -78,7 +78,7 @@ export const handler: Handler = async event => {
 
   if (event.httpMethod === "GET") {
     const expected = process.env.CONTACT_ADMIN_TOKEN || "", supplied = event.headers["x-contact-admin-token"] || "";
-    if (expected.length < 16 || !supplied || !safeEqual(supplied, expected)) return reply(401, { error: "קוד ניהול שגוי" });
+    if (!expected || !supplied || !safeEqual(supplied, expected)) return reply(401, { error: "קוד ניהול שגוי" });
     try {
       const data = await firestoreRequest("websiteContacts?pageSize=100&orderBy=createdAt%20desc", "GET");
       return reply(200, { contacts: (data?.documents || []).map(fromDoc) });
