@@ -205,7 +205,8 @@ const App: React.FC = () => {
           <Route path="/contact-admin" element={<ContactPage />} />
           <Route path="/" element={<Landing onEnterTool={handleNavigate} />} />
           <Route path="/home" element={<Landing onEnterTool={handleNavigate} />} />
-          <Route path="/login" element={<Login onLogin={(tid, isM, isA) => { setSession({teamId: tid, isManager: isM}); if (isA) navigate('/admin'); else navigate('/home'); }} />} />
+          <Route path="/login" element={<Navigate to="/home" replace />} />
+          <Route path="/admin-login" element={<Login adminOnly onLogin={(tid, isM, isA) => { if (isA) { setSession({teamId: tid, isManager: isM, isAdmin: true}); navigate('/admin'); } else { navigate('/home'); } }} />} />
           <Route path="/lab" element={<TheLab onEnterTool={handleNavigate} onBack={() => navigate('/home')} isLoggedIn={!!session} />} />
           <Route path="/dashboard" element={<Dashboard projects={projects} onToggleTask={handleToggleWoopTask} onDelete={handleDeleteProject} />} />
           <Route path="/wizard" element={<WoopWizard onCancel={() => navigate('/dashboard')} onSave={handleSaveWoop} />} />
@@ -219,8 +220,8 @@ const App: React.FC = () => {
           <Route path="/products/:slug" element={<ProductsPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/clients" element={<ClientsPage />} />
-          <Route path="/admin" element={<AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} />} />
-          <Route path="/brand_assets" element={<BrandAssets onBack={() => navigate('/admin')} />} />
+          <Route path="/admin" element={session?.isAdmin ? <AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} /> : <Navigate to="/admin-login" replace />} />
+          <Route path="/brand_assets" element={session?.isAdmin ? <BrandAssets onBack={() => navigate('/admin')} /> : <Navigate to="/admin-login" replace />} />
           <Route path="/articles" element={<ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); navigate(`/article_detail/${a.id}`); }} />} />
           <Route path="/article_detail/:articleId" element={isConfigLoading ? <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען...</div> : selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => navigate('/articles')} /> : <Navigate to="/articles" />} />
           <Route path="*" element={<Navigate to="/" />} />
