@@ -1,6 +1,6 @@
 // Standard modular import for initializeApp from firebase/app
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import {
   getFirestore,
   collection,
@@ -27,6 +27,23 @@ const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefi
 const app = isConfigValid ? initializeApp(firebaseConfig) : null;
 const db = app ? getFirestore(app) : null;
 const auth = app ? getAuth(app) : null;
+
+const subscribeToAdminAuth = (callback: (isAdmin: boolean) => void) => {
+  if (!auth) { callback(false); return () => {}; }
+  return onAuthStateChanged(auth, async (user) => {
+    if (!user) { callback(false); return; }
+    try {
+      const token = await user.getIdTokenResult();
+      callback(token.claims.admin === true);
+    } catch {
+      callback(false);
+    }
+  });
+};
+
+const signOutAdmin = async () => {
+  if (auth) await signOut(auth);
+};
 
 const signInAdmin = async (email: string, password: string) => {
   if (!auth) return { success: false, error: "Firebase לא מוגדר" };
@@ -187,6 +204,8 @@ export {
   db,
   auth,
   signInAdmin,
+  signOutAdmin,
+  subscribeToAdminAuth,
   isFirebaseReady,
   DEFAULT_METRICS,
   getSystemConfig,
