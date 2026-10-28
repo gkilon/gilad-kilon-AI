@@ -1,4 +1,5 @@
 import React from 'react';
+import portraitUrl from '../gilad-kilon-portrait.jpg';
 import { motion } from 'framer-motion';
 import { SmartSearchDark } from './SmartSearch';
 import { Link } from 'react-router-dom';
@@ -90,7 +91,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
               <div className="absolute w-48 h-48 md:w-60 md:h-60 rounded-full border border-white/30 top-10 left-10"></div>
               <div className="relative z-10 flex justify-between items-start gap-4">
                 <span className="text-xs md:text-sm tracking-wide text-white/75">ייעוץ · פיתוח · שינוי</span>
-                <img src="/gilad-kilon-portrait.jpg" alt="גלעד קילון" className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover object-center border-4 border-white/80 shadow-xl" />
+                <img src={portraitUrl} alt="גלעד קילון" className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover object-center border-4 border-white/80 shadow-xl" />
               </div>
               <div className="relative z-10 mt-28 md:mt-32">
                 <p className="text-3xl md:text-4xl font-bold leading-tight">גלעד קילון</p>
