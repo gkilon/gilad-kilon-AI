@@ -24,7 +24,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, message, adminOnly = false }) =>
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlTeamId = params.get('teamId');
-    if (urlTeamId) {
+    if (urlTeamId && !adminOnly) {
       setTeamId(urlTeamId);
       setMode('employee');
       setIsUnlocked(true);
