@@ -6,12 +6,13 @@ import { createWorkspace, loginToWorkspace, getSystemConfig, isFirebaseReady } f
 interface LoginProps {
   onLogin: (teamId: string, isManager: boolean, isAdmin?: boolean) => void;
   message?: string;
+  adminOnly?: boolean;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
-  const [isUnlocked, setIsUnlocked] = useState(false);
+const Login: React.FC<LoginProps> = ({ onLogin, message, adminOnly = false }) => {
+  const [isUnlocked, setIsUnlocked] = useState(adminOnly);
   const [accessCode, setAccessCode] = useState('');
-  const [mode, setMode] = useState<'login' | 'signup' | 'employee' | 'admin'>('login');
+  const [mode, setMode] = useState<'login' | 'signup' | 'employee' | 'admin'>(adminOnly ? 'admin' : 'login');
   const [teamId, setTeamId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -111,7 +112,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, message }) => {
     );
   }
 
-  if (!isUnlocked) {
+  if (!isUnlocked && !adminOnly) {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center p-6 animate-fadeIn bg-brand-beige">
         <div className="studio-card w-full max-w-md p-12 border-brand-dark bg-white shadow-[16px_16px_0px_#1a1a1a] text-center">
