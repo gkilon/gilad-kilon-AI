@@ -36,7 +36,7 @@ const ContactPage: React.FC = () => {
       const response = await fetch('/.netlify/functions/contact-api', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, phone, organization, topic, message, website }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'שליחת הפנייה נכשלה');
-      setStatus('הפנייה התקבלה. תודה, אחזור אליך.');
+      setStatus(data.notificationSent ? 'הפנייה התקבלה. תודה, אחזור אליך.' : 'הפנייה נשמרה, אבל לא נשלחה אליך התראת דוא״ל. צריך לבדוק את הגדרות ההתראה ב-Netlify.');
       setName(''); setEmail(''); setPhone(''); setOrganization(''); setMessage('');
     } catch (error) { setStatus(error instanceof Error ? error.message : 'אירעה שגיאה. נסו שוב.'); }
     finally { setBusy(false); }
