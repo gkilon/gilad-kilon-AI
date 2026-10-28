@@ -65,7 +65,7 @@ const fromDoc = (doc: any) => {
 };
 async function notify(contact: ReturnType<typeof fromDoc>) {
   const key = process.env.RESEND_API_KEY, to = process.env.CONTACT_NOTIFICATION_EMAIL, from = process.env.RESEND_FROM_EMAIL;
-  if (!key || !to || !from) return;
+  if (!key || !to || !from) throw new Error("Email notification is not configured");
   const esc = (s: string) => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
   const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ from, to: [to], subject: `פנייה חדשה מהאתר: ${contact.topic || "פנייה כללית"}`, html: `<h2>פנייה חדשה מהאתר</h2><p><b>שם:</b> ${esc(contact.name)}</p><p><b>דוא"ל:</b> ${esc(contact.email)}</p><p><b>טלפון:</b> ${esc(contact.phone)}</p><p><b>ארגון:</b> ${esc(contact.organization)}</p><p><b>נושא:</b> ${esc(contact.topic || "פנייה כללית")}</p><p><b>הודעה:</b><br>${esc(contact.message).replace(/\n/g, "<br>")}</p>` }), signal: AbortSignal.timeout(8000) });
   if (!response.ok) throw new Error("Resend notification failed");
