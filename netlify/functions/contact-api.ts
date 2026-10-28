@@ -84,7 +84,7 @@ export const handler: Handler = async event => {
   }
   const contact = { id: randomUUID(), name: p.name.trim(), email: p.email.trim(), phone: (p.phone || "").trim(), organization: (p.organization || "").trim(), topic: (p.topic || "").trim(), message: p.message.trim(), createdAt: new Date().toISOString() };
   try {
-    await firestoreRequest("websiteContacts", "POST?documentId=" + encodeURIComponent(contact.id), { fields: { name: field(contact.name), email: field(contact.email), phone: field(contact.phone), organization: field(contact.organization), topic: field(contact.topic), message: field(contact.message), createdAt: { timestampValue: contact.createdAt } } });
+    await firestoreRequest("websiteContacts?documentId=" + encodeURIComponent(contact.id), "POST", { fields: { name: field(contact.name), email: field(contact.email), phone: field(contact.phone), organization: field(contact.organization), topic: field(contact.topic), message: field(contact.message), createdAt: { timestampValue: contact.createdAt } } });
   } catch { return reply(500, { error: "לא הצלחנו לשמור את הפנייה. נסו שוב מאוחר יותר." }); }
   let notificationSent = true;
   try { await notify(contact); } catch { notificationSent = false; }
