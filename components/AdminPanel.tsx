@@ -1,13 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
-import { getSystemConfig, updateSystemConfig } from '../firebase';
+import { getSystemConfig, getWebsiteContacts, updateSystemConfig } from '../firebase';
 import { Article, ClientLogo, Collaboration } from '../types';
 
 const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = ({ onBack, onGoToAssets }) => {
   const [config, setConfig] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState('');
-  const [activeTab, setActiveTab] = useState<'system' | 'clients_partners' | 'articles'>('system');
+  const [activeTab, setActiveTab] = useState<'system' | 'clients_partners' | 'articles' | 'contacts'>('system');
+  const [contacts, setContacts] = useState<any[]>([]);
+  const [contactsLoading, setContactsLoading] = useState(false);
+  const [contactsError, setContactsError] = useState('');
 
   useEffect(() => {
     getSystemConfig().then(data => {
@@ -15,6 +18,18 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    if (activeTab !== 'contacts') return;
+    let cancelled = false;
+    setContactsLoading(true);
+    setContactsError('');
+    getWebsiteContacts()
+      .then(items => { if (!cancelled) setContacts(items as any[]); })
+      .catch(error => { if (!cancelled) setContactsError(error instanceof Error ? error.message : 'לא ניתן לטעון את הפניות. בדוק את הרשאות Firestore.'); })
+      .finally(() => { if (!cancelled) setContactsLoading(false); });
+    return () => { cancelled = true; };
+  }, [activeTab]);
 
   const handleSave = async () => {
     setSaveStatus('שומר...');
@@ -93,6 +108,7 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
         <button onClick={() => setActiveTab('system')} className={`flex-1 min-w-[120px] py-4 font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'system' ? 'bg-brand-dark text-white' : 'text-brand-muted hover:bg-brand-dark/5'}`}>הגדרות ליבה</button>
         <button onClick={() => setActiveTab('clients_partners')} className={`flex-1 min-w-[120px] py-4 font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'clients_partners' ? 'bg-brand-dark text-white' : 'text-brand-muted hover:bg-brand-dark/5'}`}>לקוחות ושותפים</button>
         <button onClick={() => setActiveTab('articles')} className={`flex-1 min-w-[120px] py-4 font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'articles' ? 'bg-brand-dark text-white' : 'text-brand-muted hover:bg-brand-dark/5'}`}>ניהול מאמרים</button>
+        <button onClick={() => setActiveTab('contacts')} className={`flex-1 min-w-[120px] py-4 font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'contacts' ? 'bg-brand-dark text-white' : 'text-brand-muted hover:bg-brand-dark/5'}`}>פניות מהאתר{contacts.length ? ` (${contacts.length})` : ''}</button>
       </div>
 
       <div className="studio-card p-10 md:p-16 border-brand-dark bg-white shadow-[12px_12px_0px_#1a1a1a] space-y-12">
@@ -185,6 +201,31 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
           </div>
         )}
 
+        {activeTab === 'contacts' && (
+          <div className="space-y-6 animate-fadeIn">
+            <div className="flex flex-wrap justify-between items-center border-b-2 border-brand-dark pb-4 gap-3">
+              <div><h3 className="text-2xl font-black italic">פניות מהאתר</h3><p className="text-sm text-brand-muted mt-2">הפניות שנשלחו דרך טופס יצירת הקשר.</p></div>
+              <button onClick={() => { setActiveTab('system'); setActiveTab('contacts'); }} className="px-4 py-2 border border-brand-dark/20 text-sm font-bold hover:bg-brand-dark/5">רענון</button>
+            </div>
+            {contactsLoading && <p className="py-8 text-center text-brand-muted">טוען פניות...</p>}
+            {contactsError && <p role="alert" className="p-4 bg-red-50 border border-red-200 text-red-800">{contactsError}</p>}
+            {!contactsLoading && !contactsError && contacts.length === 0 && <p className="py-8 text-center text-brand-muted">אין כרגע פניות להצגה.</p>}
+            <div className="space-y-4">
+              {contacts.map((item: any) => (
+                <article key={item.id} className="p-6 bg-brand-beige/20 border border-brand-dark/10">
+                  <div className="flex flex-wrap justify-between items-start gap-2">
+                    <h4 className="text-xl font-black">{item.name || 'ללא שם'}</h4>
+                    <time className="text-sm text-brand-muted">{item.createdAt ? new Date(item.createdAt.seconds ? item.createdAt.seconds * 1000 : item.createdAt).toLocaleString('he-IL') : ''}</time>
+                  </div>
+                  <p className="mt-2 text-sm"><a className="underline" href={`mailto:${item.email || ''}`}>{item.email}</a>{item.phone ? ` · ${item.phone}` : ''}{item.organization ? ` · ${item.organization}` : ''}</p>
+                  <p className="mt-3 font-bold">{item.topic || 'פנייה כללית'}</p>
+                  <p className="mt-2 whitespace-pre-wrap leading-relaxed">{item.message}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+
         {activeTab === 'articles' && (
           <div className="space-y-10 animate-fadeIn">
             <div className="flex justify-between items-center border-b-2 border-brand-dark pb-4">
@@ -205,9 +246,9 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
           </div>
         )}
 
-        <button onClick={handleSave} className="w-full py-8 bg-brand-dark text-white font-black text-2xl hover:bg-brand-accent transition-all shadow-xl active:scale-95">
+        {activeTab !== 'contacts' && <button onClick={handleSave} className="w-full py-8 bg-brand-dark text-white font-black text-2xl hover:bg-brand-accent transition-all shadow-xl active:scale-95">
           {saveStatus || "עדכן והפץ שינויים במערכת"}
-        </button>
+        </button>}
       </div>
     </div>
   );
