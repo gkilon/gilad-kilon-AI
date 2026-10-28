@@ -78,7 +78,8 @@ export const handler: Handler = async event => {
 
   if (event.httpMethod === "GET") {
     const expected = process.env.CONTACT_ADMIN_TOKEN || "", supplied = event.headers["x-contact-admin-token"] || "";
-    if (!expected || !supplied || !safeEqual(supplied, expected)) return reply(401, { error: "קוד ניהול שגוי" });
+    if (!expected) return reply(503, { error: "קוד הניהול לא מוגדר בסביבת הפריסה הזו (CONTACT_ADMIN_TOKEN)" });
+    if (!supplied || !safeEqual(supplied, expected)) return reply(401, { error: "הקוד שהוזן אינו תואם להגדרה ב-Netlify" });
     try {
       const data = await firestoreRequest("websiteContacts?pageSize=100&orderBy=createdAt%20desc", "GET");
       return reply(200, { contacts: (data?.documents || []).map(fromDoc) });
