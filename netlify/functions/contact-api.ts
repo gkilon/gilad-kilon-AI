@@ -68,7 +68,7 @@ async function notify(contact: ReturnType<typeof fromDoc>) {
   if (!key || !to || !from) throw new Error("Email notification is not configured");
   const esc = (s: string) => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
   const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ from, to: [to], subject: `פנייה חדשה מהאתר: ${contact.topic || "פנייה כללית"}`, html: `<h2>פנייה חדשה מהאתר</h2><p><b>שם:</b> ${esc(contact.name)}</p><p><b>דוא"ל:</b> ${esc(contact.email)}</p><p><b>טלפון:</b> ${esc(contact.phone)}</p><p><b>ארגון:</b> ${esc(contact.organization)}</p><p><b>נושא:</b> ${esc(contact.topic || "פנייה כללית")}</p><p><b>הודעה:</b><br>${esc(contact.message).replace(/\n/g, "<br>")}</p>` }), signal: AbortSignal.timeout(8000) });
-  if (!response.ok) throw new Error("Resend notification failed");
+  if (!response.ok) { const detail = await response.text().catch(() => ""); console.error("[contact-api] Resend rejected notification:", { status: response.status, detail: detail.slice(0, 1000) }); throw new Error(`Resend notification failed (HTTP ${response.status})`); }
 }
 export const handler: Handler = async event => {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: { ...headers, "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, x-contact-admin-token" }, body: "" };
@@ -99,6 +99,6 @@ export const handler: Handler = async event => {
     await firestoreRequest("websiteContacts?documentId=" + encodeURIComponent(contact.id), "POST", { fields: { name: field(contact.name), email: field(contact.email), phone: field(contact.phone), organization: field(contact.organization), topic: field(contact.topic), message: field(contact.message), createdAt: { timestampValue: contact.createdAt } } });
   } catch (error) { console.error("[contact-api] Firestore save failed:", error instanceof Error ? error.message : "Unknown error"); return reply(500, { error: "לא הצלחנו לשמור את הפנייה. נסו שוב מאוחר יותר." }); }
   let notificationSent = true;
-  try { await notify(contact); } catch { notificationSent = false; }
+  try { await notify(contact); } catch (error) { notificationSent = false; console.error("[contact-api] Email notification failed:", error instanceof Error ? error.message : "Unknown error"); }
   return reply(200, { success: true, notificationSent });
 };
