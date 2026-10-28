@@ -18,9 +18,14 @@ const AdminPanel: React.FC<{ onBack: () => void, onGoToAssets?: () => void }> = 
 
   const handleSave = async () => {
     setSaveStatus('שומר...');
-    await updateSystemConfig(config);
-    setSaveStatus('נשמר בהצלחה!');
-    setTimeout(() => setSaveStatus(''), 2000);
+    try {
+      await updateSystemConfig(config);
+      setSaveStatus('נשמר בהצלחה!');
+    } catch (error) {
+      console.error('Admin content save failed:', error);
+      setSaveStatus('השמירה נכשלה — בדוק הרשאות וחיבור');
+    }
+    setTimeout(() => setSaveStatus(''), 4000);
   };
 
   const addItem = (type: 'clients' | 'articles' | 'partners') => {
