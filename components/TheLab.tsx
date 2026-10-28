@@ -65,7 +65,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
 
         <div className="grid gap-6 lg:grid-cols-3">
           <article className="overflow-hidden border border-brand-dark/10 bg-white">
-            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-brand-beige"><img src={commScreenshot} alt="צילום מסך של כלי סגנונות התקשורת" className="h-full w-full object-cover object-top" loading="lazy" /></div>
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-white"><img src={commScreenshot} alt="צילום מסך של כלי סגנונות התקשורת" className="h-full w-full object-contain object-center" loading="lazy" /></div>
             <div className="p-6 sm:p-8">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">התנסות עצמאית</span>
@@ -82,7 +82,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
           </article>
 
           <article className="overflow-hidden border border-brand-dark/10 bg-white">
-            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-brand-beige"><img src={obtScreenshot} alt="צילום מסך של כלי זיהוי מטרות התפתחותיות OBT" className="h-full w-full object-cover object-top" loading="lazy" /></div>
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-white"><img src={obtScreenshot} alt="צילום מסך של כלי זיהוי מטרות התפתחותיות OBT" className="h-full w-full object-contain object-center" loading="lazy" /></div>
             <div className="p-6 sm:p-8">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">חלק מתהליך מקצועי</span>
@@ -99,7 +99,7 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
           </article>
 
           <article className="overflow-hidden border border-brand-dark/10 bg-white">
-            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-brand-beige"><img src={syncScreenshot} alt="צילום מסך של כלי ניהול שותפויות" className="h-full w-full object-cover object-top" loading="lazy" /></div>
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-white"><img src={syncScreenshot} alt="צילום מסך של כלי ניהול שותפויות" className="h-full w-full object-contain object-center" loading="lazy" /></div>
             <div className="p-6 sm:p-8">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">כלי לעבודה עם שותפויות</span>
