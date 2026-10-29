@@ -105,18 +105,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, message, adminOnly = false }) =>
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <div className="space-y-3">
-              <label className="text-[11px] font-black text-brand-dark uppercase tracking-widest">סיסמת מנהל</label>
-              <input
-                type="password"
-                autoComplete="current-password"
-                required
-                className="w-full bg-white border-4 border-brand-dark p-5 text-2xl text-brand-dark outline-none focus:ring-4 focus:ring-brand-accent/20 font-bold"
-                value={password}
-                autoFocus
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
             {error && <p className="bg-red-500 text-white font-black p-3 text-center text-xs">{error}</p>}
             <button disabled={loading} className="w-full py-6 bg-brand-dark text-white font-black text-xl hover:bg-brand-accent transition-all shadow-xl active:scale-95 disabled:opacity-60">{loading ? 'מתחבר...' : 'כניסה לממשק ניהול'}</button>
             {adminOnly ? <button type="button" onClick={() => { window.location.href = '/home'; }} className="w-full text-brand-muted font-black text-[10px] uppercase tracking-widest hover:text-brand-dark underline decoration-brand-accent">חזרה לאתר</button> : <button type="button" onClick={() => setMode('login')} className="w-full text-brand-muted font-black text-[10px] uppercase tracking-widest hover:text-brand-dark underline decoration-brand-accent">חזרה לכניסה רגילה</button>}
