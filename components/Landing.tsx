@@ -59,12 +59,14 @@ export const ExpertiseCard: React.FC<{ title: string; desc: string; icon: React.
 const Arrow = () => <span aria-hidden="true" className="inline-block mr-2 transition-transform group-hover:-translate-x-1">←</span>;
 
 const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
-  const services = [
-    { n: '01', title: 'פיתוח מנהלים', text: 'תהליך קבוצתי בן מספר מפגשים, העוסק בתכנים המרכזיים של עבודת הניהול ומותאם לאתגרים ולצרכים של דרג הניהול בארגון.' },
-    { n: '02', title: 'ייעוץ אישי למנהלים', text: 'תהליך אחד על אחד עם מנהל או מנהלת סביב אתגרים, דילמות וסוגיות מהתפקיד, כדי לחשוב יחד ולגבש דרכי פעולה שמתאימות למציאות שלהם.' },
-    { n: '03', title: 'צוותי הנהלה', text: 'לעזור לצוותי הנהלה לגבש כיוון, לנהל שיחות חשובות, לקבל החלטות ולפעול כצוות גם כשיש חילוקי דעות.' },
-    { n: '04', title: 'ממשקים ושותפויות', text: 'לשפר את העבודה בין מנהלים ויחידות, להבהיר אחריות וציפיות ולבנות שותפויות שמקדמות את העבודה.' },
-    { n: '05', title: 'שינוי וייעוץ ארגוני', text: 'ללוות ארגונים בתקופות של צמיחה ושינוי, ולחבר בין המבנה והתהליכים לבין מה שאנשים צריכים כדי להצליח.' }
+  const coreServices = [
+    { n: '01', title: 'פיתוח מנהלים', text: 'תהליך קבוצתי בן מספר מפגשים, המותאם לאתגרים ולצרכים של דרג הניהול בארגון. עוסקים בסוגיות המרכזיות של עבודת הניהול, לומדים מתוך הניסיון של המשתתפים ומתרגמים את הלמידה לדרכי פעולה שאפשר ליישם בעבודה היומיומית.' },
+    { n: '02', title: 'ייעוץ אישי למנהלים | בגישת OBT', text: 'תהליך אישי למנהל או למנהלת שרוצים לקדם שינוי משמעותי בדרך הניהול שלהם. מגדירים מטרה, מזהים דפוסי פעולה והנחות שמקשים להתקדם, ובוחנים את הפער בין מה שרוצים להשיג לבין מה שעושים בפועל. משם יוצאים ללמידה ולהתנסויות הדרגתיות שמאפשרות שינוי בפועל.' },
+    { n: '03', title: 'צוותי הנהלה', text: 'ליווי צוותי הנהלה בבניית צוות שעובד יחד, ולא רק אוסף של מנהלים. מחדדים את המטרות והאחריות המשותפת, משפרים את איכות השיח וקבלת ההחלטות, ומציפים מתחים ומחלוקות שחשוב להתמודד איתם כדי לחזק את היכולת לפעול כצוות.' },
+    { n: '04', title: 'ממשקים ושותפויות', text: 'עבודה על נקודות המפגש בין אנשים, צוותים ויחידות בארגון, שבהן נוצרים לא פעם חיכוכים, אי־הבנות ופערי ציפיות. מבהירים מה כל צד צריך מהאחר, בוחנים את דפוסי העבודה המשותפים ובונים הסכמות ותהליכים שמאפשרים שיתוף פעולה אפקטיבי יותר.' }
+  ];
+  const additionalServices = [
+    { n: '05', title: 'שינוי וייעוץ ארגוני', text: 'ליווי ארגונים בתקופות של צמיחה ושינוי, וחיבור בין המבנה, התהליכים ודרך העבודה לבין מה שאנשים והארגון צריכים כדי להתקדם.' }
   ];
   const products = [
     { title: 'תהליך OBT להתפתחות אישית', tag: 'מוצר ייחודי', text: 'תהליך מובנה שמחבר בין מטרה שרוצים להשיג לבין מה שעוצר את השינוי בפועל, ומסייע להפוך תובנות לצעדים מעשיים.', href: 'https://obt.kilon-consulting.com/' },
@@ -142,10 +144,18 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איפה אנחנו יכולים לעבוד יחד</p>
           <h2 className="text-3xl md:text-5xl font-black leading-tight">האתגרים משתנים. השאלה היא מה צריך להשתנות כדי להתקדם.</h2>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {services.map(s => <article key={s.n} className="border border-brand-dark/10 p-6 md:p-7 bg-brand-paper hover:bg-white hover:border-brand-accent transition-colors">
-            <div className="text-xs text-brand-accent font-bold mb-8">{s.n}</div><h3 className="text-xl font-bold mb-4">{s.title}</h3><p className="text-sm md:text-base leading-relaxed text-brand-muted">{s.text}</p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {coreServices.map(s => <article key={s.n} className="h-full border border-brand-dark/10 p-7 md:p-9 bg-brand-paper hover:bg-white hover:border-brand-accent transition-colors">
+            <div className="text-xs text-brand-accent font-bold mb-7">{s.n}</div><h3 className="text-xl md:text-2xl font-bold mb-4">{s.title}</h3><p className="text-sm md:text-base leading-relaxed text-brand-muted">{s.text}</p>
           </article>)}
+        </div>
+        <div className="mt-12 pt-8 border-t border-brand-dark/10">
+          <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-5">תחום עבודה נוסף</p>
+          <div className="grid md:grid-cols-2 gap-4">
+            {additionalServices.map(s => <article key={s.n} className="border border-brand-dark/10 p-6 md:p-7 bg-brand-paper hover:bg-white hover:border-brand-accent transition-colors">
+              <div className="text-xs text-brand-accent font-bold mb-5">{s.n}</div><h3 className="text-xl font-bold mb-3">{s.title}</h3><p className="text-sm md:text-base leading-relaxed text-brand-muted">{s.text}</p>
+            </article>)}
+          </div>
         </div>
       </div>
     </section>
