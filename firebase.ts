@@ -1,6 +1,5 @@
 // Standard modular import for initializeApp from firebase/app
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import {
   getFirestore,
   collection,
@@ -27,37 +26,42 @@ const firebaseConfig = {
 const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined" && firebaseConfig.projectId !== "undefined";
 const app = isConfigValid ? initializeApp(firebaseConfig) : null;
 const db = app ? getFirestore(app) : null;
-const auth = app ? getAuth(app) : null;
+const auth = null;
+const ADMIN_TOKEN_KEY = 'gk_admin_token';
+const adminHeaders = () => ({ 'Content-Type': 'application/json', 'x-contact-admin-token': sessionStorage.getItem(ADMIN_TOKEN_KEY) || '' });
 
 const subscribeToAdminAuth = (callback: (isAdmin: boolean) => void) => {
-  if (!auth) { callback(false); return () => {}; }
-  return onAuthStateChanged(auth, async (user) => {
-    if (!user) { callback(false); return; }
-    try {
-      const token = await user.getIdTokenResult();
-      callback(token.claims.admin === true);
-    } catch {
-      callback(false);
-    }
-  });
+  const check = () => callback(Boolean(sessionStorage.getItem(ADMIN_TOKEN_KEY)));
+  check();
+  window.addEventListener('gk-admin-auth-changed', check);
+  window.addEventListener('storage', check);
+  return () => {
+    window.removeEventListener('gk-admin-auth-changed', check);
+    window.removeEventListener('storage', check);
+  };
 };
 
 const signOutAdmin = async () => {
-  if (auth) await signOut(auth);
+  sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+  window.dispatchEvent(new Event('gk-admin-auth-changed'));
 };
 
-const signInAdmin = async (email: string, password: string) => {
-  if (!auth) return { success: false, error: "Firebase לא מוגדר" };
+const signInAdmin = async (token: string) => {
+  const supplied = token.trim();
+  if (!supplied) return { success: false, error: "נא להזין קוד ניהול" };
   try {
-    const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
-    const token = await credential.user.getIdTokenResult(true);
-    if (token.claims.admin !== true) {
-      await signOut(auth);
-      return { success: false, error: "לחשבון זה אין הרשאת מנהל" };
-    }
-    return { success: true, uid: credential.user.uid };
+    const response = await fetch('/.netlify/functions/admin-api', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-contact-admin-token': supplied },
+      body: JSON.stringify({ action: 'login' })
+    });
+    const data = await response.json();
+    if (!response.ok || !data.success) return { success: false, error: data.error || "קוד הניהול שגוי" };
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, supplied);
+    window.dispatchEvent(new Event('gk-admin-auth-changed'));
+    return { success: true, uid: 'admin' };
   } catch {
-    return { success: false, error: "פרטי התחברות שגויים או שחשבון המנהל לא הוגדר" };
+    return { success: false, error: "לא ניתן להתחבר כרגע. נסו שוב." };
   }
 };
 
@@ -110,26 +114,22 @@ const getSystemConfig = async () => {
 };
 
 const getWebsiteContacts = async () => {
-  if (!db || !auth || !auth.currentUser) throw new Error('נדרשת התחברות מנהל כדי לצפות בפניות');
-  const token = await auth.currentUser.getIdTokenResult(true);
-  if (token.claims.admin !== true) throw new Error('אין הרשאת מנהל לצפייה בפניות');
-  const snapshot = await getDocs(query(collection(db, "websiteContacts"), orderBy("createdAt", "desc")));
-  return snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
+  const response = await fetch('/.netlify/functions/admin-api', {
+    headers: { 'x-contact-admin-token': sessionStorage.getItem(ADMIN_TOKEN_KEY) || '' }
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'לא ניתן לטעון את הפניות');
+  return data.contacts || [];
 };
 
 const updateSystemConfig = async (config: any) => {
-  if (!db || !auth || !auth.currentUser) {
-    throw new Error('נדרשת התחברות מנהל כדי לשמור שינויים');
-  }
-
-  // Defense in depth: the UI route is not an authorization boundary.
-  // Firestore Security Rules must independently enforce the admin claim too.
-  const token = await auth.currentUser.getIdTokenResult(true);
-  if (token.claims.admin !== true) {
-    throw new Error('אין הרשאת מנהל לשמירת שינויים');
-  }
-
-  await setDoc(doc(db, "system", "config"), config, { merge: true });
+  const response = await fetch('/.netlify/functions/admin-api', {
+    method: 'POST',
+    headers: adminHeaders(),
+    body: JSON.stringify({ action: 'save-config', config })
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'שמירת השינויים נכשלה');
 };
 
 const createWorkspace = async (teamId: string, password: string) => {
