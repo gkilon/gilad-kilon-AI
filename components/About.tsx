@@ -1,9 +1,10 @@
 import React from 'react';
+import portraitUrl from '../gilad-kilon-portrait.jpg';
 
 const About: React.FC = () => {
   return <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
     <section className="border-b border-brand-dark/10 bg-brand-dark text-white relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 relative"><div className="absolute left-8 top-10 w-40 h-40 rounded-full border border-brand-gold/30 pointer-events-none"></div>
+      <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 relative"><img src={portraitUrl} alt="גלעד קילון" className="absolute left-8 top-10 w-32 h-32 md:w-40 md:h-40 rounded-full object-cover object-center border-4 border-brand-gold/40 shadow-xl" />
         <p className="text-xs font-bold tracking-[0.18em] text-brand-gold mb-5">מי אני ואיך אני עובד</p>
         <h1 className="text-4xl md:text-7xl font-bold leading-tight max-w-5xl relative">אני אוהב להבין אנשים ומערכות, ולמצוא דרך להפוך הבנה לעשייה.</h1>
         <p className="text-xl md:text-2xl text-white/70 leading-relaxed max-w-3xl mt-8 relative">גלעד קילון · יועץ ארגוני, מפתח מנהלים ומלווה צוותי הנהלה · יותר מ־20 שנות ניסיון</p>
