@@ -36,7 +36,7 @@ const ClientsPage: React.FC = () => {
         {/* Clients Section */}
         <section className="space-y-8">
           <div className="max-w-3xl">
-            <h2 className="text-2xl md:text-3xl font-bold text-brand-dark">ארגונים שעבדתי איתם</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-brand-dark">לקוחות שאני מלווה או ליוויתי בעבר</h2>
             
           </div>
 
