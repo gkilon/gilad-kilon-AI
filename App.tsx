@@ -55,7 +55,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isConfigLoading, setIsConfigLoading] = useState(true);
   
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => Boolean(sessionStorage.getItem('gk_admin_token')));
   const [session, setSession] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('gk_session');
     return saved ? JSON.parse(saved) : null;
