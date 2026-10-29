@@ -15,7 +15,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, message, adminOnly = false }) =>
   const [mode, setMode] = useState<'login' | 'signup' | 'employee' | 'admin'>(adminOnly ? 'admin' : 'login');
   const [teamId, setTeamId] = useState('');
   const [password, setPassword] = useState('');
-  const [adminEmail, setAdminEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [masterCode, setMasterCode] = useState('GILAD2025');
@@ -51,7 +50,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, message, adminOnly = false }) =>
 
     if (mode === 'admin') {
       setLoading(true);
-      const result = await signInAdmin(adminEmail, password);
+      const result = await signInAdmin(password);
       setLoading(false);
       if (result.success) onLogin('admin', true, true);
       else setError(result.error || "התחברות מנהל נכשלה");
@@ -95,15 +94,15 @@ const Login: React.FC<LoginProps> = ({ onLogin, message, adminOnly = false }) =>
           </div>
           <form onSubmit={handleAction} className="space-y-8 text-right">
             <div className="space-y-3">
-              <label className="text-[11px] font-black text-brand-dark uppercase tracking-widest">כתובת דוא״ל של מנהל</label>
+              <label className="text-[11px] font-black text-brand-dark uppercase tracking-widest">קוד ניהול</label>
               <input
-                type="email"
-                autoComplete="username"
+                type="password"
+                autoComplete="current-password"
                 required
-                className="w-full bg-white border-4 border-brand-dark p-4 text-lg text-brand-dark outline-none focus:ring-4 focus:ring-brand-accent/20 font-bold text-left"
-                value={adminEmail}
-                onChange={(e) => setAdminEmail(e.target.value)}
-                dir="ltr"
+                className="w-full bg-white border-4 border-brand-dark p-5 text-2xl text-brand-dark outline-none focus:ring-4 focus:ring-brand-accent/20 font-bold"
+                value={password}
+                autoFocus
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="space-y-3">
