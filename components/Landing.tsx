@@ -167,6 +167,25 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
       </div>
     </section>
 
+    <section className="bg-brand-paper border-y border-brand-dark/10">
+      <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
+        <div className="relative overflow-hidden bg-brand-dark text-white p-7 md:p-12">
+          <div aria-hidden="true" className="pointer-events-none absolute -left-12 -top-20 h-64 w-64 rounded-full border border-brand-gold/30"></div>
+          <div className="relative grid gap-7 md:grid-cols-[1fr_auto] md:items-center">
+            <div className="max-w-3xl">
+              <p className="text-xs font-bold tracking-[0.18em] text-brand-gold mb-4">המעבדה של גלעד קילון</p>
+              <h2 className="text-3xl md:text-4xl font-black leading-tight">לא רק לדבר על כלים חדשים. אפשר גם להתנסות בהם.</h2>
+              <p className="mt-4 text-base md:text-lg leading-relaxed text-white/70">פיתחתי כלים שמחברים בין ייעוץ ארגוני, מתודולוגיה וטכנולוגיה — כדי לעזור לחשוב על אתגרים ניהוליים ולעבוד איתם אחרת. חלק מהכלים פתוחים להתנסות עצמאית.</p>
+            </div>
+            <div className="flex flex-col gap-3 md:min-w-[220px]">
+              <Link to="/lab" className="inline-flex items-center justify-center bg-brand-gold px-6 py-4 font-bold text-brand-dark transition-colors hover:bg-white">להיכנס למעבדה ולהתנסות <Arrow /></Link>
+              <p className="text-xs text-white/55 text-center">דוגמאות אמיתיות לכלים שפיתחתי</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section className="bg-brand-dark text-white">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 grid md:grid-cols-[0.8fr_1.2fr] gap-10 md:gap-16 items-center">
         <div><p className="text-xs font-bold tracking-[0.18em] text-brand-touch mb-4">אפשר להתחיל משיחה</p><h2 className="text-3xl md:text-5xl font-black leading-tight">מה אתם רוצים לקדם?</h2><p className="mt-5 text-lg text-white/65 leading-relaxed">אפשר להתחיל משאלה, מיעד או ממשהו שצריך להשתנות. נחשוב יחד מה הצעד הנכון.</p><div className="flex flex-wrap gap-3 mt-8"><Link to="/contact" className="inline-flex px-7 py-4 bg-brand-touch text-white font-bold hover:bg-white hover:text-brand-dark transition-colors">בואו נדבר <Arrow /></Link></div></div>
