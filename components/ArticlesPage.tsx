@@ -8,23 +8,17 @@ interface ArticlesPageProps {
 
 const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, onSelectArticle }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-beige via-white to-brand-beige text-brand-dark" dir="rtl">
-      {/* Background Grid */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-[0.3] pointer-events-none z-0"></div>
-      
-      {/* Subtle gradient overlay */}
-      <div className="fixed inset-0 bg-gradient-to-br from-brand-sage/5 via-transparent to-brand-accent/5 pointer-events-none z-0"></div>
-
-      <div className="relative z-10 max-w-6xl mx-auto py-24 px-6 space-y-32 pb-48 text-right">
-        <section className="text-center space-y-8 animate-fadeIn">
-          <div className="inline-block border-b-2 border-brand-accent pb-4">
-            <span className="text-[10px] font-bold text-brand-muted uppercase tracking-[0.4em] block mb-2">Knowledge Base</span>
-            <h1 className="text-5xl md:text-8xl font-black bg-gradient-to-r from-brand-sage to-brand-accent bg-clip-text text-transparent tracking-tighter italic uppercase leading-none">
+    <div className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
+      <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-12 md:space-y-16 text-right">
+        <section className="max-w-4xl space-y-6 border-r-4 border-brand-touch pr-6 md:pr-8 bg-brand-dark text-white p-7 md:p-10 relative overflow-hidden">
+          <div>
+            <span className="text-xs font-bold text-brand-gold block mb-4">מאמרים ותוכן</span>
+            <h1 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">
               חומרים מקצועיים.
             </h1>
           </div>
-          <p className="text-xl md:text-3xl text-brand-muted max-w-2xl mx-auto font-light leading-relaxed">
-            "תובנות, כלים ומחשבות על ניהול, אסטרטגיה ואנשים."
+          <p className="text-lg md:text-2xl text-white/70 max-w-3xl leading-relaxed">
+            תובנות, כלים ומחשבות על ניהול, אסטרטגיה ואנשים.
           </p>
         </section>
 
@@ -33,33 +27,33 @@ const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, onSelectArticle }
             המאמרים בטעינה...
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {articles.map(article => (
               <div
                 key={article.id}
                 onClick={() => onSelectArticle(article)}
-                className="arch-card p-10 bg-white border border-brand-dark/10 hover:border-brand-accent flex flex-col h-full cursor-pointer group transition-all duration-300 relative overflow-hidden"
+                className="p-6 md:p-8 bg-brand-paper border border-brand-dark/10 hover:border-brand-accent flex flex-col h-full cursor-pointer group transition-colors relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-1 h-0 group-hover:h-full bg-brand-accent transition-all duration-500"></div>
+                <div className="absolute top-0 right-0 w-1 h-0 group-hover:h-full bg-brand-touch transition-all duration-500"></div>
 
                 <div className="flex justify-between items-start mb-8">
-                  <span className="text-[9px] font-bold text-brand-accent uppercase tracking-widest bg-brand-accent/5 px-2 py-1 border border-brand-accent/10">
+                  <span className="text-xs font-bold text-brand-accent bg-brand-sage/25 px-3 py-1">
                     {article.category}
                   </span>
-                  <span className="text-[10px] font-mono text-brand-muted/50 uppercase tracking-widest">{article.date}</span>
+                  <span className="text-xs text-brand-muted">{article.date}</span>
                 </div>
 
                 <div className="flex-1 space-y-4 mb-8">
-                  <h3 className="text-2xl font-black text-brand-dark leading-tight group-hover:text-brand-accent transition-colors">
+                  <h3 className="text-xl md:text-2xl font-bold text-brand-dark leading-tight group-hover:text-brand-accent transition-colors">
                     {article.title}
                   </h3>
                   {article.subtitle && (
-                    <p className="text-brand-muted font-light leading-relaxed">{article.subtitle}</p>
+                    <p className="text-brand-muted leading-relaxed">{article.subtitle}</p>
                   )}
                 </div>
 
                 <div className="pt-6 border-t border-brand-dark/5 flex justify-between items-center opacity-70 group-hover:opacity-100 transition-opacity">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-dark">לקריאת המאמר</span>
+                  <span className="text-sm font-bold text-brand-dark">לקריאת המאמר</span>
                   <span className="text-xl group-hover:translate-x-[-5px] transition-transform">←</span>
                 </div>
               </div>

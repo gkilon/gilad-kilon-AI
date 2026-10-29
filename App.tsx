@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { WoopProject, IdeaEntry, Task, UserSession, Article, ViewType, WoopData } from './types.ts';
-import { fetchFromCloud, getSystemConfig, syncToCloud, deleteFromCloud } from './firebase';
+import { fetchFromCloud, getSystemConfig, syncToCloud, deleteFromCloud, subscribeToAdminAuth, signOutAdmin } from './firebase';
 import Dashboard from './components/Dashboard.tsx';
 import WoopWizard from './components/WoopWizard.tsx';
 import Header from './components/Header.tsx';
@@ -22,6 +22,8 @@ import ClientsPage from './components/ClientsPage.tsx';
 import BrandAssets from './components/BrandAssets.tsx';
 import ArticlesPage from './components/ArticlesPage.tsx';
 import ArticleDetail from './components/ArticleDetail.tsx';
+import ProductsPage from './components/ProductsPage.tsx';
+import ContactPage from './components/ContactPage.tsx';
 
 const FloatingWhatsApp: React.FC = () => (
   <a 
@@ -53,12 +55,15 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isConfigLoading, setIsConfigLoading] = useState(true);
   
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [session, setSession] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('gk_session');
     return saved ? JSON.parse(saved) : null;
   });
 
   
+  useEffect(() => subscribeToAdminAuth(setIsAdminAuthenticated), []);
+
   // Helper for manual navigation
   const handleNavigate = (view: ViewType) => {
     navigate(`/${view}`);
@@ -187,7 +192,7 @@ const App: React.FC = () => {
         onNavigate={handleNavigate} 
         currentView={location.pathname.substring(1) || 'home'} 
         session={session} 
-        onLogout={() => { setSession(null); navigate('/home'); }} 
+        onLogout={() => { void signOutAdmin(); setSession(null); navigate('/home'); }} 
       />
       <main className="w-full mx-auto">
         <AnimatePresence mode="wait">
@@ -199,9 +204,12 @@ const App: React.FC = () => {
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
         <Routes location={location}>
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/contact-admin" element={<ContactPage />} />
           <Route path="/" element={<Landing onEnterTool={handleNavigate} />} />
           <Route path="/home" element={<Landing onEnterTool={handleNavigate} />} />
-          <Route path="/login" element={<Login onLogin={(tid, isM, isA) => { setSession({teamId: tid, isManager: isM}); if (isA) navigate('/admin'); else navigate('/home'); }} />} />
+          <Route path="/login" element={<Navigate to="/home" replace />} />
+          <Route path="/admin-login" element={<Login adminOnly onLogin={(tid, isM, isA) => { if (isA) { setSession({teamId: tid, isManager: isM, isAdmin: true}); navigate('/admin'); } else { navigate('/home'); } }} />} />
           <Route path="/lab" element={<TheLab onEnterTool={handleNavigate} onBack={() => navigate('/home')} isLoggedIn={!!session} />} />
           <Route path="/dashboard" element={<Dashboard projects={projects} onToggleTask={handleToggleWoopTask} onDelete={handleDeleteProject} />} />
           <Route path="/wizard" element={<WoopWizard onCancel={() => navigate('/dashboard')} onSave={handleSaveWoop} />} />
@@ -211,10 +219,12 @@ const App: React.FC = () => {
           <Route path="/tasks" element={<TaskHub tasks={generalTasks} onUpdate={(t) => { setGeneralTasks(t); if (session) syncToCloud('general_tasks', {id: 'main_list', managerId: session.teamId, tasks: t}); }} onBack={() => navigate('/lab')} />} />
           <Route path="/feedback360" element={<Feedback360 onBack={() => navigate('/lab')} />} />
           <Route path="/communication" element={<CommunicationDNA onBack={() => navigate('/lab')} />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/products/:slug" element={<ProductsPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/clients" element={<ClientsPage />} />
-          <Route path="/admin" element={<AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} />} />
-          <Route path="/brand_assets" element={<BrandAssets onBack={() => navigate('/admin')} />} />
+          <Route path="/admin" element={isAdminAuthenticated && session?.isAdmin ? <AdminPanel onBack={() => navigate('/home')} onGoToAssets={() => navigate('/brand_assets')} /> : <Navigate to="/admin-login" replace />} />
+          <Route path="/brand_assets" element={isAdminAuthenticated && session?.isAdmin ? <BrandAssets onBack={() => navigate('/admin')} /> : <Navigate to="/admin-login" replace />} />
           <Route path="/articles" element={<ArticlesPage articles={articles} onSelectArticle={(a) => { setSelectedArticle(a); navigate(`/article_detail/${a.id}`); }} />} />
           <Route path="/article_detail/:articleId" element={isConfigLoading ? <div className="py-40 text-center text-brand-accent font-black animate-pulse text-4xl">טוען...</div> : selectedArticle ? <ArticleDetail article={selectedArticle} onBack={() => navigate('/articles')} /> : <Navigate to="/articles" />} />
           <Route path="*" element={<Navigate to="/" />} />

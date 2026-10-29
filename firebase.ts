@@ -1,5 +1,6 @@
 // Standard modular import for initializeApp from firebase/app
 import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import {
   getFirestore,
   collection,
@@ -7,6 +8,7 @@ import {
   query,
   where,
   getDocs,
+  orderBy,
   doc,
   deleteDoc,
   setDoc,
@@ -25,6 +27,39 @@ const firebaseConfig = {
 const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined" && firebaseConfig.projectId !== "undefined";
 const app = isConfigValid ? initializeApp(firebaseConfig) : null;
 const db = app ? getFirestore(app) : null;
+const auth = app ? getAuth(app) : null;
+
+const subscribeToAdminAuth = (callback: (isAdmin: boolean) => void) => {
+  if (!auth) { callback(false); return () => {}; }
+  return onAuthStateChanged(auth, async (user) => {
+    if (!user) { callback(false); return; }
+    try {
+      const token = await user.getIdTokenResult();
+      callback(token.claims.admin === true);
+    } catch {
+      callback(false);
+    }
+  });
+};
+
+const signOutAdmin = async () => {
+  if (auth) await signOut(auth);
+};
+
+const signInAdmin = async (email: string, password: string) => {
+  if (!auth) return { success: false, error: "Firebase לא מוגדר" };
+  try {
+    const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
+    const token = await credential.user.getIdTokenResult(true);
+    if (token.claims.admin !== true) {
+      await signOut(auth);
+      return { success: false, error: "לחשבון זה אין הרשאת מנהל" };
+    }
+    return { success: true, uid: credential.user.uid };
+  } catch {
+    return { success: false, error: "פרטי התחברות שגויים או שחשבון המנהל לא הוגדר" };
+  }
+};
 
 const isFirebaseReady = () => !!db;
 
@@ -74,11 +109,26 @@ const getSystemConfig = async () => {
   return defaultConfig;
 };
 
+const getWebsiteContacts = async () => {
+  if (!db || !auth || !auth.currentUser) throw new Error('נדרשת התחברות מנהל כדי לצפות בפניות');
+  const token = await auth.currentUser.getIdTokenResult(true);
+  if (token.claims.admin !== true) throw new Error('אין הרשאת מנהל לצפייה בפניות');
+  const snapshot = await getDocs(query(collection(db, "websiteContacts"), orderBy("createdAt", "desc")));
+  return snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
+};
+
 const updateSystemConfig = async (config: any) => {
-  if (!db) {
-    console.error('Firebase not configured');
-    return;
+  if (!db || !auth || !auth.currentUser) {
+    throw new Error('נדרשת התחברות מנהל כדי לשמור שינויים');
   }
+
+  // Defense in depth: the UI route is not an authorization boundary.
+  // Firestore Security Rules must independently enforce the admin claim too.
+  const token = await auth.currentUser.getIdTokenResult(true);
+  if (token.claims.admin !== true) {
+    throw new Error('אין הרשאת מנהל לשמירת שינויים');
+  }
+
   await setDoc(doc(db, "system", "config"), config, { merge: true });
 };
 
@@ -168,9 +218,14 @@ const getTeamPulses = async (teamId: string) => {
 
 export {
   db,
+  auth,
+  signInAdmin,
+  signOutAdmin,
+  subscribeToAdminAuth,
   isFirebaseReady,
   DEFAULT_METRICS,
   getSystemConfig,
+  getWebsiteContacts,
   updateSystemConfig,
   createWorkspace,
   loginToWorkspace,

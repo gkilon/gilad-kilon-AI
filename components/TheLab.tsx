@@ -1,7 +1,7 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { ToolEntry, Icons } from './Landing';
-import { FadeIn } from './motion/FadeIn';
+import commScreenshot from '../comm.png';
+import syncScreenshot from '../sync.png';
+import obtScreenshot from '../obt.png';
 
 interface TheLabProps {
   onEnterTool: (view: string) => void;
@@ -11,199 +11,158 @@ interface TheLabProps {
 
 const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
   return (
-    <div className="min-h-screen bg-brand-beige" dir="rtl">
-      {/* Background Grid */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-[0.4] pointer-events-none z-0"></div>
-
-      <div className="relative z-10 pt-20 pb-40 px-6 max-w-7xl mx-auto">
-
-        {onBack && (
-          <FadeIn delay={0.1}>
-            <div className="mb-8 text-right">
-              <motion.button
-                onClick={onBack}
-                className="flex items-center gap-2 text-brand-muted font-bold text-xs uppercase tracking-widest hover:text-brand-dark transition-all group mr-auto md:mr-0"
-                whileHover={{ x: -4 }}
-              >
-                <span>חזרה לעמוד הראשי</span>
-                <span className="text-xl group-hover:translate-x-1 transition-transform">←</span>
-              </motion.button>
-            </div>
-          </FadeIn>
-        )}
-
-        {/* 1. Header */}
-        <FadeIn delay={0.2}>
-          <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20 border-b border-brand-dark/10 pb-12">
-            <div className="space-y-4 text-right">
-              <motion.span 
-                className="text-[11px] font-bold text-brand-accent uppercase tracking-[0.4em] block"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                PROFESSIONAL WORKSPACE
-              </motion.span>
-              <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-brand-dark">המעבדה<span className="text-brand-accent">.</span></h1>
-            </div>
-            <motion.div 
-              className="bg-brand-dark text-white px-8 py-3 text-[10px] font-bold uppercase tracking-[0.2em] mb-2 flex items-center gap-3 shadow-lg"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <motion.div 
-                className={`w-2 h-2 rounded-full ${isLoggedIn ? 'bg-green-500' : 'bg-brand-gold animate-pulse'}`}
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              ></motion.div>
-              {isLoggedIn ? 'CONSULTING ACCESS' : 'STRATEGIC PREVIEW'}
-            </motion.div>
-          </div>
-        </FadeIn>
-
-        {/* 2. Professional Explanation */}
-        <FadeIn delay={0.3} className="mb-24 text-right">
-          <div className="max-w-4xl mr-0 space-y-8">
-            <h2 className="text-3xl md:text-5xl font-light text-brand-dark tracking-tight leading-tight">
-              המרחב שבו אסטרטגיה ניהולית <strong className="font-black">פוגשת בינה מלאכותית.</strong>
-            </h2>
-            <div className="flex gap-8">
-              <motion.div 
-                className="w-1 bg-brand-accent/30 self-stretch"
-                initial={{ height: 0 }}
-                animate={{ height: '100%' }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              ></motion.div>
-              <p className="text-xl text-brand-muted font-light leading-relaxed max-w-2xl">
-                פיתחתי את הכלים האלו כדי לעזור לנו לזקק את העיקר בתוך הרעש הארגוני במהלך העבודה המשותפת.
-                כל כלי כאן הוא זיקוק של עשרות שנים בשטח, המונגש דרך יכולות AI מתקדמות כדי לפנות זמן למה שחשוב באמת: האנשים והתוצאות.
-              </p>
+    <main className="min-h-screen bg-brand-beige text-brand-dark" dir="rtl">
+      <section className="relative overflow-hidden bg-brand-dark text-white">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden opacity-50">
+          <div className="absolute -left-28 -top-40 h-[32rem] w-[32rem] rounded-full border border-white/10" />
+          <div className="absolute -left-12 -top-24 h-[22rem] w-[22rem] rounded-full border border-brand-gold/30" />
+          <div className="absolute bottom-[-10rem] right-[40%] h-[26rem] w-[26rem] rounded-full bg-brand-accent/20 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-6 py-12 md:py-20">
+          {onBack && (
+            <button onClick={onBack} className="mb-12 inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-white">
+              <span aria-hidden="true">→</span> חזרה לאתר
+            </button>
+          )}
+          <div className="max-w-4xl">
+            <p className="mb-5 text-sm font-bold tracking-wide text-brand-gold">המעבדה · ייעוץ, מתודולוגיה וטכנולוגיה</p>
+            <h1 className="max-w-4xl text-4xl font-black leading-tight tracking-tight sm:text-5xl md:text-7xl">
+              לא עוד AI שמייצר תשובות.
+              <span className="mt-2 block text-brand-gold">כלים שעוזרים לעבוד אחרת.</span>
+            </h1>
+            <p className="mt-7 max-w-3xl text-lg leading-relaxed text-white/75 md:text-xl">
+              אני מפתח ומשלב כלי AI מתוך העבודה שלי עם מנהלים וארגונים. המטרה היא לא להוסיף טכנולוגיה לשם הטכנולוגיה, אלא למצוא דרכים טובות יותר להתמודד עם שאלות ניהוליות, לזהות כיווני התפתחות ולהפוך תובנות לעבודה מעשית.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <a href="#selected-tools" className="inline-flex items-center justify-center bg-brand-touch px-6 py-4 font-bold text-white transition-colors hover:bg-brand-gold hover:text-brand-dark">
+                לראות דוגמאות <span aria-hidden="true" className="mr-2">↓</span>
+              </a>
+              <a href="#guided-work" className="inline-flex items-center justify-center border border-white/25 px-6 py-4 font-bold text-white transition-colors hover:bg-white hover:text-brand-dark">
+                כלים בתוך תהליך מקצועי
+              </a>
             </div>
           </div>
-        </FadeIn>
+          <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/15 pt-5 text-sm text-white/55">
+            <span>הבנה ארגונית לפני בחירת הטכנולוגיה</span>
+            <span aria-hidden="true" className="hidden h-1 w-1 rounded-full bg-brand-gold sm:block" />
+            <span>מתודולוגיה לפני אוטומציה</span>
+            <span aria-hidden="true" className="hidden h-1 w-1 rounded-full bg-brand-gold sm:block" />
+            <span>כלים שמשרתים את העבודה</span>
+          </div>
+        </div>
+      </section>
 
-        {/* 3. Marketing Disclaimer (Guest Only) */}
-        {!isLoggedIn && (
-          <FadeIn delay={0.4} className="mb-24">
-            <motion.div 
-              className="bg-white border border-brand-dark/10 p-10 md:p-14 relative overflow-hidden group hover:border-brand-accent/50 transition-colors duration-500 shadow-sm hover:shadow-xl"
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.div 
-                className="absolute top-0 right-0 w-2 h-full bg-brand-dark/5 group-hover:bg-brand-accent/20 transition-all"
-                initial={{ height: 0 }}
-                whileInView={{ height: '100%' }}
-                viewport={{ once: true }}
-              ></motion.div>
-
-              <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12 text-right">
-                <div className="flex-1 space-y-6">
-                  <div className="inline-flex items-center gap-3 text-brand-accent font-bold text-[10px] uppercase tracking-[0.3em]">
-                    <span>Unlock Consultant Experience</span>
-                  </div>
-
-                  <h3 className="text-3xl font-black text-brand-dark tracking-tight">
-                    בואו נהפוך את התובנות לביצועים.
-                  </h3>
-
-                  <p className="text-lg text-brand-muted font-light leading-relaxed">
-                    הכלים כאן פתוחים לכם לשימוש והתנסות בגרסת "טעימה".
-                    כדי לקבל את מלוא המעטפת המקצועית, לשמור נתונים ולהפעיל את סוכני ה-AI האישיים -
-                    כל מה שצריך זה להזין את <span className="font-bold text-brand-dark border-b border-brand-accent">קוד הגישה שקיבלתם ממני</span>.
-                  </p>
-                </div>
-
-                <div className="shrink-0 w-full lg:w-auto">
-                  <motion.button
-                    onClick={() => onEnterTool('login')}
-                    className="w-full lg:w-auto bg-brand-dark text-white px-10 py-5 font-bold text-sm uppercase tracking-widest hover:bg-brand-accent transition-all flex items-center justify-center gap-4 shadow-lg hover:shadow-xl"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span>התחברות לגישה מלאה</span>
-                    <motion.span 
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
-                      →
-                    </motion.span>
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          </FadeIn>
-        )}
-
-        {/* 4. Tool Grid */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-dark/5 border border-brand-dark/5 shadow-sm overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <ToolEntry
-            title="ניהול שינוי (WOOP)"
-            desc="להפוך רצונות לתוכנית עבודה אמיתית. ה-AI עוזר לנו לדייק את המכשולים ואת הצעדים הבאים."
-            icon={<Icons.WOOP />}
-            onClick={() => onEnterTool('dashboard')}
-          />
-          <ToolEntry
-            title="פורום הנהלה (TOWS)"
-            desc="כלי לקבלת החלטות על בסיס חיבור בין המצב בחוץ ליכולות שלכם בפנים."
-            icon={<Icons.TOWS />}
-            onClick={() => onEnterTool('executive')}
-          />
-          <ToolEntry
-            title="דופק צוותי (Pulse)"
-            desc="מדידה פשוטה של המצב בצוות - מחויבות, תקשורת ואמון. ה-AI נותן לנו שורה תחתונה ניהולית."
-            icon={<Icons.Pulse />}
-            onClick={() => onEnterTool('synergy')}
-          />
-          <ToolEntry
-            title="ניהול משימות"
-            desc="מרכז הבקרה לביצוע השוטף. ניהול משימות פשוט, מהיר ואפקטיבי לצוות ולארגון."
-            icon={<Icons.Tasks />}
-            onClick={() => onEnterTool('tasks')}
-          />
-          <ToolEntry
-            title="מעבדת רעיונות"
-            desc="מקום לרשום או להקליט רעיונות. ה-AI יסכם אותם ויחבר אותם למה שאנחנו עושים עכשיו."
-            icon={<Icons.Ideas />}
-            onClick={() => onEnterTool('ideas')}
-          />
-          <ToolEntry
-            title="DNA תקשורת"
-            desc="אבחון מקצועי שעוזר להבין איך לדבר עם אחרים ולהניע אותם בצורה טובה יותר."
-            icon={<Icons.DNA />}
-            onClick={() => onEnterTool('communication')}
-          />
-          <ToolEntry
-            title="משוב 360"
-            desc="סיכום חכם של משוב מכמה כיוונים. עוזר לראות איפה אפשר להשתפר ומהן החוזקות."
-            icon={<Icons.Feedback />}
-            onClick={() => onEnterTool('feedback360')}
-          />
-        </motion.div>
-
-        <motion.div 
-          className="mt-24 text-center space-y-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          <div className="h-px w-24 bg-brand-dark/10 mx-auto"></div>
-          <p className="text-xl text-brand-dark font-light italic tracking-tight leading-relaxed max-w-2xl mx-auto">
-            "הכלים האלה לא מחליפים את החשיבה שלך, הם עוזרים לה לקרות מהר יותר וטוב יותר."
+      <section id="selected-tools" className="mx-auto max-w-7xl px-6 py-16 md:py-24">
+        <div className="mb-10 grid gap-5 md:grid-cols-[0.8fr_1.2fr] md:items-end md:gap-16">
+          <div>
+            <p className="mb-3 text-xs font-bold tracking-[0.18em] text-brand-accent">דוגמאות נבחרות</p>
+            <h2 className="text-3xl font-black leading-tight md:text-5xl">מהרעיון לכלי שאפשר לעבוד איתו.</h2>
+          </div>
+          <p className="max-w-2xl text-lg leading-relaxed text-brand-muted">
+            במקום רשימה ארוכה של אפליקציות, נציג כאן כמה דוגמאות שממחישות את החיבור בין שאלה מקצועית, דרך עבודה וכלי טכנולוגי. בהמשך נוסיף לכל דוגמה תוצר אמיתי מתוך הכלי.
           </p>
-          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-muted/50 block pt-4">GK STRATEGIC LABORATORY v2.1</span>
-        </motion.div>
-      </div>
-    </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          <article className="overflow-hidden border border-brand-dark/10 bg-white">
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-white"><img src={commScreenshot} alt="צילום מסך של כלי סגנונות התקשורת" className="h-full w-full object-contain object-center" loading="lazy" /></div>
+            <div className="p-6 sm:p-8">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">התנסות עצמאית</span>
+                <span className="text-xs text-brand-muted">תקשורת ועבודה עם אנשים</span>
+              </div>
+              <h3 className="text-2xl font-bold">סגנונות תקשורת</h3>
+              <p className="mt-3 leading-relaxed text-brand-muted">
+                כלי עזר להבנת הבדלים בסגנונות תקשורת ולחשיבה על האופן שבו אפשר להתאים את הדרך שבה פונים לאנשים שונים. הוא נועד לפתוח אפשרויות לשיחה ולעבודה משותפת — לא לאבחן אנשים.
+              </p>
+              <a href="https://communication.kilon-consulting.com/" target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center font-bold text-brand-accent transition-colors hover:text-brand-dark">
+                לפתיחת הכלי <span aria-hidden="true" className="mr-2">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <article className="overflow-hidden border border-brand-dark/10 bg-white">
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-white"><img src={obtScreenshot} alt="צילום מסך של כלי זיהוי מטרות התפתחותיות OBT" className="h-full w-full object-contain object-center" loading="lazy" /></div>
+            <div className="p-6 sm:p-8">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">חלק מתהליך מקצועי</span>
+                <span className="text-xs text-brand-muted">התפתחות אישית וניהולית</span>
+              </div>
+              <h3 className="text-2xl font-bold">זיהוי מטרות התפתחותיות — OBT</h3>
+              <p className="mt-3 leading-relaxed text-brand-muted">
+                שימוש בתשובות ובנקודות מבט שונות כדי לזהות כיוונים אפשריים להתפתחות. הכלי תומך בתהליך מקצועי; הוא אינו מחליף את החשיבה, השיחה והעבודה שמעניקות לתובנות משמעות.
+              </p>
+              <a href="https://obt-360.kilon-consulting.com/" target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center font-bold text-brand-accent transition-colors hover:text-brand-dark">
+                להיכרות עם הכלי <span aria-hidden="true" className="mr-2">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <article className="overflow-hidden border border-brand-dark/10 bg-white">
+            <div className="aspect-[4/3] overflow-hidden border-b border-brand-dark/10 bg-white"><img src={syncScreenshot} alt="צילום מסך של כלי ניהול שותפויות" className="h-full w-full object-contain object-center" loading="lazy" /></div>
+            <div className="p-6 sm:p-8">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="bg-brand-beige px-3 py-1 text-xs font-bold text-brand-dark">כלי לעבודה עם שותפויות</span>
+                <span className="text-xs text-brand-muted">ממשקים ושיתוף פעולה</span>
+              </div>
+              <h3 className="text-2xl font-bold">ניהול שותפויות</h3>
+              <p className="mt-3 leading-relaxed text-brand-muted">
+                כלי מבוסס AI לתמיכה בבחינת שותפויות ובחשיבה על איכות העבודה המשותפת. הוא מסייע להתבונן במה שקורה בממשק בין אנשים או קבוצות, ולזהות נושאים שכדאי לברר ולפתח — כחלק משיחה ועבודה מקצועית.
+              </p>
+              <a href="https://bucolic-stardust-e4fa35.netlify.app/" target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center font-bold text-brand-accent transition-colors hover:text-brand-dark">
+                לפתיחת הכלי <span aria-hidden="true" className="mr-2">↗</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="guided-work" className="border-y border-brand-dark/10 bg-brand-paper">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-[0.85fr_1.15fr] md:items-center md:py-20">
+          <div>
+            <p className="mb-3 text-xs font-bold tracking-[0.18em] text-brand-accent">מעבר לכלי עצמו</p>
+            <h2 className="text-3xl font-black leading-tight md:text-5xl">יש כלים שהערך שלהם נוצר בתוך התהליך.</h2>
+          </div>
+          <div>
+            <p className="text-lg leading-relaxed text-brand-muted">
+              חלק מהכלים שפיתחתי נועדו להשתלב בעבודה עם מנהלים, צוותי הנהלה וארגונים. במקרה כזה, לא נכון להציג אותם כאפליקציה שמספיקה להפעיל לבד: המתודולוגיה, השיחה וההתאמה למצב הן חלק מהעבודה.
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <a href="https://obt.kilon-consulting.com/" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center bg-brand-dark px-6 py-4 font-bold text-white transition-colors hover:bg-brand-touch">
+                להכיר את תהליך OBT <span aria-hidden="true" className="mr-2">↗</span>
+              </a>
+              <a href="mailto:gilad@kilon.co.il?subject=התנסות%20בכלי%20מהמעבדה" className="inline-flex items-center justify-center border border-brand-dark/20 px-6 py-4 font-bold text-brand-dark transition-colors hover:border-brand-accent hover:text-brand-accent">
+                לתיאום התנסות
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16 md:py-20">
+        <div className="flex flex-col gap-6 border-t border-brand-dark/15 pt-8 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-2xl font-bold">רוצים לבדוק איך זה יכול לעבוד אצלכם?</p>
+            <p className="mt-2 max-w-2xl leading-relaxed text-brand-muted">אפשר לדבר על האתגר הארגוני, ורק אחר כך להחליט אם ואיזה כלי יכול לעזור.</p>
+          </div>
+          <a href="mailto:gilad@kilon.co.il?subject=שיחה%20על%20המעבדה" className="inline-flex shrink-0 items-center justify-center bg-brand-touch px-7 py-4 font-bold text-white transition-colors hover:bg-brand-gold hover:text-brand-dark">
+            בואו נדבר <span aria-hidden="true" className="mr-2">←</span>
+          </a>
+        </div>
+        <div className="mt-8 border-t border-brand-dark/10 pt-5 text-sm text-brand-muted">
+          {isLoggedIn ? (
+            <button onClick={() => onEnterTool('dashboard')} className="font-semibold underline underline-offset-4 hover:text-brand-dark">
+              כניסה למרחב העבודה
+            </button>
+          ) : (
+            <button onClick={() => onEnterTool('login')} className="font-semibold underline underline-offset-4 hover:text-brand-dark">
+              למשתמשים קיימים: כניסה למרחב העבודה
+            </button>
+          )}
+        </div>
+      </section>
+    </main>
   );
 };
 
 export default TheLab;
-
