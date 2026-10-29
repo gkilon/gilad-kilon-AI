@@ -33,6 +33,17 @@ const TheLab: React.FC<TheLabProps> = ({ onEnterTool, onBack, isLoggedIn }) => {
             <p className="mt-7 max-w-3xl text-lg leading-relaxed text-white/75 md:text-xl">
               אני מפתח ומשלב כלי AI מתוך העבודה שלי עם מנהלים וארגונים. המטרה היא לא להוסיף טכנולוגיה לשם הטכנולוגיה, אלא למצוא דרכים טובות יותר להתמודד עם שאלות ניהוליות, לזהות כיווני התפתחות ולהפוך תובנות לעבודה מעשית.
             </p>
+            <div className="mt-8 border border-brand-gold/50 bg-white/5 p-5 md:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-bold text-white text-lg md:text-xl">רוצים להתנסות בעצמכם?</p>
+                  <p className="mt-1 text-sm md:text-base leading-relaxed text-white/70">בחרו אחד מהכלים הפתוחים להתנסות ונסו אותו על שאלה שמעסיקה אתכם.</p>
+                </div>
+                <a href="#selected-tools" className="inline-flex shrink-0 items-center justify-center bg-brand-gold px-5 py-3 font-bold text-brand-dark transition-colors hover:bg-white">
+                  לבחירת כלי להתנסות <span aria-hidden="true" className="mr-2">↓</span>
+                </a>
+              </div>
+            </div>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a href="#selected-tools" className="inline-flex items-center justify-center bg-brand-touch px-6 py-4 font-bold text-white transition-colors hover:bg-brand-gold hover:text-brand-dark">
                 לראות דוגמאות <span aria-hidden="true" className="mr-2">↓</span>
