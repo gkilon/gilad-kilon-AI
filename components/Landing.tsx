@@ -60,10 +60,11 @@ const Arrow = () => <span aria-hidden="true" className="inline-block mr-2 transi
 
 const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
   const services = [
-    { n: '01', title: 'פיתוח מנהלים', text: 'ללוות מנהלים בצמתים מקצועיים, לפתח את דרך הניהול שלהם ולחבר בין מה שהם רוצים להשיג לבין מה שהם עושים ביום יום.' },
-    { n: '02', title: 'צוותי הנהלה', text: 'לעזור לצוותי הנהלה לגבש כיוון, לנהל שיחות חשובות, לקבל החלטות ולפעול כצוות גם כשיש חילוקי דעות.' },
-    { n: '03', title: 'ממשקים ושותפויות', text: 'לשפר את העבודה בין מנהלים ויחידות, להבהיר אחריות וציפיות ולבנות שותפויות שמקדמות את העבודה.' },
-    { n: '04', title: 'שינוי וייעוץ ארגוני', text: 'ללוות ארגונים בתקופות של צמיחה ושינוי, ולחבר בין המבנה והתהליכים לבין מה שאנשים צריכים כדי להצליח.' }
+    { n: '01', title: 'פיתוח מנהלים', text: 'תהליך קבוצתי בן מספר מפגשים, העוסק בתכנים המרכזיים של עבודת הניהול ומותאם לאתגרים ולצרכים של דרג הניהול בארגון.' },
+    { n: '02', title: 'ייעוץ אישי למנהלים', text: 'תהליך אחד על אחד עם מנהל או מנהלת סביב אתגרים, דילמות וסוגיות מהתפקיד, כדי לחשוב יחד ולגבש דרכי פעולה שמתאימות למציאות שלהם.' },
+    { n: '03', title: 'צוותי הנהלה', text: 'לעזור לצוותי הנהלה לגבש כיוון, לנהל שיחות חשובות, לקבל החלטות ולפעול כצוות גם כשיש חילוקי דעות.' },
+    { n: '04', title: 'ממשקים ושותפויות', text: 'לשפר את העבודה בין מנהלים ויחידות, להבהיר אחריות וציפיות ולבנות שותפויות שמקדמות את העבודה.' },
+    { n: '05', title: 'שינוי וייעוץ ארגוני', text: 'ללוות ארגונים בתקופות של צמיחה ושינוי, ולחבר בין המבנה והתהליכים לבין מה שאנשים צריכים כדי להצליח.' }
   ];
   const products = [
     { title: 'תהליך OBT להתפתחות אישית', tag: 'מוצר ייחודי', text: 'תהליך מובנה שמחבר בין מטרה שרוצים להשיג לבין מה שעוצר את השינוי בפועל, ומסייע להפוך תובנות לצעדים מעשיים.', href: 'https://obt.kilon-consulting.com/' },
@@ -141,7 +142,7 @@ const Landing: React.FC<LandingProps> = ({ onEnterTool }) => {
           <p className="text-xs font-bold tracking-[0.18em] text-brand-accent mb-4">איפה אנחנו יכולים לעבוד יחד</p>
           <h2 className="text-3xl md:text-5xl font-black leading-tight">האתגרים משתנים. השאלה היא מה צריך להשתנות כדי להתקדם.</h2>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {services.map(s => <article key={s.n} className="border border-brand-dark/10 p-6 md:p-7 bg-brand-paper hover:bg-white hover:border-brand-accent transition-colors">
             <div className="text-xs text-brand-accent font-bold mb-8">{s.n}</div><h3 className="text-xl font-bold mb-4">{s.title}</h3><p className="text-sm md:text-base leading-relaxed text-brand-muted">{s.text}</p>
           </article>)}
