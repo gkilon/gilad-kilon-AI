@@ -23,6 +23,7 @@ import BrandAssets from './components/BrandAssets.tsx';
 import ArticlesPage from './components/ArticlesPage.tsx';
 import ArticleDetail from './components/ArticleDetail.tsx';
 import ProductsPage from './components/ProductsPage.tsx';
+import OBTProgram from './components/OBTProgram.tsx';
 import ContactPage from './components/ContactPage.tsx';
 
 const FloatingWhatsApp: React.FC = () => (
@@ -219,6 +220,7 @@ const App: React.FC = () => {
           <Route path="/tasks" element={<TaskHub tasks={generalTasks} onUpdate={(t) => { setGeneralTasks(t); if (session) syncToCloud('general_tasks', {id: 'main_list', managerId: session.teamId, tasks: t}); }} onBack={() => navigate('/lab')} />} />
           <Route path="/feedback360" element={<Feedback360 onBack={() => navigate('/lab')} />} />
           <Route path="/communication" element={<CommunicationDNA onBack={() => navigate('/lab')} />} />
+          <Route path="/obt" element={<OBTProgram />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:slug" element={<ProductsPage />} />
           <Route path="/about" element={<About />} />
