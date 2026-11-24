@@ -179,10 +179,23 @@ const OBTProgram: React.FC = () => {
           <p className="mb-4 text-xs font-bold tracking-[0.18em] text-[#F5A66E]">OBT · FEEDBACK BOOST</p>
           <h2 className="text-3xl font-black leading-tight md:text-5xl">בואו להפוך את שיחת המשוב לנקודת התחלה.</h2>
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-white/70">נשמח לחשוב יחד איך Feedback Boost יכול להשתלב בתהליך המשוב והפיתוח בארגון שלכם.</p>
-          <div className="mt-9">
-            <Link to="/contact?topic=OBT%20Feedback%20Boost" className="inline-flex items-center rounded-lg bg-[#F28A45] px-7 py-4 font-bold text-[#101B32] shadow-lg transition hover:-translate-y-0.5 hover:bg-white">
-              לתיאום שיחה <span className="mr-3">←</span>
-            </Link>
+          <div className="mt-10 grid gap-4 text-right sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/15 bg-white/[0.05] p-6">
+              <p className="text-lg font-bold">גלעד קילון</p>
+              <a href="tel:+972526417512" className="mt-2 block text-white/70 transition hover:text-white" dir="ltr">052-6417512</a>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <a href="https://wa.me/972526417512?text=%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A2%D7%9C%20Feedback%20Boost" target="_blank" rel="noopener noreferrer" className="rounded-lg bg-[#F28A45] px-5 py-3 text-sm font-bold text-[#101B32] transition hover:bg-white">WhatsApp עם גלעד</a>
+                <a href="mailto:gilad@kilon.org?subject=Feedback%20Boost" className="rounded-lg border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">שליחת מייל</a>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/15 bg-white/[0.05] p-6">
+              <p className="text-lg font-bold">יהודה בידרמן</p>
+              <a href="tel:+972525759514" className="mt-2 block text-white/70 transition hover:text-white" dir="ltr">052-5759514</a>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <a href="https://wa.me/972525759514?text=%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A2%D7%9C%20Feedback%20Boost" target="_blank" rel="noopener noreferrer" className="inline-flex rounded-lg border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">WhatsApp עם יהודה</a>
+                <a href="mailto:ygud@zahav.net.il?subject=Feedback%20Boost" className="inline-flex rounded-lg border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">שליחת מייל ליהודה</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
