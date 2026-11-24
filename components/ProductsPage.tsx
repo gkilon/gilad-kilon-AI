@@ -179,6 +179,7 @@ const ProductsPage: React.FC = () => {
         <section><h2 className="text-lg font-bold mb-2">מה אני מביא לתהליך?</h2><p className="text-lg leading-relaxed text-brand-muted">{selected.approach}</p></section>
         <div className="flex flex-wrap gap-3 items-center pt-2">
           {selected.url && <a href={selected.url} target="_blank" rel="noopener noreferrer" className="inline-flex px-6 py-3 bg-brand-accent text-white font-bold hover:bg-brand-touch transition-colors">{selected.slug === 'obt' ? 'להיכרות עם כלי OBT ←' : selected.slug === 'communication-styles' ? 'להיכרות עם כלי סגנונות התקשורת ←' : selected.slug === 'p2g' ? 'לדף תכנית המשוב ←' : 'לכלי המשלים ←'}</a>}
+          {selected.slug === "obt" && <Link to="/obt" className="inline-flex px-6 py-3 bg-brand-dark text-white font-bold hover:bg-brand-accent transition-colors">לתכנית OBT הקבוצתית ←</Link>}
           <Link to={`/contact?topic=${encodeURIComponent(selected.title)}`} className="inline-flex px-6 py-3 border border-brand-dark/20 font-bold hover:border-brand-dark transition-colors">לשיחה על הנושא ←</Link>
         </div>
       </div>
