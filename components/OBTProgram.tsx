@@ -29,14 +29,22 @@ const OBTProgram: React.FC = () => {
         <div className="absolute -top-40 -left-24 h-[30rem] w-[30rem] rounded-full bg-orange-500/10 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-1 w-40 bg-[#F28A45]" />
         <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-10 md:pb-28 md:pt-14">
-          <div className="mb-16 flex items-center justify-between border-b border-white/15 pb-5">
-            <div>
-              <div className="text-2xl font-black tracking-wide">OBT</div>
-              <div className="mt-1 text-[11px] font-medium tracking-[0.2em] text-white/55">ONE BIG THING</div>
+          <div className="mb-16 flex items-center justify-start border-b border-white/15 pb-5">
+            <div className="flex items-center gap-4" aria-label="OBT — Innovation in Human Capital">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg border-2 border-[#F28A45] bg-white text-[#F28A45]">
+                <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M9 3v18M3 9h18" />
+                </svg>
+              </div>
+              <div>
+                <div className="flex items-center gap-3 text-2xl leading-none text-white md:text-3xl">
+                  <span className="font-black tracking-tight">OBT</span>
+                  <span className="text-xl font-light text-white/35">|</span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.13em] text-white/65 md:text-xs">Innovation in Human Capital</span>
+                </div>
+              </div>
             </div>
-            <Link to="/contact?topic=OBT%20Feedback%20Boost" className="hidden rounded-lg bg-[#F28A45] px-5 py-3 text-sm font-bold text-[#101B32] transition hover:bg-white md:inline-flex">
-              לתיאום שיחה <span className="mr-2">←</span>
-            </Link>
           </div>
 
           <div className="grid items-end gap-12 lg:grid-cols-[1.2fr_0.8fr]">
@@ -197,8 +205,9 @@ const OBTProgram: React.FC = () => {
             <div className="rounded-2xl border border-white/15 bg-white/[0.05] p-6">
               <p className="text-lg font-bold">יהודה בידרמן</p>
               <a href="tel:+972525759514" className="mt-2 block text-white/70 transition hover:text-white" dir="ltr">052-5759514</a>
-              <div className="mt-5">
+              <div className="mt-5 flex flex-wrap gap-3">
                 <a href="https://wa.me/972525759514?text=%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A2%D7%9C%20Feedback%20Boost" target="_blank" rel="noopener noreferrer" className="inline-flex rounded-lg border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">WhatsApp עם יהודה</a>
+                <a href="mailto:ygud@zahav.net.il?subject=Feedback%20Boost" className="inline-flex rounded-lg border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">שליחת מייל ליהודה</a>
               </div>
             </div>
           </div>
