@@ -171,7 +171,7 @@ const OBTProgram: React.FC = () => {
             <li className="flex gap-3"><span className="font-black text-[#D96F2B]">✓</span><span>עובדים מכל דרג ותפקיד — לאו דווקא מנהלים — שהיעד שלהם נוגע לאופן שבו הם פועלים, מתקשרים או מובילים בעבודה.</span></li>
             <li className="flex gap-3"><span className="font-black text-[#D96F2B]">✓</span><span>עובדים טובים ומוערכים, לצד עובדים שיש להם תחום מסוים לפיתוח: התהליך אינו מיועד רק למי שמתקשים, אלא גם למי שיכולים לעשות קפיצת מדרגה.</span></li>
           </ul>
-          <p className="mt-8 border-r-4 border-[#E58A4B] pr-5 text-base font-medium leading-relaxed text-[#101B32]">זהו תהליך פיתוח מעשי וממוקד, לא קבוצה טיפולית. עובדים על אתגרים והתנהגויות מתוך מציאות העבודה, עם כיוון ברור ליישום ולשינוי בשטח.</p>
+          <p className="mt-8 border-r-4 border-[#E58A4B] pr-5 text-base font-medium leading-relaxed text-[#101B32]">זהו תהליך פיתוח מעשי וממוקד, שעוסק באתגרים התנהגותיים מתוך מציאות העבודה ומחבר בין יעד אישי לבין צעדים קונקרטיים ושינוי בשטח.</p>
         </div>
       </section>
 
