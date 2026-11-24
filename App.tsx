@@ -189,12 +189,12 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen" dir="rtl">
-      <Header 
+      {location.pathname !== '/obt' && <Header 
         onNavigate={handleNavigate} 
         currentView={location.pathname.substring(1) || 'home'} 
         session={session} 
         onLogout={() => { void signOutAdmin(); setSession(null); navigate('/home'); }} 
-      />
+      />}
       <main className="w-full mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
