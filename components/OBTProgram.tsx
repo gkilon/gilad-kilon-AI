@@ -16,8 +16,8 @@ const steps = [
   },
   {
     number: '03',
-    title: 'מתנסים בשטח',
-    text: 'בין המפגשים מתרגלים צעדים קטנים במצבי עבודה אמיתיים, חוזרים עם הניסיון ולומדים איך להמשיך.',
+    title: 'מיישמים בשטח',
+    text: 'בין המפגשים מיישמים צעדים ממוקדים במצבי עבודה אמיתיים, חוזרים עם מה שקרה ומדייקים את דרך הפעולה.',
     tag: 'יישום'
   }
 ];
@@ -58,7 +58,7 @@ const OBTProgram: React.FC = () => {
                 שיחת המשוב מזהה לא פעם בדיוק את הדבר שחשוב לשנות. אבל כשמדובר בהתנהגות ולא בידע מקצועי, הדרך מהתובנה לשינוי יומיומי אינה מובנת מאליה.
               </p>
               <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/85 md:text-lg">
-                Feedback Boost היא תוכנית קבוצתית ממוקדת בת שלושה מפגשים, המבוססת על גישת OBT — One Big Thing. כל משתתף מתמקד ביעד התנהגותי אחד, מתנסה ביישום שלו בעבודה ומפתח דרך להפוך כוונה לפעולה.
+                Feedback Boost היא תוכנית קבוצתית ממוקדת בת שלושה מפגשים, המבוססת על גישת OBT — One Big Thing. היא מיועדת לעובדים שנבחרו לתהליך סביב יעד התפתחותי התנהגותי — לא פער בידע מקצועי או במיומנות טכנית. כל משתתף עובד על יעד אחד ומתרגם אותו לצעדים מעשיים ולשינויים אמיתיים בשגרת העבודה.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link to="/contact?topic=OBT%20Feedback%20Boost" className="inline-flex items-center rounded-lg bg-[#F28A45] px-7 py-4 font-bold text-[#101B32] shadow-lg shadow-orange-950/20 transition hover:-translate-y-0.5 hover:bg-white">
@@ -80,7 +80,7 @@ const OBTProgram: React.FC = () => {
                   <div className="mr-5 h-7 border-r border-dashed border-white/25" />
                   <div className="flex items-center gap-4">
                     <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F28A45]/15 text-lg font-black text-[#F5A66E]">2</span>
-                    <div><div className="font-bold">התנסות ולמידה</div><div className="mt-1 text-sm text-white/55">עבודה עם מה שמקדם ומה שמעכב</div></div>
+                    <div><div className="font-bold">למידה ויישום</div><div className="mt-1 text-sm text-white/55">זיהוי חסמים וצעדים מעשיים</div></div>
                   </div>
                   <div className="mr-5 h-7 border-r border-dashed border-white/25" />
                   <div className="flex items-center gap-4">
@@ -119,7 +119,7 @@ const OBTProgram: React.FC = () => {
           <div className="mb-12 max-w-3xl">
             <p className="mb-4 text-xs font-bold tracking-[0.18em] text-[#D96F2B]">התהליך</p>
             <h2 className="text-3xl font-black leading-tight text-[#101B32] md:text-5xl">שלושה מפגשים. שינוי שמתרגלים בשטח.</h2>
-            <p className="mt-5 text-lg leading-relaxed text-slate-600">הקבוצה מספקת מסגרת ללמידה, חשיבה ומשוב. בין המפגשים כל משתתף מתנסה בסביבת העבודה האמיתית שלו.</p>
+            <p className="mt-5 text-lg leading-relaxed text-slate-600">הקבוצה מספקת מסגרת ממוקדת ללמידה ולעבודה מעשית סביב אתגרי העבודה של המשתתפים. בין המפגשים הם מיישמים צעדים במצבים אמיתיים וחוזרים עם תובנות מהשטח.</p>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {steps.map((step) => (
@@ -165,12 +165,13 @@ const OBTProgram: React.FC = () => {
 
       <section className="mx-auto max-w-7xl px-6 py-16 md:py-24">
         <div className="grid items-center gap-10 lg:grid-cols-2">
-          <div><p className="mb-4 text-xs font-bold tracking-[0.18em] text-[#D96F2B]">למי זה מתאים</p><h2 className="text-3xl font-black leading-tight text-[#101B32] md:text-4xl">לארגונים שרוצים שהמשוב יהיה התחלה של תהליך — ולא סופו.</h2></div>
+          <div><p className="mb-4 text-xs font-bold tracking-[0.18em] text-[#D96F2B]">למי זה מתאים</p><h2 className="text-3xl font-black leading-tight text-[#101B32] md:text-4xl">לארגונים שרוצים לקדם עובדים שנבחרו לתהליך סביב יעד התנהגותי משמעותי.</h2></div>
           <ul className="space-y-5 text-lg leading-relaxed text-slate-600">
-            <li className="flex gap-3"><span className="font-black text-[#D96F2B]">✓</span><span>ארגונים המבקשים לתת מענה מעשי ליעדי פיתוח התנהגותיים שעולים בתהליכי הערכה.</span></li>
-            <li className="flex gap-3"><span className="font-black text-[#D96F2B]">✓</span><span>עובדים ומנהלים שמוכנים להתמקד בשינוי אחד משמעותי ולתרגל אותו בעבודה.</span></li>
-            <li className="flex gap-3"><span className="font-black text-[#D96F2B]">✓</span><span>קבוצות עמיתים שיכולות להיתרם מלמידה משותפת ומנקודות מבט מגוונות.</span></li>
+            <li className="flex gap-3"><span className="font-black text-[#D96F2B]">✓</span><span>עובדים שנבחרו להשתתף משום שזוהה אצלם יעד התנהגותי שיכול לקדם אותם לשלב הבא.</span></li>
+            <li className="flex gap-3"><span className="font-black text-[#D96F2B]">✓</span><span>עובדים מכל דרג ותפקיד — לאו דווקא מנהלים — שהיעד שלהם נוגע לאופן שבו הם פועלים, מתקשרים או מובילים בעבודה.</span></li>
+            <li className="flex gap-3"><span className="font-black text-[#D96F2B]">✓</span><span>עובדים טובים ומוערכים, לצד עובדים שיש להם תחום מסוים לפיתוח: התהליך אינו מיועד רק למי שמתקשים, אלא גם למי שיכולים לעשות קפיצת מדרגה.</span></li>
           </ul>
+          <p className="mt-8 border-r-4 border-[#E58A4B] pr-5 text-base font-medium leading-relaxed text-[#101B32]">זהו תהליך פיתוח מעשי וממוקד, לא קבוצה טיפולית. עובדים על אתגרים והתנהגויות מתוך מציאות העבודה, עם כיוון ברור ליישום ולשינוי בשטח.</p>
         </div>
       </section>
 
