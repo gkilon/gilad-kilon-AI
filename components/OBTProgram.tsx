@@ -52,7 +52,7 @@ const OBTProgram: React.FC = () => {
               <p className="mb-5 text-sm font-bold tracking-wide text-[#F5A66E]">תוכנית פיתוח התנהגותי | מבוססת OBT</p>
               <h1 className="max-w-4xl text-4xl font-black leading-[1.13] tracking-tight sm:text-5xl md:text-7xl">
                 Feedback Boost
-                <span className="mt-4 block max-w-4xl text-xl font-medium leading-snug text-white/85 md:text-3xl">לא שיטת משוב חדשה, אלא תהליך המשך ממוקד שמתחבר למשוב הקיים ומסייע להפוך את היעדים שעולים בו להתנסות ולשינוי בעבודה.</span>
+                <span className="mt-4 block max-w-4xl text-xl font-medium leading-snug text-white/85 md:text-3xl">לא שיטת משוב חדשה, אלא תהליך המשך ממוקד שמתחבר למשוב הקיים ומסייע להפוך את היעדים שעולים בו לשינויים אמיתיים בשטח.</span>
               </h1>
               <p className="mt-8 max-w-3xl text-lg leading-relaxed text-white/75 md:text-xl">
                 שיחת המשוב מזהה לא פעם בדיוק את הדבר שחשוב לשנות. אבל כשמדובר בהתנהגות ולא בידע מקצועי, הדרך מהתובנה לשינוי יומיומי אינה מובנת מאליה.
