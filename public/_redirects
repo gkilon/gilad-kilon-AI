@@ -1,2 +1,5 @@
-# SPA fallback - redirect all routes to index.html
+# Feedback Boost social preview must be handled before the SPA fallback
+/obt /.netlify/functions/obt-ssr 200!
+
+# SPA fallback - redirect all other routes to index.html
 /* /index.html 200
