@@ -21,12 +21,12 @@ export const handler: Handler = async (event) => {
   const url = 'https://kilon-consulting.com/obt';
 
   const html = indexHtml
-    .replace(/<title>.*?<\\/title>/, `<title>${title}</title>`)
-    .replace(/<meta name="title" content=".*?">/, `<meta name="title" content="${title}">`)
-    .replace(/<meta name="description"\\s+content=".*?">/s, `<meta name="description" content="${description}">`)
-    .replace(/<meta property="og:url" content=".*?">/, `<meta property="og:url" content="${url}">`)
-    .replace(/<meta property="og:title" content=".*?">/, `<meta property="og:title" content="${title}">`)
-    .replace(/<meta property="og:description"\\s+content=".*?">/s, `<meta property="og:description" content="${description}">`)
+    .replace(/<title>.*?<\/title>/, \`<title>\${title}</title>\`)
+    .replace(/<meta name="title" content=".*?">/, \`<meta name="title" content="\${title}">\`)
+    .replace(/<meta name="description"\s+content=".*?">/s, \`<meta name="description" content="\${description}">\`)
+    .replace(/<meta property="og:url" content=".*?">/, \`<meta property="og:url" content="\${url}">\`)
+    .replace(/<meta property="og:title" content=".*?">/, \`<meta property="og:title" content="\${title}">\`)
+    .replace(/<meta property="og:description"\s+content=".*?">/s, \`<meta property="og:description" content="\${description}">\`)
     .replace(/<meta property="og:image:alt" content=".*?">/, '<meta property="og:image:alt" content="Feedback Boost — ממשוב לשינוי התנהגותי">');
 
   return {
