@@ -7,6 +7,13 @@
   status = 301
   force = true
 
+# Route Feedback Boost through the SSR function for social sharing previews.
+[[redirects]]
+  from = "/obt"
+  to = "/.netlify/functions/obt-ssr"
+  status = 200
+  force = true
+
 # Route article detail pages through the SSR function for social previews.
 [[redirects]]
   from = "/article_detail/*"
